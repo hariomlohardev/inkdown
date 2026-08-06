@@ -320,32 +320,30 @@
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
 
-<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============ -->
+<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) — Notion-style ============ -->
 <section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
   <div class="twHead" id="twHead">
-    <span class="twGrip" aria-hidden="true">⠿</span>
     <div class="twTitleWrap">
       <b id="twDate">Today</b>
-      <span class="twSub" id="twSub">Add your first task</span>
+      <span class="twSub" id="twSub">No to-dos yet</span>
     </div>
-    <span class="twChip" id="twCount">0/0</span>
-    <button class="twIcon" id="twSettings" title="Todo settings" aria-label="Todo settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </button>
-    <button class="twIcon" id="twClose" title="Close (Ctrl+Alt+D)" aria-label="Close widget">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
+    <div class="twHeadBtns">
+      <button class="twIcon" id="twSettings" title="Todo settings" aria-label="Todo settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="twIcon" id="twClose" title="Close (Ctrl+Alt+D)" aria-label="Close widget">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
   </div>
   <div class="twProg"><i id="twProgFill"></i></div>
-  <div class="twBanner" id="twBanner" hidden>🎉 All done for today!</div>
   <div class="twBody" id="twList"></div>
   <form class="twAdd" id="twAddForm">
-    <input id="twInput" placeholder="Add a todo…" autocomplete="off" maxlength="200">
-    <button type="submit" title="Add" aria-label="Add todo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </button>
+    <span class="twAddIcon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </span>
+    <input id="twInput" placeholder="Add a to-do…  (press Enter)" autocomplete="off" maxlength="200">
   </form>
-  <div class="twFoot">Ctrl+Alt+D to toggle · 📌 pins roll to tomorrow</div>
 </section>
 
 <!-- ============ TODO SETTINGS MODAL ============ -->

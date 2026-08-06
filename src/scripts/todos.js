@@ -1,6 +1,6 @@
 // Daily Todo system
-// - Home has a "📌 Todos" button → opens a dedicated Todos page
-// - Floating draggable widget: toggle with Ctrl+Alt+D (works on any page)
+// - Home "📌 Todos" button → dedicated Todos page
+// - Notion-style floating widget: toggle with Ctrl+Alt+D, fixed tidy height
 // - Day-based todos with pinned rollover + settings modal
 import { $, esc } from './state.js';
 
@@ -10,6 +10,10 @@ const POS_KEY = 'inkdown:todoPos';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>';
 const TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
+// Empty-state icons (Notion-style, light stroke)
+const ICON_EMPTY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>';
+const ICON_DONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
 let lastRenderedKey = null;
 
@@ -196,18 +200,14 @@ function renderWidget() {
 
   const total = day.items.length;
   const done = day.items.filter(i => i.done).length;
-  const remaining = total - done;
 
   $('#twDate').textContent = fmtDate(key);
-  $('#twCount').textContent = done + '/' + total;
-  $('#twSub').textContent = total === 0
-    ? 'Add your first task'
-    : remaining === 0
-      ? 'All clear — nice work ✨'
-      : remaining + ' task' + (remaining > 1 ? 's' : '') + ' remaining';
+  $('#twSub').textContent =
+    total === 0 ? 'No to-dos yet'
+    : done === total ? 'All done ✨'
+    : done + ' of ' + total + ' done';
 
   $('#twProgFill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
-  $('#twBanner').hidden = !(total > 0 && done === total);
 
   const list = $('#twList');
   list.innerHTML = '';
@@ -215,20 +215,24 @@ function renderWidget() {
   if (hideDone) items = items.filter(i => !i.done);
 
   if (!items.length) {
-    list.innerHTML = total === 0
-      ? '<div class="tdEmpty big">Nothing here yet.<br>Add your first todo below ✨</div>'
-      : '<div class="tdEmpty big">Everything is checked off 🎈</div>';
+    const allDone = total > 0;   // items exist but are all completed (and hidden)
+    list.innerHTML =
+      '<div class="twEmpty">' +
+        '<div class="twEmptyIcon">' + (allDone ? ICON_DONE : ICON_EMPTY) + '</div>' +
+        '<div class="twEmptyText">' + (allDone ? 'Everything is done' : 'No to-dos for today') + '</div>' +
+        '<div class="twEmptyHint">' + (allDone ? 'Nice work — enjoy your day' : 'Add one below to get started') + '</div>' +
+      '</div>';
     return;
   }
 
   const pinned = items.filter(i => i.pinned);
   const rest = items.filter(i => !i.pinned);
   if (pinned.length) {
-    list.appendChild(secLabel('📌 Pinned'));
+    list.appendChild(secLabel('Pinned'));
     pinned.forEach(i => list.appendChild(itemRow(i, key)));
   }
   if (rest.length) {
-    if (pinned.length) list.appendChild(secLabel('▤ Tasks'));
+    if (pinned.length) list.appendChild(secLabel('To-do'));
     rest.forEach(i => list.appendChild(itemRow(i, key)));
   }
 }
@@ -260,7 +264,6 @@ function renderTodosPage() {
     items.forEach(i => list.appendChild(itemRow(i, key)));
   }
 
-  // Previous days
   const past = $('#thPastList');
   const openBefore = new Set([...past.querySelectorAll('.pastDay.open')].map(el => el.dataset.key));
   past.innerHTML = '';
@@ -368,7 +371,7 @@ function restorePos() {
       return;
     }
   } catch (e) {}
-  w.style.left = Math.max(8, innerWidth - 374) + 'px';
+  w.style.left = Math.max(8, innerWidth - 354) + 'px';
   w.style.top = '76px';
 }
 
