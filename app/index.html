@@ -129,37 +129,74 @@
   <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
 </section>
 
-<!-- ============ TODOS PAGE ============ -->
+<!-- ============ TODOS ============ -->
 <section id="todosPage" aria-label="Todos">
-  <div class="todosInner">
-    <div class="todosHead">
-      <button class="btn" id="tdBack" title="Back to library" aria-label="Back to library">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  <aside class="homeSide">
+    <div class="brand sideBrand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5v11l4.5-3.8L13 16V5" stroke="var(--bg)" stroke-width="2.4"/>
+          <path d="M17 10v9m0 0l-3-3m3 3l3-3" stroke="var(--pink)" stroke-width="2.2"/>
+        </svg>
+      </div>
+      <div class="wordmark"><b>Inkdown</b><span>readme studio</span></div>
+    </div>
+
+    <nav class="sideNav">
+      <button class="navItem" id="todoNavAll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>All files</span>
       </button>
-      <div class="todosTitle"><b>📌 Todos</b><span>day-wise tasks</span></div>
-      <div class="todosActions">
-        <button class="libAction" id="thOpenWidget" title="Floating widget — Ctrl+Alt+D">Open widget</button>
-        <button class="libAction" id="thSettings" title="Todo settings">⚙ Settings</button>
+      <button class="navItem active" id="todoNavTodos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Todos</span>
+      </button>
+    </nav>
+
+    <div class="sideFoot">
+      <button class="navItem" id="todoSettingsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="homeMain">
+    <div class="viewHead">
+      <div class="greet">
+        <h1 id="todoGreetTitle">Your Todos</h1>
+        <p id="todoGreetSub"></p>
+      </div>
+      <div class="viewTools">
+        <button class="iconBtn2" id="thOpenWidget" title="Open floating todo widget (Ctrl+Alt+D)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </button>
       </div>
     </div>
-    <div class="todoCard">
-      <div class="todosProg">
-        <div class="thBar"><i id="thBarFill"></i></div>
-        <span id="thStats">0/0 today</span>
+
+    <div class="homeScroll">
+      <div class="statsRow">
+        <div class="statCard"><div class="statIco a1">📋</div><div class="statTxt"><b id="tdStatTotal">0</b><span>Today</span></div></div>
+        <div class="statCard"><div class="statIco a2">✅</div><div class="statTxt"><b id="tdStatDone">0</b><span>Done</span></div></div>
+        <div class="statCard"><div class="statIco a3">📌</div><div class="statTxt"><b id="tdStatPinned">0</b><span>Pinned</span></div></div>
+        <div class="statCard"><div class="statIco a4">📈</div><div class="statTxt"><b id="tdStatWeek">—</b><span>Week done</span></div></div>
       </div>
-      <div class="thGrid">
-        <div class="thToday">
-          <div class="thLabel">Today</div>
-          <div id="thTodayList" class="thList"></div>
-          <form class="twAdd" id="thAddForm">
-            <input id="thInput" placeholder="Add a todo for today…" autocomplete="off" maxlength="200">
-            <button type="submit" title="Add">+</button>
-          </form>
-        </div>
-        <div class="thPast">
-          <div class="thLabel">Previous days</div>
-          <div id="thPastList"></div>
-        </div>
+
+      <div class="todoProgress"><i id="tdBarFill"></i></div>
+
+      <form class="todoAdd" id="thAddForm">
+        <input id="thInput" placeholder="Add a todo for today…  (Enter)" autocomplete="off" spellcheck="false">
+        <button type="submit" title="Add">+</button>
+      </form>
+
+      <div class="todoSection">
+        <div class="sectionHead"><span>Today</span></div>
+        <div id="thTodayList"></div>
+      </div>
+
+      <div class="todoSection">
+        <div class="sectionHead"><span>Previous days</span></div>
+        <div id="thPastList"></div>
       </div>
     </div>
   </div>
