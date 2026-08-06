@@ -1,4 +1,5 @@
 // UI orchestration: toasts, menus, overlay, file IO, render loop
+// RULE: no DOM access at module top-level — everything inside init functions
 import { state, $, $$, esc, STORAGE_KEYS, debounce } from './state.js';
 import { buildHTML, runMermaid, runMath } from './markdown.js';
 import { decorate } from './decorate.js';
@@ -8,13 +9,11 @@ import { applyHighlights } from './highlight.js';
 import { updateStats, lintDebounced, pushVersion } from './quality.js';
 import { ED_ACTS } from './editor.js';
 import { openSearch, closeSearch } from './search.js';
-import { setTheme } from './theme.js';
-import { STORAGE_KEYS as KEYS } from './state.js';
+import { SAMPLE } from './samples.js';
 
-let lastJump = null;
+const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
 export function toast(msg, type = 'ok') {
-  const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   const t = document.createElement('div');
   t.className = 'toast';
   t.innerHTML = (type === 'ok' ? ICON_OK : '⚠️ ') + esc(msg);
@@ -25,12 +24,122 @@ export function toast(msg, type = 'ok') {
   }, 2300);
 }
 
+/* ================= RENDER PIPELINE ================= */
+export async function renderView(animate = false) {
+  const target = state.editing ? state.previewEl : state.docEl;
+  target.classList.remove('anim');
+  target.innerHTML = buildHTML(state.md);
+  decorate(target);
+  await runMermaid(target);
+  runMath(target);
+  applyHighlights(target);
+  buildTOC(target);
+  measureNav();
+  updateMMThumb();
+  updateStats();
+  if (animate) {
+    void target.offsetWidth;
+    target.classList.add('anim');
+  }
+}
+
+const renderPreviewDebounced = debounce(() => renderView(false), 280);
+
+/* ================= SAVE / DIRTY ================= */
+export function markDirty() {
+  state.dirty = true;
+  $('#saveDot').classList.add('dirty');
+  $('#saveTxt').textContent = 'Unsaved changes';
+  autoSave();
+}
+
+const autoSave = debounce(() => saveDoc(false), 1200);
+
+export function saveDoc(announce = false) {
+  pushVersion();
+  try {
+    localStorage.setItem(STORAGE_KEYS.DOC, JSON.stringify({
+      md: state.md, name: state.name, at: Date.now(),
+      highlights: state.highlights, goal: state.goal, scroll: state.scroll
+    }));
+    state.dirty = false;
+    setSaved('Saved · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    const b = $('#btnSave');
+    b.classList.remove('flash');
+    void b.offsetWidth;
+    b.classList.add('flash');
+    if (announce) toast('Saved to this browser');
+  } catch (e) {
+    toast('Could not save', 'warn');
+  }
+}
+
+function setSaved(txt) {
+  $('#saveDot').classList.remove('dirty');
+  $('#saveTxt').textContent = txt;
+}
+
+export async function loadDoc(md, name, animate = true, rec) {
+  state.md = md;
+  state.name = name || 'untitled.md';
+  state.dirty = false;
+  state.highlights = rec?.highlights || [];
+  state.goal = rec?.goal || 0;
+  state.scroll = rec?.scroll || 0;
+  state.collapsed.clear();
+  $('#docTitle').textContent = state.name;
+  $('#stName').textContent = state.name;
+  document.title = state.name + ' — Inkdown';
+  setSaved('Saved');
+  closeSearch();
+  if (state.editing) state.editorEl.value = md;
+  await renderView(animate);
+  if (state.scroll && !state.editing) state.scrollArea.scrollTop = state.scroll;
+}
+
+export function setEditing(on) {
+  state.editing = on;
+  document.body.classList.toggle('editing', on);
+  $('#btnEdit').classList.toggle('active', on);
+  $('#btnEdit').title = on ? 'Done editing (Ctrl+E)' : 'Quick edit (Ctrl+E)';
+  if (on) {
+    state.editorEl.value = state.md;
+    renderView(false);
+    lintDebounced();
+    setTimeout(() => state.editorEl.focus(), 60);
+  } else {
+    renderView(true);
+    updateReadProgress();
+  }
+}
+
+function setFocus(on) {
+  document.body.classList.toggle('focus', on);
+  $('#btnFocus').classList.toggle('active', on);
+  if (on) state.scrollArea.focus();
+}
+
+/* ================= INIT — all DOM binding happens here ================= */
 export function initUI() {
+  bindStaticButtons();
   initMenus();
   initOverlay();
   initRename();
   initReading();
   initSaveExport();
+}
+
+function bindStaticButtons() {
+  $('#btnEdit').onclick = () => setEditing(!state.editing);
+  $('#btnFocus').onclick = () => setFocus(!document.body.classList.contains('focus'));
+  $('#focusExit').onclick = () => setFocus(false);
+
+  // Editor input → update state, mark dirty, re-render preview
+  state.editorEl.addEventListener('input', () => {
+    state.md = state.editorEl.value;
+    markDirty();
+    renderPreviewDebounced();
+  });
 }
 
 function initMenus() {
@@ -58,10 +167,6 @@ function initMenus() {
     if (!e.target.closest('.menuWrap')) $('#exportMenu').classList.remove('open');
     if (!e.target.closest('#editTools')) $$('.pop').forEach(p => p.classList.remove('open'));
   });
-
-  document.addEventListener('click', closeAllMenus);
-
-  $('#focusExit').onclick = () => setFocus(false);
 }
 
 function initOverlay() {
@@ -89,8 +194,7 @@ function initOverlay() {
   };
 
   $('#btnSample').onclick = async () => {
-    const { loadSample } = await import('./storage.js');
-    await loadSample();
+    await loadDoc(SAMPLE, 'sample-readme.md');
     hideOverlay();
     toast('Sample loaded');
   };
@@ -165,9 +269,7 @@ function initRename() {
       state.name = t;
       $('#stName').textContent = t;
       document.title = t + ' — Inkdown';
-      state.dirty = true;
-      $('#saveDot').classList.add('dirty');
-      $('#saveTxt').textContent = 'Unsaved changes';
+      markDirty();
     }
   });
 }
@@ -246,110 +348,7 @@ function exportHTML() {
     '</style></head><body>' + state.docEl.innerHTML + '</body></html>';
 }
 
-export async function loadDoc(md, name, animate = true, rec) {
-  state.md = md;
-  state.name = name || 'untitled.md';
-  state.dirty = false;
-  state.highlights = rec?.highlights || [];
-  state.goal = rec?.goal || 0;
-  state.scroll = rec?.scroll || 0;
-  state.collapsed.clear();
-  $('#docTitle').textContent = state.name;
-  $('#stName').textContent = state.name;
-  document.title = state.name + ' — Inkdown';
-  setSaved('Saved');
-  closeSearch();
-  if (state.editing) state.editorEl.value = md;
-  await renderView(animate);
-  if (state.scroll && !state.editing) state.scrollArea.scrollTop = state.scroll;
-}
-
-function setSaved(txt) {
-  $('#saveDot').classList.remove('dirty');
-  $('#saveTxt').textContent = txt;
-}
-
-export function saveDoc(announce = false) {
-  pushVersion();
-  try {
-    localStorage.setItem(STORAGE_KEYS.DOC, JSON.stringify({
-      md: state.md, name: state.name, at: Date.now(),
-      highlights: state.highlights, goal: state.goal, scroll: state.scroll
-    }));
-    state.dirty = false;
-    setSaved('Saved · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    const b = $('#btnSave');
-    b.classList.remove('flash');
-    void b.offsetWidth;
-    b.classList.add('flash');
-    if (announce) toast('Saved to this browser');
-  } catch (e) {
-    toast('Could not save', 'warn');
-  }
-}
-
-const autoSave = debounce(() => saveDoc(false), 1200);
-
-export function markDirty() {
-  state.dirty = true;
-  $('#saveDot').classList.add('dirty');
-  $('#saveTxt').textContent = 'Unsaved changes';
-  autoSave();
-}
-
-export function setEditing(on) {
-  state.editing = on;
-  document.body.classList.toggle('editing', on);
-  $('#btnEdit').classList.toggle('active', on);
-  $('#btnEdit').title = on ? 'Done editing (Ctrl+E)' : 'Quick edit (Ctrl+E)';
-  if (on) {
-    state.editorEl.value = state.md;
-    renderView(false);
-    lintDebounced();
-    setTimeout(() => state.editorEl.focus(), 60);
-  } else {
-    renderView(true);
-    updateReadProgress();
-  }
-}
-
-$('#btnEdit').onclick = () => setEditing(!state.editing);
-
-state.editorEl.addEventListener('input', () => {
-  state.md = state.editorEl.value;
-  markDirty();
-  renderPreviewDebounced();
-  lintDebounced();
-});
-
-const renderPreviewDebounced = debounce(() => renderView(false), 280);
-
-export async function renderView(animate = false) {
-  const target = state.editing ? state.previewEl : state.docEl;
-  target.classList.remove('anim');
-  target.innerHTML = buildHTML(state.md);
-  decorate(target);
-  await runMermaid(target);
-  runMath(target);
-  applyHighlights(target);
-  buildTOC(target);
-  measureNav();
-  updateMMThumb();
-  updateStats();
-  if (animate) {
-    void target.offsetWidth;
-    target.classList.add('anim');
-  }
-}
-
-function setFocus(on) {
-  document.body.classList.toggle('focus', on);
-  $('#btnFocus').classList.toggle('active', on);
-  if (on) state.scrollArea.focus();
-}
-
-$('#btnFocus').onclick = () => setFocus(!document.body.classList.contains('focus'));
-
+/* ================= KEYBOARD ================= */
 export function setupKeyboard() {
   document.addEventListener('keydown', e => {
     const mod = e.metaKey || e.ctrlKey;

@@ -1,8 +1,9 @@
-// Main entry point - orchestrates initialization
+// Entry point — orchestrates initialization in the CORRECT order
 import { initState } from './state.js';
-import { loadSavedDoc, loadSample } from './storage.js';
+import { readSavedDoc } from './storage.js';
+import { SAMPLE } from './samples.js';
 import { initTheme } from './theme.js';
-import { initUI, setupKeyboard, renderView, updateReadProgress, setEditing } from './ui.js';
+import { initUI, setupKeyboard, loadDoc, toast, updateReadProgress } from './ui.js';
 import { initTOC } from './toc.js';
 import { initNavigation } from './navigation.js';
 import { initEditor } from './editor.js';
@@ -10,11 +11,15 @@ import { initSearch } from './search.js';
 import { initHighlight } from './highlight.js';
 import { initViewer } from './viewer.js';
 import { initQuality } from './quality.js';
-import { toast } from './ui.js';
 
 (async function boot() {
+  // 1. Theme first (only touches <html> attribute)
   initTheme();
+
+  // 2. Cache DOM references into state — MUST happen before any bindings
   initState();
+
+  // 3. Bind all UI (safe now: state.docEl / state.editorEl exist)
   initUI();
   initTOC();
   initNavigation();
@@ -25,11 +30,13 @@ import { toast } from './ui.js';
   initQuality();
   setupKeyboard();
 
-  const loaded = await loadSavedDoc();
-  if (!loaded) {
-    await loadSample();
-  } else {
+  // 4. Load content last
+  const saved = readSavedDoc();
+  if (saved) {
+    await loadDoc(saved.md, saved.name || 'untitled.md', true, saved);
     toast('Restored your last document');
+  } else {
+    await loadDoc(SAMPLE, 'sample-readme.md');
   }
 
   updateReadProgress();

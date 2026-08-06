@@ -1,9 +1,15 @@
 // Image viewer with zoom/pan
-import { $ } from './state.js';
+import { state, $ } from './state.js';
 
 let ivScale = 1, ivX = 0, ivY = 0, ivDrag = null;
 
 export function initViewer() {
+  // Open image on click (bound here, after state.docEl exists)
+  state.docEl.addEventListener('click', e => {
+    const img = e.target.closest('img');
+    if (img) openImg(img.src);
+  });
+
   $('#imgView').addEventListener('wheel', e => {
     e.preventDefault();
     ivScale = Math.min(5, Math.max(0.4, ivScale * (e.deltaY < 0 ? 1.15 : 0.87)));
@@ -30,18 +36,6 @@ export function initViewer() {
 
   $('#imgView').addEventListener('click', e => {
     if (!ivDrag || Math.abs(ivX) < 4) $('#imgView').classList.remove('open');
-  });
-
-  // Attach openImg to state.docEl click for images (handled in highlight.js)
-  state_docEl_imgHandler();
-}
-
-function state_docEl_imgHandler() {
-  import('./state.js').then(({ state }) => {
-    state.docEl.addEventListener('click', e => {
-      const img = e.target.closest('img');
-      if (img) openImg(img.src);
-    });
   });
 }
 
