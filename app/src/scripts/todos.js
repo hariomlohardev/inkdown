@@ -502,7 +502,7 @@ export function initTodos(){
     loadData(); autoCleanup(); ensureToday();
 
     const navAll=$('#todoNavAll'); if(navAll) navAll.onclick=()=>showLibrary();
-    const settingsBtn=$('#todoSettingsBtn'); if(settingsBtn) settingsBtn.onclick=openTodoSettings;
+    const settingsBtn = $('#todoSettingsBtn'); if (settingsBtn) settingsBtn.onclick = () => document.dispatchEvent(new CustomEvent('settings:open'));
     const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleTodoWidget;
     
     const homeWidgetBtn = $('#homeWidgetBtn'); if(homeWidgetBtn) homeWidgetBtn.onclick = toggleTodoWidget;
@@ -524,7 +524,7 @@ export function initTodos(){
     });
 
     const twClose=$('#twClose'); if(twClose) twClose.onclick=()=>toggleTodoWidget();
-    const twSettings=$('#twSettings'); if(twSettings) twSettings.onclick=openTodoSettings;
+    const twSettings = $('#twSettings'); if (twSettings) twSettings.onclick = () => document.dispatchEvent(new CustomEvent('settings:open'));
     const twAddForm=$('#twAddForm'), twInput=$('#twInput');
     if(twAddForm) twAddForm.addEventListener('submit',e=>{
       e.preventDefault();

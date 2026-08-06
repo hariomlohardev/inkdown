@@ -1,4 +1,4 @@
-import os, sys, socket, threading, functools, ctypes, logging, multiprocessing, time, traceback
+import os, sys, socket, threading, functools, ctypes, logging, multiprocessing, traceback
 import http.server, socketserver
 
 PORT = 8741
@@ -31,21 +31,11 @@ def log(msg):
     except Exception: pass
 
 def install_exception_hook():
-    """Catch ANY uncaught error, log it to crash.log, and show a dialog instead of dying silently."""
     def hook(exc_type, exc_value, exc_tb):
         try:
             msg = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
-            log('UNCAUGHT EXCEPTION:\n' + msg)
-            with open(os.path.join(data_dir(), 'crash.log'), 'a', encoding='utf-8') as f:
-                f.write('\n=== %s ===\n%s' % (time.strftime('%Y-%m-%d %H:%M:%S'), msg))
-        except Exception:
-            pass
-        try:
-            ctypes.windll.user32.MessageBoxW(
-                0, 'Inkdown hit an unexpected error:\n\n%s\n\nDetails saved to %%APPDATA%%\\Inkdown\\crash.log' % exc_value,
-                'Inkdown', 0x10)
-        except Exception:
-            pass
+            log('UNCAUGHT:\n' + msg)
+        except Exception: pass
         try: sys.__excepthook__(exc_type, exc_value, exc_tb)
         except Exception: pass
     sys.excepthook = hook
@@ -62,14 +52,13 @@ def parse_args():
         try:
             p = os.path.abspath(a)
             if not os.path.isfile(p): continue
-            if not p.lower().endswith(('.md', '.markdown', '.mdown', '.txt')): continue
-            if os.path.getsize(p) > MAX_OPEN_FILE_BYTES:
-                log('skipping large launch file: ' + p); continue
+            if not p.lower().endswith(('.md','.markdown','.mdown','.txt')): continue
+            if os.path.getsize(p) > MAX_OPEN_FILE_BYTES: continue
             with open(p, 'r', encoding='utf-8', errors='ignore') as f:
                 LAUNCH_DOCS.append({'name': os.path.basename(p), 'content': f.read()})
             log('queued launch file: ' + p)
         except Exception as e:
-            log('parse_args error for %r: %r' % (a, e))
+            log('parse_args error: ' + repr(e))
 
 def base_dir():
     if getattr(sys, 'frozen', False):
@@ -86,12 +75,11 @@ except Exception: WEBVIEW_DATA_DIR = data_dir()
 _io_lock = threading.Lock()
 
 class Api:
-    """js_api must only contain simple methods — never store the Window on it."""
+    """js_api — only simple methods; never store the Window here."""
     def toggle_fullscreen(self):
         try:
             w = _MAIN_WINDOW.get('ref')
-            if w is not None:
-                w.toggle_fullscreen(); return True
+            if w is not None: w.toggle_fullscreen(); return True
         except Exception as e:
             log('fullscreen error: ' + repr(e))
         return False
@@ -105,13 +93,21 @@ class Api:
                 with open(DATA_FILE, 'w', encoding='utf-8') as f: f.write(payload)
             return True
         except Exception as e:
-            log('save_snapshot error: ' + repr(e)); return False
+            log('save error: ' + repr(e)); return False
     def load_snapshot(self):
         try:
             with _io_lock:
                 with open(DATA_FILE, 'r', encoding='utf-8') as f: return f.read()
         except Exception:
             return ''
+    def fetch_url(self, url):
+        import urllib.request
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return r.read().decode('utf-8', errors='ignore')
+        except Exception:
+            return None
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):
@@ -141,25 +137,36 @@ def main():
     try:
         set_app_user_model_id()
         parse_args()
-        log('launch docs queued: %d' % len(LAUNCH_DOCS))
 
         import webview
         import updater
 
         root = app_dir()
         log('app dir: %s (exists=%s)' % (root, os.path.isdir(root)))
+
+        if not os.path.isdir(root):
+            try:
+                ctypes.windll.user32.MessageBoxW(
+                    0, 'Could not find the app folder at:\n\n%s\n\nPlease reinstall.' % root,
+                    'Inkdown', 0x10)
+            except Exception: pass
+            return
+
         port = start_server(root)
         log('local server on port %d' % port)
         url = 'http://127.0.0.1:%d/index.html' % port
 
         api = Api()
+
+        # NOTE: text_select=False avoids a known click-blocking bug in some
+        # PyWebView + WebView2 combos. If you need text selection, try True.
         window = webview.create_window(
             title='Inkdown — README Studio',
             url=url,
             width=1280, height=820,
             min_size=(820, 600),
             background_color='#0a0a0a',
-            text_select=True,
+            text_select=False,
             js_api=api,
         )
         _MAIN_WINDOW['ref'] = window
@@ -182,20 +189,16 @@ def main():
             log('webview.start failed: ' + repr(e))
             try:
                 ctypes.windll.user32.MessageBoxW(
-                    0, 'The window failed to start.\n\nThis usually means the WebView2 runtime is '
-                       'missing, or the app hit an error.\n\nError: %s\n\nTry installing the '
-                       '"Microsoft Edge WebView2 Runtime" and reopen Inkdown.' % e,
+                    0, 'The window failed to start. Error: %s\n\nTry installing the "Microsoft Edge WebView2 Runtime".' % e,
                     'Inkdown', 0x10)
-            except Exception:
-                pass
+            except Exception: pass
             raise
     except Exception as e:
-        log('FATAL: %r' % e)
+        log('FATAL: ' + repr(e))
         log(traceback.format_exc())
         try:
-            ctypes.windll.user32.MessageBoxW(0, 'Inkdown failed to start:\n\n%s' % e, 'Inkdown', 0x10)
-        except Exception:
-            pass
+            ctypes.windll.user32.MessageBoxW(0, 'Inkdown failed:\n\n%s' % e, 'Inkdown', 0x10)
+        except Exception: pass
         raise
 
 if __name__ == '__main__':

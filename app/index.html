@@ -202,6 +202,228 @@
   </div>
 </section>
 
+
+<!-- ============ SETTINGS PAGE ============ -->
+<section id="settingsPage" aria-label="Settings">
+  <aside class="homeSide">
+    <div class="brand sideBrand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5v11l4.5-3.8L13 16V5" stroke="var(--bg)" stroke-width="2.4"/>
+          <path d="M17 10v9m0 0l-3-3m3 3l3-3" stroke="var(--pink)" stroke-width="2.2"/>
+        </svg>
+      </div>
+      <div class="wordmark"><b>Inkdown</b><span>readme studio</span></div>
+    </div>
+
+    <nav class="sideNav">
+      <button class="navItem" id="settingsNavAll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>All files</span>
+      </button>
+      <button class="navItem" id="settingsNavTodos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Todos</span>
+      </button>
+      <button class="navItem active" id="settingsNavSelf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sideFoot">
+      <button class="navItem ghost" id="settingsSample">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10.7l-5.8 1.9L12 18.4l-2.2-5.8L4 10.7l6.1-1.9z"/></svg>
+        <span>Sample doc</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="homeMain">
+    <div class="viewHead">
+      <div class="greet">
+        <h1>Settings</h1>
+        <p>Customize your workspace, manage your data, and see shortcuts.</p>
+      </div>
+    </div>
+
+    <div class="homeScroll">
+      <!-- Appearance -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">🎨</div>
+          <div>
+            <h3>Appearance</h3>
+            <span>How Inkdown looks on your screen</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Theme</b>
+              <span>Follow your system, or pick a fixed one</span>
+            </div>
+            <div class="setThemeSeg">
+              <button class="setThemeOpt" data-theme-value="system">🖥 System</button>
+              <button class="setThemeOpt" data-theme-value="light">☀ Light</button>
+              <button class="setThemeOpt" data-theme-value="dark">🌙 Dark</button>
+            </div>
+          </label>
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Default reading font</b>
+              <span>Used when opening new documents</span>
+            </div>
+            <select id="settingsDefaultFont" class="setSelect">
+              <option value="serif">Serif</option>
+              <option value="sans">Sans-serif</option>
+              <option value="mono">Monospace</option>
+              <option value="atk">Atkinson ♿</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Editor Behavior -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">✏️</div>
+          <div>
+            <h3>Editor behavior</h3>
+            <span>How the editor saves and behaves</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Auto-save</b>
+              <span>Automatically save edits after typing</span>
+            </div>
+            <label class="setToggle">
+              <input type="checkbox" id="settingsAutosave">
+              <span class="setToggleSlider"></span>
+            </label>
+          </label>
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Auto-save interval</b>
+              <span>How often changes are written</span>
+            </div>
+            <select id="settingsAutosaveInterval" class="setSelect">
+              <option value="2">2 seconds</option>
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+              <option value="30">30 seconds</option>
+              <option value="60">1 minute</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">💾</div>
+          <div>
+            <h3>Data management</h3>
+            <span>Back up, restore, or clear your library</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Storage used</b>
+              <span id="settingsStorageUsed">Calculating…</span>
+            </div>
+            <div class="setStorageBar">
+              <i id="settingsStorageFill"></i>
+            </div>
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsExportAll">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export entire library (.zip)</span>
+            </button>
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsImportAll">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Import library from .zip</span>
+            </button>
+            <input type="file" id="settingsImportFile" accept=".zip" hidden>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keyboard Shortcuts -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">⌨️</div>
+          <div>
+            <h3>Keyboard shortcuts</h3>
+            <span>Work faster with the keys at your fingertips</span>
+          </div>
+        </div>
+        <div class="setCard shortcutsCard">
+          <div class="scGroup">
+            <div class="scLabel">General</div>
+            <div class="scRow"><span>Save document</span><kbd>Ctrl + S</kbd></div>
+            <div class="scRow"><span>Toggle edit mode</span><kbd>Ctrl + E</kbd></div>
+            <div class="scRow"><span>Search document</span><kbd>Ctrl + K</kbd></div>
+            <div class="scRow"><span>Open file</span><kbd>Ctrl + O</kbd></div>
+            <div class="scRow"><span>Toggle contents</span><kbd>Ctrl + \</kbd></div>
+            <div class="scRow"><span>Focus mode</span><kbd>F</kbd></div>
+            <div class="scRow"><span>Fullscreen (desktop)</span><kbd>F11</kbd></div>
+          </div>
+          <div class="scGroup">
+            <div class="scLabel">Formatting</div>
+            <div class="scRow"><span>Bold</span><kbd>Ctrl + B</kbd></div>
+            <div class="scRow"><span>Italic</span><kbd>Ctrl + I</kbd></div>
+            <div class="scRow"><span>Inline code</span><kbd>Ctrl + `</kbd></div>
+          </div>
+          <div class="scGroup">
+            <div class="scLabel">Todos</div>
+            <div class="scRow"><span>Quick-add todo</span><kbd>Ctrl + Alt + T</kbd></div>
+            <div class="scRow"><span>Toggle widget</span><kbd>Ctrl + Alt + W</kbd></div>
+          </div>
+          <div class="scGroup">
+            <div class="scLabel">Navigation</div>
+            <div class="scRow"><span>Back to last jump</span><kbd>Ctrl + [</kbd></div>
+            <div class="scRow"><span>Close dialogs</span><kbd>Esc</kbd></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">⚠️</div>
+          <div>
+            <h3>Danger zone</h3>
+            <span>These actions cannot be undone</span>
+          </div>
+        </div>
+        <div class="setCard danger">
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Reset settings to default</b>
+              <span>Keeps your files — only resets preferences</span>
+            </div>
+            <button class="setBtn warn" id="settingsReset">Reset settings</button>
+          </label>
+          <label class="setRow">
+            <div class="setRowText">
+              <b>Clear all data</b>
+              <span>Deletes every file, todo, and setting</span>
+            </div>
+            <button class="setBtn danger" id="settingsClearAll">Clear everything</button>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ READER / EDITOR ============ -->
 <div id="app">
   <header>
@@ -446,185 +668,6 @@
     </div>
     <div class="privacy">🔒 nothing leaves your browser — files live in localStorage</div>
     <input type="file" id="fileInput" accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
-  </div>
-</div>
-<!-- ============ SETTINGS MODAL ============ -->
-<div id="settingsModal" class="settingsModal" hidden role="dialog" aria-modal="true" aria-label="Settings">
-  <div class="settingsBox">
-    <button class="settingsClose" id="settingsClose" aria-label="Close settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    
-    <h2>⚙ Settings</h2>
-    
-    <div class="settingsScroll">
-      <!-- Appearance -->
-      <section class="settingsSection">
-        <h3>Appearance</h3>
-        <div class="settingsGroup">
-          <label class="settingsRow">
-            <div class="settingsText">
-              <b>Theme mode</b>
-              <span>Choose how Inkdown looks</span>
-            </div>
-            <select id="settingsTheme" class="settingsSelect">
-              <option value="system">🖥 System</option>
-              <option value="light">☀ Light</option>
-              <option value="dark">🌙 Dark</option>
-            </select>
-          </label>
-          
-          <label class="settingsRow">
-            <div class="settingsText">
-              <b>Default font</b>
-              <span>Font for new documents</span>
-            </div>
-            <select id="settingsDefaultFont" class="settingsSelect">
-              <option value="serif">Serif</option>
-              <option value="sans">Sans-serif</option>
-              <option value="mono">Monospace</option>
-              <option value="atk">Atkinson ♿</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <!-- Editor Behavior -->
-      <section class="settingsSection">
-        <h3>Editor Behavior</h3>
-        <div class="settingsGroup">
-          <label class="settingsRow">
-            <div class="settingsText">
-              <b>Auto-save</b>
-              <span>Automatically save changes</span>
-            </div>
-            <label class="settingsToggle">
-              <input type="checkbox" id="settingsAutosave" checked>
-              <span class="toggleSlider"></span>
-            </label>
-          </label>
-          
-          <label class="settingsRow">
-            <div class="settingsText">
-              <b>Auto-save interval</b>
-              <span>Seconds between auto-saves</span>
-            </div>
-            <select id="settingsAutosaveInterval" class="settingsSelect">
-              <option value="2">2 seconds</option>
-              <option value="5">5 seconds</option>
-              <option value="10">10 seconds</option>
-              <option value="30">30 seconds</option>
-              <option value="60">1 minute</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <!-- Data Management -->
-      <section class="settingsSection">
-        <h3>Data Management</h3>
-        <div class="settingsGroup">
-          <div class="settingsRow">
-            <div class="settingsText">
-              <b>Storage usage</b>
-              <span id="settingsStorageUsed">Calculating...</span>
-            </div>
-          </div>
-          
-          <div class="settingsRow">
-            <button class="settingsBtn" id="settingsExportAll">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Export entire library (.zip)
-            </button>
-          </div>
-          
-          <div class="settingsRow">
-            <button class="settingsBtn" id="settingsImportAll">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Import library from .zip
-            </button>
-            <input type="file" id="settingsImportFile" accept=".zip" hidden>
-          </div>
-          
-          <div class="settingsRow">
-            <button class="settingsBtn danger" id="settingsClearAll">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              Clear all data
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Keyboard Shortcuts -->
-      <section class="settingsSection">
-        <h3>Keyboard Shortcuts</h3>
-        <div class="settingsGroup">
-          <div class="shortcutsList">
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + S</span>
-              <span class="shortcutDesc">Save document</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + E</span>
-              <span class="shortcutDesc">Toggle edit mode</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + K</span>
-              <span class="shortcutDesc">Search document</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + O</span>
-              <span class="shortcutDesc">Open file</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + B</span>
-              <span class="shortcutDesc">Bold text</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + I</span>
-              <span class="shortcutDesc">Italic text</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">F</span>
-              <span class="shortcutDesc">Focus mode</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + Alt + T</span>
-              <span class="shortcutDesc">Quick add todo</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + Alt + W</span>
-              <span class="shortcutDesc">Toggle todo widget</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">F11</span>
-              <span class="shortcutDesc">Fullscreen (desktop)</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Ctrl + \</span>
-              <span class="shortcutDesc">Toggle table of contents</span>
-            </div>
-            <div class="shortcutRow">
-              <span class="shortcutKey">Esc</span>
-              <span class="shortcutDesc">Close dialogs / exit focus</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Reset -->
-      <section class="settingsSection">
-        <h3>Reset</h3>
-        <div class="settingsGroup">
-          <div class="settingsRow">
-            <button class="settingsBtn warn" id="settingsReset">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-              Reset settings to default
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
   </div>
 </div>
 <!-- ============ TODO SETTINGS ============ -->

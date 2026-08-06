@@ -17,6 +17,8 @@ import { initPWA } from './pwa.js';
 import { restored } from './persist.js';
 import { initSettings } from './settings.js';
 
+
+
 // Global safety net: one bad error should never white-screen the whole app.
 window.addEventListener('error', (e) => {
   try { console.error('[Inkdown] error:', e.message, e.filename, e.lineno); } catch (_) {}

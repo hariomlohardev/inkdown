@@ -405,11 +405,7 @@ export function initLibrary(){
   if (legacyTodos) legacyTodos.onclick = () => { if(navTodos) navTodos.onclick(); };
 
   const sideSettings = $('#sideSettings');
-  if (sideSettings) sideSettings.onclick = () => {
-    document.dispatchEvent(new CustomEvent('settings:open'));
-    const ls = $('#libSettings');
-    if (ls) ls.click();
-  };
+  if (sideSettings) sideSettings.onclick = () => document.dispatchEvent(new CustomEvent('settings:open'));
 
   const sideSample = $('#sideSample');
   if (sideSample) sideSample.onclick = newSample;
