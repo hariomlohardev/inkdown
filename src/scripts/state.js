@@ -1,13 +1,12 @@
 // Shared state and utility functions
-
 export const STORAGE_KEYS = {
-  DOC: 'inkdown:doc',
+  DOC: 'inkdown:doc',       // legacy single-file key (migrated)
   THEME: 'inkdown:theme',
-  READ: 'inkdown:read',
-  VERSIONS: 'inkdown:versions'
+  READ: 'inkdown:read'
 };
 
 export const state = {
+  fileId: null,            // ← currently open library file id
   md: '',
   name: 'untitled.md',
   dirty: false,
@@ -41,7 +40,6 @@ export function debounce(fn, ms) {
 }
 
 export function initState() {
-  // Attach commonly accessed elements to state for convenience
   state.docEl = $('#doc');
   state.previewEl = $('#preview');
   state.scrollArea = $('#scrollArea');

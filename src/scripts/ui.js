@@ -1,5 +1,4 @@
 // UI orchestration: toasts, menus, overlay, file IO, render loop
-// RULE: no DOM access at module top-level — everything inside init functions
 import { state, $, $$, esc, STORAGE_KEYS, debounce } from './state.js';
 import { buildHTML, runMermaid, runMath } from './markdown.js';
 import { decorate } from './decorate.js';
@@ -7,6 +6,7 @@ import { buildTOC } from './toc.js';
 import { measureNav, updateReadProgress, updateMMThumb } from './navigation.js';
 import { applyHighlights } from './highlight.js';
 import { updateStats, lintDebounced, pushVersion } from './quality.js';
+import { upsertFile, createFile, getLibrary, uniqueName } from './storage.js';
 import { ED_ACTS } from './editor.js';
 import { openSearch, closeSearch } from './search.js';
 import { SAMPLE } from './samples.js';
@@ -45,6 +45,23 @@ export async function renderView(animate = false) {
 
 const renderPreviewDebounced = debounce(() => renderView(false), 280);
 
+/* ================= FILE OPEN / BACK ================= */
+export function openFile(rec, opts = {}) {
+  state.fileId = rec.id;
+  document.body.classList.remove('focus');
+  document.body.dataset.view = 'reader';
+  loadDoc(rec.md, rec.name, true, rec);
+  if (opts.edit) setEditing(true);
+}
+
+export function backToLibrary() {
+  if (state.dirty) saveDoc(false);
+  if (state.editing) setEditing(false);
+  document.body.dataset.view = 'library';
+  document.title = 'Inkdown — Library';
+  document.dispatchEvent(new CustomEvent('library:shown'));
+}
+
 /* ================= SAVE / DIRTY ================= */
 export function markDirty() {
   state.dirty = true;
@@ -57,20 +74,30 @@ const autoSave = debounce(() => saveDoc(false), 1200);
 
 export function saveDoc(announce = false) {
   pushVersion();
-  try {
-    localStorage.setItem(STORAGE_KEYS.DOC, JSON.stringify({
-      md: state.md, name: state.name, at: Date.now(),
-      highlights: state.highlights, goal: state.goal, scroll: state.scroll
-    }));
+  if (!state.fileId) {
+    // safety: create a record if somehow missing
+    const rec = createFile(state.name, state.md);
+    state.fileId = rec.id;
+  }
+  const ok = upsertFile({
+    id: state.fileId,
+    name: state.name,
+    md: state.md,
+    updatedAt: Date.now(),
+    scroll: state.scroll,
+    highlights: state.highlights,
+    goal: state.goal
+  });
+  if (ok) {
     state.dirty = false;
     setSaved('Saved · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     const b = $('#btnSave');
     b.classList.remove('flash');
     void b.offsetWidth;
     b.classList.add('flash');
-    if (announce) toast('Saved to this browser');
-  } catch (e) {
-    toast('Could not save', 'warn');
+    if (announce) toast('Saved to library');
+  } else {
+    toast('Could not save (storage full?)', 'warn');
   }
 }
 
@@ -82,6 +109,7 @@ function setSaved(txt) {
 export async function loadDoc(md, name, animate = true, rec) {
   state.md = md;
   state.name = name || 'untitled.md';
+  if (rec?.id) state.fileId = rec.id;
   state.dirty = false;
   state.highlights = rec?.highlights || [];
   state.goal = rec?.goal || 0;
@@ -119,7 +147,7 @@ function setFocus(on) {
   if (on) state.scrollArea.focus();
 }
 
-/* ================= INIT — all DOM binding happens here ================= */
+/* ================= INIT ================= */
 export function initUI() {
   bindStaticButtons();
   initMenus();
@@ -130,11 +158,12 @@ export function initUI() {
 }
 
 function bindStaticButtons() {
+  $('#btnBack').onclick = backToLibrary;
+  $('#logoHome').onclick = backToLibrary;
   $('#btnEdit').onclick = () => setEditing(!state.editing);
   $('#btnFocus').onclick = () => setFocus(!document.body.classList.contains('focus'));
   $('#focusExit').onclick = () => setFocus(false);
 
-  // Editor input → update state, mark dirty, re-render preview
   state.editorEl.addEventListener('input', () => {
     state.md = state.editorEl.value;
     markDirty();
@@ -143,9 +172,7 @@ function bindStaticButtons() {
 }
 
 function initMenus() {
-  const closeAllMenus = () => {
-    $$('.menu, .pop').forEach(m => m.classList.remove('open'));
-  };
+  const closeAllMenus = () => $$('.menu, .pop').forEach(m => m.classList.remove('open'));
 
   $('#btnRead').onclick = e => {
     e.stopPropagation();
@@ -174,6 +201,8 @@ function initOverlay() {
   const fileInput = $('#fileInput');
   let dragDepth = 0, dragMode = false;
 
+  const inReader = () => document.body.dataset.view === 'reader';
+
   const showOverlay = drag => {
     overlay.classList.add('open');
     overlay.classList.toggle('dragging', !!drag);
@@ -193,25 +222,31 @@ function initOverlay() {
     fileInput.value = '';
   };
 
-  $('#btnSample').onclick = async () => {
-    await loadDoc(SAMPLE, 'sample-readme.md');
+  // Every import creates a NEW library file and opens it
+  $('#btnSample').onclick = () => {
+    const name = uniqueName('sample-readme.md', getLibrary());
+    const rec = createFile(name, SAMPLE);
     hideOverlay();
-    toast('Sample loaded');
+    openFile(rec);
+    toast('Sample added to library');
   };
 
   $('#btnPaste').onclick = async () => {
     try {
       const t = await navigator.clipboard.readText();
       if (t.trim()) {
-        await loadDoc(t, 'pasted.md');
+        const name = uniqueName('pasted.md', getLibrary());
+        const rec = createFile(name, t);
         hideOverlay();
-        toast('Pasted from clipboard');
+        openFile(rec);
+        toast('Pasted into library');
         return;
       }
     } catch (e) {}
-    await loadDoc('', 'untitled.md');
+    const name = uniqueName('untitled.md', getLibrary());
+    const rec = createFile(name, '');
     hideOverlay();
-    setEditing(true);
+    openFile(rec, { edit: true });
     toast('Paste your Markdown (Ctrl+V)');
   };
 
@@ -221,38 +256,47 @@ function initOverlay() {
       return;
     }
     const r = new FileReader();
-    r.onload = async () => {
-      await loadDoc(r.result, f.name);
+    r.onload = () => {
+      const name = uniqueName(f.name, getLibrary());
+      const rec = createFile(name, r.result);
       hideOverlay();
-      toast('Loaded ' + f.name);
+      openFile(rec);
+      toast('Imported ' + f.name);
     };
     r.readAsText(f);
   }
 
+  // Drag & drop ONLY active inside the reader view
   window.addEventListener('dragenter', e => {
+    if (!inReader()) return;
     e.preventDefault();
     dragMode = true;
     dragDepth++;
     showOverlay(true);
   });
-  window.addEventListener('dragover', e => e.preventDefault());
+  window.addEventListener('dragover', e => { if (inReader()) e.preventDefault(); });
   window.addEventListener('dragleave', e => {
+    if (!inReader()) return;
     e.preventDefault();
     if (dragMode && --dragDepth <= 0) overlay.classList.remove('dragging');
   });
   window.addEventListener('drop', e => {
+    if (!inReader()) return;
     e.preventDefault();
     dragMode = false;
     const f = e.dataTransfer && e.dataTransfer.files[0];
     if (f) readFile(f);
     else {
       const t = e.dataTransfer.getData('text');
-      if (t.trim()) loadDoc(t, 'pasted.md');
+      if (t.trim()) {
+        const name = uniqueName('pasted.md', getLibrary());
+        const rec = createFile(name, t);
+        openFile(rec);
+      }
     }
     hideOverlay();
   });
 
-  // Expose for keyboard shortcuts
   state._showOverlay = showOverlay;
   state._hideOverlay = hideOverlay;
 }
@@ -336,15 +380,11 @@ function exportHTML() {
     'body{font:17px/1.75 "Source Serif 4",Georgia,serif;max-width:820px;margin:48px auto;padding:0 26px;color:#0a0a0a}' +
     'h1,h2,h3,h4{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.02em;line-height:1.25}' +
     'h1{border-bottom:1px solid #d4d4d4;padding-bottom:.4em}h2{border-bottom:1px solid #e9e9e9;padding-bottom:.3em;margin-top:2em}' +
-    '.codebox{border-radius:12px;overflow:hidden;border:1px solid #242424;margin:1.1em 0}.codehead{background:#121212;color:#8f8f8f;font:600 11px monospace;padding:8px 16px;letter-spacing:.2em;text-transform:uppercase}.ccopy{display:none}' +
-    'pre{background:#0a0a0a!important;color:#e8e8e8;padding:18px 20px;overflow-x:auto;margin:0}code{font-family:"JetBrains Mono",monospace;font-size:13.5px}' +
+    'pre{background:#0a0a0a!important;color:#e8e8e8;padding:18px 20px;overflow-x:auto;border-radius:12px}code{font-family:"JetBrains Mono",monospace;font-size:13.5px}' +
     ':not(pre)>code{background:#f4f4f4;border:1px solid #e9e9e9;padding:2px 7px;border-radius:6px;font-size:.85em;color:#d1005f}' +
-    '.tableWrap{overflow-x:auto;border:1px solid #e9e9e9;border-radius:12px}table{border-collapse:collapse;width:100%}' +
-    'th{background:#f5f5f5;text-align:left;padding:10px 16px;border-bottom:2px solid #d4d4d4;font-family:sans-serif;font-size:.8em;text-transform:uppercase;letter-spacing:.08em}td{padding:10px 16px;border-bottom:1px solid #e9e9e9}' +
-    'blockquote{border-left:4px solid #ff2e88;background:rgba(255,46,136,.07);border-radius:0 12px 12px 0;padding:12px 20px;color:#3f3f3f;font-style:italic}' +
-    'img{max-width:100%;border-radius:12px}a{color:#d1005f}hr{border:none;height:2px;background:#d4d4d4;margin:2.4em 0}' +
-    '.mermaid{text-align:center;padding:20px;border:1px solid #e9e9e9;border-radius:12px}details{border:1px solid #e9e9e9;border-radius:10px;padding:12px 16px}summary{cursor:pointer;font-weight:700}' +
-    '.hl{background:rgba(255,46,136,.25)}' +
+    'table{border-collapse:collapse;width:100%}th{background:#f5f5f5;text-align:left;padding:10px 16px;border:1px solid #d4d4d4}td{padding:10px 16px;border:1px solid #e9e9e9}' +
+    'blockquote{border-left:4px solid #ff2e88;background:rgba(255,46,136,.07);padding:12px 20px;color:#3f3f3f;font-style:italic}' +
+    'img{max-width:100%;border-radius:12px}a{color:#d1005f}' +
     '</style></head><body>' + state.docEl.innerHTML + '</body></html>';
 }
 
@@ -352,17 +392,22 @@ function exportHTML() {
 export function setupKeyboard() {
   document.addEventListener('keydown', e => {
     const mod = e.metaKey || e.ctrlKey;
+    const inReader = document.body.dataset.view === 'reader';
     const typing = /INPUT|TEXTAREA/.test(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
 
-    if (mod && e.key.toLowerCase() === 's') { e.preventDefault(); saveDoc(true); }
-    else if (mod && e.key.toLowerCase() === 'e') { e.preventDefault(); setEditing(!state.editing); }
-    else if (mod && e.key.toLowerCase() === 'o') { e.preventDefault(); state._showOverlay?.(false); }
-    else if (mod && e.key === '\\') {
+    if (mod && e.key.toLowerCase() === 's' && inReader) { e.preventDefault(); saveDoc(true); }
+    else if (mod && e.key.toLowerCase() === 'e' && inReader) { e.preventDefault(); setEditing(!state.editing); }
+    else if (mod && e.key.toLowerCase() === 'o') {
+      e.preventDefault();
+      if (inReader) state._showOverlay?.(false);
+      else $('#libFileInput').click();   // upload from library
+    }
+    else if (mod && e.key === '\\' && inReader) {
       e.preventDefault();
       document.body.classList.toggle('toc-open');
       state._syncTocBtn?.();
     }
-    else if (mod && e.key.toLowerCase() === 'k') {
+    else if (mod && e.key.toLowerCase() === 'k' && inReader) {
       e.preventDefault();
       if (state.editing) { $('#frBar').classList.add('open'); $('#frFind').focus(); }
       else openSearch();
@@ -376,11 +421,11 @@ export function setupKeyboard() {
     else if (mod && e.key === '`' && state.editing && document.activeElement === state.editorEl) {
       e.preventDefault(); ED_ACTS.code();
     }
-    else if (mod && e.key === '[') {
+    else if (mod && e.key === '[' && inReader) {
       e.preventDefault();
       if (state.lastJump !== null) state.scrollArea.scrollTo({ top: state.lastJump, behavior: 'smooth' });
     }
-    else if ((e.key === 'f' || e.key === 'F') && !mod && !typing) {
+    else if ((e.key === 'f' || e.key === 'F') && !mod && !typing && inReader) {
       e.preventDefault();
       setFocus(!document.body.classList.contains('focus'));
     }

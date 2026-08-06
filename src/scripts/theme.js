@@ -1,5 +1,6 @@
-// Theme management
-import { $, STORAGE_KEYS } from './state.js';
+import { $ } from './state.js';
+
+const THEME_KEY = 'inkdown:theme';
 
 export function isDark() {
   return document.documentElement.dataset.theme === 'dark';
@@ -7,12 +8,7 @@ export function isDark() {
 
 export function setTheme(t) {
   document.documentElement.dataset.theme = t;
-  try {
-    localStorage.setItem(STORAGE_KEYS.THEME, t);
-  } catch (e) {
-    // localStorage might fail on file:// URLs
-  }
-  // Notify listeners (mermaid needs re-render on theme change)
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
   document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: t } }));
 }
 
@@ -22,14 +18,13 @@ export function toggleTheme() {
 
 export function initTheme() {
   let saved = 'light';
-  try {
-    saved = localStorage.getItem(STORAGE_KEYS.THEME);
-  } catch (e) {}
-  if (!saved) {
-    saved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  if (!saved) saved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   document.documentElement.dataset.theme = saved;
 
-  // Single button toggles between sun/moon via CSS
-  $('#btnTheme').onclick = toggleTheme;
+  // Bind every theme toggle button (reader header + library header)
+  ['#btnTheme', '#libTheme'].forEach(sel => {
+    const el = $(sel);
+    if (el) el.onclick = toggleTheme;
+  });
 }
