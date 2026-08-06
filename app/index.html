@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Inkdown — README viewer, editor, todos & rendering power">
+<meta name="description" content="Inkdown — A beautiful Markdown viewer, editor and todo app">
 <title>Inkdown — Library</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M20 16v22l12-10 12 10V16' stroke='%23ffffff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M32 40v12m0 0l-6-6m6 6l6-6' stroke='%23ff2e88' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
@@ -11,37 +11,32 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff2e88">
 
-<!-- Fonts: non-blocking; falls back to system fonts when offline -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap"
-      rel="stylesheet" media="print" onload="this.media='all'">
-
-<!-- Local KaTeX + app styles -->
-<link rel="stylesheet" href="vendor/katex.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <link rel="stylesheet" href="src/styles/main.css">
 
-<!-- Local libraries (offline + instant) -->
-<script src="vendor/marked.min.js"></script>
-<script src="vendor/purify.min.js"></script>
-<script src="vendor/highlight.min.js"></script>
-<script src="vendor/katex.min.js"></script>
-<script src="vendor/auto-render.min.js"></script>
-<script src="vendor/mermaid.min.js"></script>
-<script src="vendor/html2canvas.min.js"></script>
-<script src="vendor/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body data-view="library">
 
-<!-- ============ SPLASH (instant start) ============ -->
-<div id="splash" aria-hidden="true">
-  <div class="splash-logo">Inkdown<b>.</b></div>
-  <div class="splash-bars"><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="splash-text">Loading Inkdown…</div>
+<!-- ============ QUICK ADD (global Ctrl+Alt+T) ============ -->
+<div id="quickAdd" class="quickAdd">
+  <form class="quickAddBox" id="qaForm">
+    <span class="qaIco">📌</span>
+    <input id="qaInput" placeholder="Quick add a todo for Today…  (Enter)" autocomplete="off" spellcheck="false">
+    <button type="button" id="qaClose" title="Close (Esc)">✕</button>
+  </form>
+  <div class="qaHint">Ctrl+Alt+T anywhere · adds to Today</div>
 </div>
-
-<div id="ambience"><div class="glow g1"></div><div class="glow g2"></div></div>
-<div id="progress"></div>
-
 
 <!-- ============ HOME (LIBRARY) ============ -->
 <section id="home" aria-label="Home">
@@ -57,7 +52,7 @@
     </div>
 
     <nav class="sideNav" id="homeNav">
-      <button class="navItem" data-nav="all" id="navAll">
+      <button class="navItem active" data-nav="all" id="navAll">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         <span>All files</span><em class="count" id="navAllCount">0</em>
       </button>
@@ -80,6 +75,10 @@
       <button class="navItem ghost" id="sideSample" title="Create a sample README">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10.7l-5.8 1.9L12 18.4l-2.2-5.8L4 10.7l6.1-1.9z"/></svg>
         <span>Sample doc</span>
+      </button>
+      <button class="navItem ghost" id="installBtn" title="Install app" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Install</span>
       </button>
     </div>
 
@@ -119,6 +118,10 @@
         <div class="statCard"><div class="statIco a4">🕒</div><div class="statTxt"><b id="statRecent">—</b><span>Last edited</span></div></div>
       </div>
 
+      <div class="recentWrap" id="recentWrap">
+        <div class="recentHead"><span>Recently edited</span></div>
+        <div class="recentRow" id="recentRow"></div>
+      </div>
 
       <div id="libGrid" class="libGrid" role="list"></div>
       <span id="libStats" hidden></span>
@@ -195,53 +198,7 @@
   </div>
 </section>
 
-<!-- ============ QUICK ADD (global Ctrl+Alt+T) ============ -->
-<div id="quickAdd" class="quickAdd">
-  <form class="quickAddBox" id="qaForm">
-    <span class="qaIco">📌</span>
-    <input id="qaInput" placeholder="Quick add a todo for Today…  (Enter)" autocomplete="off" spellcheck="false">
-    <button type="button" id="qaClose" title="Close (Esc)">✕</button>
-  </form>
-  <div class="qaHint">Ctrl+Alt+T anywhere · adds to Today</div>
-</div>
-
-<!-- ============ TODO SETTINGS ============ -->
-<div id="todoSettings" class="tdModal" hidden role="dialog" aria-modal="true" aria-label="Todo settings">
-  <div class="tdPanel">
-    <button class="closeX" id="tsClose">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h2>⚙ Todo Settings</h2>
-
-    <div class="tsGroup">
-      <div class="tsLabel">Behaviour</div>
-      <label class="tsRow"><div class="tsTxt"><b>Roll pinned todos forward</b><span>Pinned, unfinished todos reappear tomorrow</span></div><input type="checkbox" id="tsRollover"></label>
-      <label class="tsRow"><div class="tsTxt"><b>Hide completed</b><span>Don't show done todos in the list</span></div><input type="checkbox" id="tsHideDone"></label>
-      <label class="tsRow"><div class="tsTxt"><b>Auto-clean old</b><span>Delete completed todos older than 7 days</span></div><input type="checkbox" id="tsAutoClean"></label>
-    </div>
-
-    <div class="tsGroup">
-      <div class="tsLabel">Default view</div>
-      <label class="tsRow">
-        <div class="tsTxt"><b>Open Todos as</b><span>What shows when you open Todos</span></div>
-        <span class="tsRadios">
-          <label><input type="radio" name="tsDefaultView" value="page" checked> Page</label>
-          <label><input type="radio" name="tsDefaultView" value="widget"> Widget</label>
-        </span>
-      </label>
-    </div>
-
-    <div class="tsGroup">
-      <div class="tsLabel">Data</div>
-      <button class="tsBtn" id="tsExport">⬇ Export todos (.json)</button>
-      <button class="tsBtn" id="tsImport">⬆ Import todos (.json)</button>
-      <input type="file" id="tsImportFile" accept=".json,application/json" hidden>
-      <button class="tsBtn danger" id="tsClear">🗑 Clear all todos</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============ READER APP ============ -->
+<!-- ============ READER / EDITOR ============ -->
 <div id="app">
   <header>
     <div class="brand">
@@ -258,18 +215,13 @@
     </div>
 
     <div class="docTitleWrap" title="Click to rename">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span id="docTitle" contenteditable="true" spellcheck="false" role="textbox" aria-label="Document title"></span>
     </div>
 
     <div class="actions">
       <button class="btn" id="btnToc" title="Contents table (Ctrl+\)" aria-label="Toggle contents table">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-          <circle cx="3.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor" stroke="none"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg>
       </button>
       <button class="btn" id="btnSearch" title="Search document (Ctrl+K)" aria-label="Search document">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
@@ -277,7 +229,6 @@
       <button class="btn" id="btnFocus" title="Focus mode (F)" aria-label="Toggle focus mode">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
-
       <div class="menuWrap">
         <button class="btn txt" id="btnRead" title="Reading settings" aria-label="Reading settings" aria-haspopup="true" aria-expanded="false">Aa</button>
         <div class="menu wide" id="readMenu" role="menu">
@@ -300,49 +251,30 @@
             <input type="range" id="pwRange" min="560" max="1100" step="20" aria-label="Page width">
             <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">W</span>
           </div>
-          <div class="rsLabel">Code</div>
-          <label class="rsToggle"><input type="checkbox" id="lnToggle"><span>Show line numbers</span></label>
         </div>
       </div>
-
-      <button class="btn" id="btnAssist" title="Writing assistant" aria-label="Writing assistant">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8L12 3z"/><path d="M19 15l.9 2.3L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.7L19 15z"/></svg>
-      </button>
-
       <button class="btn" id="btnOpen" title="Import file (Ctrl+O)" aria-label="Import file">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 14l1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6A2 2 0 0 1 18.45 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6A2 2 0 0 1 18.45 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/></svg>
       </button>
       <button class="btn" id="btnEdit" title="Quick edit (Ctrl+E)" aria-label="Toggle edit mode">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
       </button>
-      <button class="btn primary" id="btnSave" title="Save to library (Ctrl+S)" aria-label="Save document">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
-        </svg>
+      <button class="btn primary" id="btnSave" title="Save (Ctrl+S)" aria-label="Save document">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         <span>Save</span>
       </button>
       <div class="menuWrap">
         <button class="btn" id="btnExport" title="Download / export" aria-label="Export options" aria-haspopup="true" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
         <div class="menu" id="exportMenu" role="menu">
-          <div class="menuLabel">Export look</div>
-          <div class="exportThemes">
-            <label><input type="radio" name="expTheme" value="minimal" checked> Minimal</label>
-            <label><input type="radio" name="expTheme" value="classic"> Classic</label>
-            <label><input type="radio" name="expTheme" value="github"> GitHub</label>
-          </div>
-          <hr>
           <button data-act="md" role="menuitem">⬇&nbsp;&nbsp;Download .md</button>
+          <button data-act="copy" role="menuitem">⧉&nbsp;&nbsp;Copy Markdown</button>
+          <hr>
           <button data-act="html" role="menuitem">&lt;/&gt;&nbsp;&nbsp;Export as HTML</button>
           <button data-act="pdf" role="menuitem">📄&nbsp;&nbsp;Save as PDF</button>
           <button data-act="png" role="menuitem">🖼&nbsp;&nbsp;Export as image</button>
           <hr>
-          <button data-act="copy" role="menuitem">⧉&nbsp;&nbsp;Copy Markdown</button>
           <button data-act="rich" role="menuitem">⧉&nbsp;&nbsp;Copy rendered</button>
           <button data-act="share" role="menuitem">🔗&nbsp;&nbsp;Copy share link</button>
           <hr>
@@ -350,7 +282,6 @@
           <button data-act="synccopy" role="menuitem">🔁&nbsp;&nbsp;Copy sync code</button>
           <button data-act="syncimport" role="menuitem">🔁&nbsp;&nbsp;Import sync code</button>
           <button data-act="print" role="menuitem">⎙&nbsp;&nbsp;Print</button>
-          <div class="hint">Ctrl+S save · Ctrl+E edit · Ctrl+K search<br>Ctrl+Alt+D todos · F focus · Ctrl+\ contents</div>
         </div>
       </div>
       <button class="btn" id="btnTheme" title="Toggle theme" aria-label="Toggle light/dark theme">
@@ -359,7 +290,6 @@
       </button>
     </div>
   </header>
-  <div id="tabBar" aria-label="Open tabs"></div>
 
   <div id="workspace">
     <aside id="tocPane" role="navigation" aria-label="Table of contents">
@@ -388,6 +318,7 @@
           <article id="doc" class="markdown-body" role="document"></article>
           <div class="doc-end" aria-hidden="true">end of document</div>
         </div>
+
         <div id="editPane">
           <div id="editTools" role="toolbar" aria-label="Formatting toolbar">
             <button class="tbtn" data-act="bold" title="Bold (Ctrl+B)"><b>B</b></button>
@@ -450,7 +381,7 @@
   </div>
 
   <footer id="status">
-    <span id="stName">sample-readme.md</span>
+    <span id="stName">untitled.md</span>
     <span class="grow"></span>
     <span id="stProg">0% read</span>
     <span id="stGoal"><span id="goalTxt"></span><span id="goalBar"><i></i></span></span>
@@ -460,12 +391,10 @@
   </footer>
 </div>
 
-<button id="focusExit" title="Exit focus mode (Esc)">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
-  </svg>
+<button id="focusExit" title="Exit focus mode (Esc)" aria-label="Exit focus mode">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
 </button>
-<button id="toTop" title="Back to top">
+<button id="toTop" title="Back to top" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
 </button>
 
@@ -479,155 +408,7 @@
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
 
-============ FLOATING TODO WIDGET ============
-<section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
-  <div class="twHead" id="twHead">
-    <div class="twTitleWrap">
-      <b id="twDate">Today</b>
-      <span class="twSub" id="twSub">No to-dos yet</span>
-    </div>
-    <div class="twHeadBtns">
-      <button class="twIcon" id="twSettings" title="Todo settings" aria-label="Todo settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <button class="twIcon" id="twClose" title="Close (Ctrl+Alt+D)" aria-label="Close widget">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <div class="twProg"><i id="twProgFill"></i></div>
-  <div class="twBody" id="twList"></div>
-  <form class="twAdd" id="twAddForm">
-    <span class="twAddIcon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </span>
-    <input id="twInput" placeholder="Add a to-do…  (press Enter)" autocomplete="off" maxlength="200">
-  </form>
-</section>
-
-<!-- ============ TODO SETTINGS MODAL ============ -->
-<div id="todoSettings" class="tdModal" hidden role="dialog" aria-modal="true" aria-label="Todo settings">
-  <div class="tdPanel">
-    <button class="closeX" id="tsClose" aria-label="Close settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h2>⚙ Todo settings</h2>
-    <div class="tsStats" id="tsStats"></div>
-    <div class="tsGroup">
-      <div class="tsLabel">Behaviour</div>
-      <label class="tsRow"><div class="tsTxt"><b>Carry pinned todos forward</b><span>📌 pinned items auto-reappear every new day (unchecked)</span></div><input type="checkbox" id="tsRollover" checked></label>
-      <label class="tsRow"><div class="tsTxt"><b>Hide completed</b><span>Don't show checked-off todos in today's lists</span></div><input type="checkbox" id="tsHideDone"></label>
-      <label class="tsRow"><div class="tsTxt"><b>Auto-clean old completed</b><span>Delete completed todos older than 7 days</span></div><input type="checkbox" id="tsAutoClean"></label>
-    </div>
-    <div class="tsGroup">
-      <div class="tsLabel">Data</div>
-      <button class="tsBtn" id="tsExport">⬇&nbsp;&nbsp;Export todos (.json)</button>
-      <button class="tsBtn" id="tsResetPos">↺&nbsp;&nbsp;Reset widget position</button>
-    </div>
-    <div class="tsGroup danger">
-      <div class="tsLabel">Danger zone</div>
-      <button class="tsBtn warn" id="tsClearToday">Clear today's todos</button>
-      <button class="tsBtn warn" id="tsClearAll">Delete ALL todo data</button>
-    </div>
-  </div>
-</div>
-<!-- ============ SETTINGS MODAL (home) ============ -->
-<div id="settingsModal" class="tdModal" hidden role="dialog" aria-modal="true" aria-label="Settings">
-  <div class="tdPanel settingsBox">
-    <button class="closeX" id="settingsClose" aria-label="Close settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h2>⚙ Settings</h2>
-
-    <div class="tsGroup">
-      <div class="tsLabel">Appearance</div>
-      <div class="setRow">
-        <div class="setTxt">
-          <b>Theme mode</b>
-          <span>Choose how Inkdown looks</span>
-        </div>
-      </div>
-      <div class="themeSeg" role="radiogroup" aria-label="Theme mode">
-        <button class="themeOption" data-theme-value="system" role="radio" aria-checked="false">🖥&nbsp;System</button>
-        <button class="themeOption" data-theme-value="light" role="radio" aria-checked="false">☀&nbsp;Light</button>
-        <button class="themeOption" data-theme-value="dark" role="radio" aria-checked="false">🌙&nbsp;Dark</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ CHART MODAL ============ -->
-<div id="chartModal" class="chartModal" hidden role="dialog" aria-modal="true" aria-label="Chart">
-  <div class="chartPanel">
-    <div class="chartHead">
-      <b id="chartTitle">Chart</b>
-      <div class="chartModes">
-        <button id="chartBar" class="on">Bar</button>
-        <button id="chartLine">Line</button>
-      </div>
-      <button class="closeX" id="chartClose" aria-label="Close chart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div id="chartLegend" class="chartLegend"></div>
-    <div id="chartWrap"><canvas id="chartCanvas"></canvas></div>
-  </div>
-</div>
-
-<!-- ============ WRITING ASSISTANT ============ -->
-<div id="assistPanel" class="assistModal" hidden role="dialog" aria-modal="true" aria-label="Writing assistant">
-  <div class="assistBox">
-    <button class="closeX" id="assistClose" aria-label="Close assistant">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h2>🧠 Writing assistant</h2>
-    <div class="assistScroll">
-      <section class="aSec">
-        <div class="aSecHead"><b>Readability</b><button class="aBtn" id="aReadGo">Analyze</button></div>
-        <div class="aResult" id="aReadOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Broken links</b><button class="aBtn" id="aLinksGo">Check links</button></div>
-        <div class="aResult" id="aLinksOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Spelling</b><button class="aBtn" id="aSpellGo">Check spelling</button></div>
-        <div class="aToggle"><label><input type="checkbox" id="aSpellcheck"> Browser spellcheck in editor</label></div>
-        <div class="aResult" id="aSpellOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Tone &amp; inclusivity</b><button class="aBtn" id="aToneGo">Check tone</button></div>
-        <div class="aResult" id="aToneOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Summarizer (TL;DR)</b><button class="aBtn" id="aSumGo">Generate</button></div>
-        <div class="aResult" id="aSumOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Translate summary</b></div>
-        <div class="aRow">
-          <select id="aLang">
-            <option value="es">Spanish</option><option value="fr">French</option>
-            <option value="de">German</option><option value="it">Italian</option>
-            <option value="pt">Portuguese</option><option value="hi">Hindi</option>
-            <option value="ja">Japanese</option><option value="ko">Korean</option>
-            <option value="zh">Chinese</option><option value="ru">Russian</option>
-            <option value="ar">Arabic</option><option value="bn">Bengali</option>
-          </select>
-          <button class="aBtn" id="aTransGo">Translate</button>
-          <button class="aBtn ghost" id="aCopyClean">Copy clean text</button>
-        </div>
-        <div class="aResult" id="aTransOut"></div>
-      </section>
-      <section class="aSec">
-        <div class="aSecHead"><b>Section order</b><button class="aBtn" id="aOrderGo">Load structure</button></div>
-        <div class="aResult" id="aOrderOut"></div>
-      </section>
-    </div>
-  </div>
-</div>
-
-<!-- ============ IMPORT OVERLAY ============ -->
+<!-- ============ FILE OPEN OVERLAY ============ -->
 <div id="overlay">
   <div class="panel">
     <button class="closeX" id="closeOverlay" aria-label="Close dialog">
@@ -660,19 +441,65 @@
     <input type="file" id="fileInput" accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
   </div>
 </div>
-<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============
-<div id="todoWidget" class="todoWidget">
-  <div class="twHead">
-    <span class="twTitle">📌 Today</span>
-    <span class="twCount" id="twCount">0/0</span>
-    <button id="twClose" title="Close (Ctrl+Alt+D)">✕</button>
+
+<!-- ============ TODO SETTINGS ============ -->
+<div id="todoSettings" class="tdModal" hidden role="dialog" aria-modal="true" aria-label="Todo settings">
+  <div class="tdPanel">
+    <button class="closeX" id="tsClose">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>⚙ Todo Settings</h2>
+    <div class="tsGroup">
+      <div class="tsLabel">Behaviour</div>
+      <label class="tsRow"><div class="tsTxt"><b>Roll pinned todos forward</b><span>Pinned, unfinished todos reappear tomorrow</span></div><input type="checkbox" id="tsRollover"></label>
+      <label class="tsRow"><div class="tsTxt"><b>Hide completed</b><span>Don't show done todos in the list</span></div><input type="checkbox" id="tsHideDone"></label>
+      <label class="tsRow"><div class="tsTxt"><b>Auto-clean old</b><span>Delete completed todos older than 7 days</span></div><input type="checkbox" id="tsAutoClean"></label>
+    </div>
+    <div class="tsGroup">
+      <div class="tsLabel">Default view</div>
+      <label class="tsRow">
+        <div class="tsTxt"><b>Open Todos as</b><span>What shows when you open Todos</span></div>
+        <span class="tsRadios">
+          <label><input type="radio" name="tsDefaultView" value="page" checked> Page</label>
+          <label><input type="radio" name="tsDefaultView" value="widget"> Widget</label>
+        </span>
+      </label>
+    </div>
+    <div class="tsGroup">
+      <div class="tsLabel">Data</div>
+      <button class="tsBtn" id="tsExport">⬇ Export todos (.json)</button>
+      <button class="tsBtn" id="tsImport">⬆ Import todos (.json)</button>
+      <input type="file" id="tsImportFile" accept=".json,application/json" hidden>
+      <button class="tsBtn danger" id="tsClear">🗑 Clear all todos</button>
+    </div>
   </div>
-  <form class="twAddRow" id="twAddForm">
-    <input id="twInput" placeholder="Add a todo…  (Enter)" autocomplete="off">
-    <button type="submit" title="Add">+</button>
+</div>
+
+<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============ -->
+<section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
+  <div class="twHead" id="twHead">
+    <div class="twTitleWrap">
+      <b id="twDate">Today</b>
+      <span class="twSub" id="twSub">No to-dos yet</span>
+    </div>
+    <div class="twHeadBtns">
+      <button class="twIcon" id="twSettings" title="Todo settings" aria-label="Todo settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="twIcon" id="twClose" title="Close (Ctrl+Alt+D)" aria-label="Close widget">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="twProg"><i id="twProgFill"></i></div>
+  <div class="twBody" id="twList"></div>
+  <form class="twAdd" id="twAddForm">
+    <span class="twAddIcon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </span>
+    <input id="twInput" placeholder="Add a to-do…  (press Enter)" autocomplete="off" maxlength="200">
   </form>
-  <div class="twList" id="twList"></div>
-</div> -->
+</section>
 
 <div id="toasts"></div>
 

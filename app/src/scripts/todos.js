@@ -52,10 +52,7 @@ function fmtDayLabel(key){
   const [y,m,d]=key.split('-').map(Number);
   return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
 }
-function fmtDayShort(key){
-  const [y,m,d]=key.split('-').map(Number);
-  return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'});
-}
+function fmtDayShort(key){ const [y,m,d]=key.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
 function sortItems(arr){ return arr.slice().sort((a,b)=>{ if(a.pinned!==b.pinned) return (b.pinned?1:0)-(a.pinned?1:0); if(a.done!==b.done) return (a.done?1:0)-(b.done?1:0); return (a.order||0)-(b.order||0); }); }
 function computeStreak(){
   let streak=0, offset=0;
@@ -93,7 +90,7 @@ export function renderTodos(){ ensureToday(); renderGreeting(); renderStats(); r
 
 function renderGreeting(){
   const t=$('#todoGreetTitle'), s=$('#todoGreetSub'); if(!t) return;
-  const day=ensureToday(); const total=day.items.length; const done=day.items.filter(i=>i.done).length;
+  const day=ensureToday(); const total=day.items.length, done=day.items.filter(i=>i.done).length;
   const h=new Date().getHours();
   const g=h<5?'Up late':h<12?'Good morning':h<18?'Good afternoon':'Good evening';
   t.textContent=g+' 👋';
@@ -280,48 +277,6 @@ function showQuickAdd(){ const qa=$('#quickAdd'); if(!qa) return; qa.classList.a
 function hideQuickAdd(){ const qa=$('#quickAdd'); if(qa) qa.classList.remove('open'); }
 function submitQuickAdd(){ const inp=$('#qaInput'); if(!inp) return; const t=inp.value.trim(); if(!t){hideQuickAdd();return;} addTodo(t,todayKey(),0); toast('Added to Today'); hideQuickAdd(); }
 
-/* =========================================================
-   FLOATING TODO WIDGET  (Ctrl+Alt+D)
-   ========================================================= */
-function toggleTodoWidget(){
-  const w = $('#todoWidget');
-  if(!w){ toast('Widget not found — check index.html', 'warn'); return; }
-  w.hidden = !w.hidden;                 // toggle the hidden attribute
-  if(!w.hidden) renderWidget();         // render when opening
-}
-window.toggleTodoWidget = toggleTodoWidget;   // lets widget button / default-view open it
-
-function renderWidget(){
-  const list = $('#twList'); if(!list) return;
-  const day = ensureToday();
-  const total = day.items.length, done = day.items.filter(i=>i.done).length;
-
-  const fill = $('#twProgFill'); if(fill) fill.style.width = (total?Math.round(done/total*100):0)+'%';
-  const dt = $('#twDate'); if(dt) dt.textContent = 'Today';
-  const sub = $('#twSub'); if(sub) sub.textContent = total===0 ? 'No to-dos yet' : done+' of '+total+' done';
-
-  list.innerHTML = '';
-  let items = sortItems(day.items);
-  if(todoData.settings.hideDone) items = items.filter(i=>!i.done);
-  if(!items.length){ list.innerHTML = '<div class="twEmpty">Nothing for today 🎉</div>'; return; }
-  items.forEach(it => list.appendChild(widgetItemEl(it)));
-}
-
-function widgetItemEl(item){
-  const el = document.createElement('div');
-  el.className = 'twItem' + (item.done?' done':'') + ' prio-' + (item.priority||0);
-  const check = document.createElement('button'); check.className='todoCheck'; check.innerHTML=CHECK_SVG;
-  check.title = item.done?'Mark as not done':'Mark as done';
-  check.onclick = ()=>toggleTodo(todayKey(), item.id);
-  const prio = document.createElement('button'); prio.className='prio p'+(item.priority||0);
-  prio.title='Priority'; prio.onclick=(e)=>{e.stopPropagation(); cyclePriority(todayKey(), item.id);};
-  const text = document.createElement('span'); text.className='twText'; text.textContent=item.text;
-  const del = document.createElement('button'); del.className='twDel'; del.innerHTML=TRASH_SVG;
-  del.title='Delete'; del.onclick=(e)=>{e.stopPropagation(); deleteTodo(todayKey(), item.id);};
-  el.append(check, prio, text, del);
-  return el;
-}
-
 /* ---------- settings ---------- */
 function exportJSON(){
   const blob=new Blob([JSON.stringify(todoData,null,2)],{type:'application/json'});
@@ -349,7 +304,6 @@ function initSettings(){
   const modal=$('#todoSettings');
   const cs=$('#tsClose'); if(cs) cs.onclick=closeTodoSettings;
   if(modal) modal.addEventListener('click',e=>{ if(e.target===modal) closeTodoSettings(); });
-  document.addEventListener('todosettings:open',openTodoSettings);
   bindToggle('#tsRollover','rolloverPins');
   bindToggle('#tsHideDone','hideDone');
   bindToggle('#tsAutoClean','autoClean');
@@ -360,10 +314,48 @@ function initSettings(){
   const cl=$('#tsClear'); if(cl) cl.onclick=()=>{ if(confirm('Delete ALL todos? This cannot be undone.')){ todoData={days:{},settings:{...DEFAULT_SETTINGS}}; ensureToday(); saveData(); renderTodos(); closeTodoSettings(); toast('All todos cleared'); } };
 }
 
-/* ---------- open / widget ---------- */
-function toggleWidget(){ document.dispatchEvent(new CustomEvent('todowidget:toggle')); if(typeof window.toggleTodoWidget==='function') window.toggleTodoWidget(); }
+/* =========================================================
+   FLOATING TODO WIDGET  (Ctrl+Alt+D)
+   ========================================================= */
+function toggleTodoWidget(){
+  const w=$('#todoWidget');
+  if(!w){ toast('Widget not found — check index.html','warn'); return; }
+  w.hidden=!w.hidden;
+  if(!w.hidden) renderWidget();
+}
+window.toggleTodoWidget=toggleTodoWidget;
+
+function renderWidget(){
+  const list=$('#twList'); if(!list) return;
+  const day=ensureToday();
+  const total=day.items.length, done=day.items.filter(i=>i.done).length;
+  const fill=$('#twProgFill'); if(fill) fill.style.width=(total?Math.round(done/total*100):0)+'%';
+  const dt=$('#twDate'); if(dt) dt.textContent='Today';
+  const sub=$('#twSub'); if(sub) sub.textContent= total===0? 'No to-dos yet' : done+' of '+total+' done';
+  list.innerHTML='';
+  let items=sortItems(day.items);
+  if(todoData.settings.hideDone) items=items.filter(i=>!i.done);
+  if(!items.length){ list.innerHTML='<div class="twEmpty">Nothing for today 🎉</div>'; return; }
+  items.forEach(it=>list.appendChild(widgetItemEl(it)));
+}
+function widgetItemEl(item){
+  const el=document.createElement('div');
+  el.className='twItem'+(item.done?' done':'')+' prio-'+(item.priority||0);
+  const check=document.createElement('button'); check.className='todoCheck'; check.innerHTML=CHECK_SVG;
+  check.title=item.done?'Mark as not done':'Mark as done';
+  check.onclick=()=>toggleTodo(todayKey(),item.id);
+  const prio=document.createElement('button'); prio.className='prio p'+(item.priority||0);
+  prio.title='Priority'; prio.onclick=(e)=>{e.stopPropagation(); cyclePriority(todayKey(),item.id);};
+  const text=document.createElement('span'); text.className='twText'; text.textContent=item.text;
+  const del=document.createElement('button'); del.className='twDel'; del.innerHTML=TRASH_SVG;
+  del.title='Delete'; del.onclick=(e)=>{e.stopPropagation(); deleteTodo(todayKey(),item.id);};
+  el.append(check,prio,text,del);
+  return el;
+}
+
+/* ---------- open / widget nav ---------- */
 function showTodosPage(){ document.body.dataset.view='todos'; document.title='Inkdown — Todos'; document.dispatchEvent(new CustomEvent('todos:shown')); }
-export function openTodosDefault(){ (todoData.settings.defaultView==='widget')? toggleWidget() : showTodosPage(); }
+export function openTodosDefault(){ (todoData.settings.defaultView==='widget')? toggleTodoWidget() : showTodosPage(); }
 export function showTodos(){ openTodosDefault(); }
 
 /* ---------- init ---------- */
@@ -372,7 +364,7 @@ export function initTodos(){
 
   const navAll=$('#todoNavAll'); if(navAll) navAll.onclick=()=>showLibrary();
   const settingsBtn=$('#todoSettingsBtn'); if(settingsBtn) settingsBtn.onclick=openTodoSettings;
-  const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleWidget;
+  const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleTodoWidget;
 
   const addForm=$('#thAddForm'), addInput=$('#thInput'), addDue=$('#thDue');
   if(addForm) addForm.addEventListener('submit',e=>{ e.preventDefault();
@@ -384,22 +376,22 @@ export function initTodos(){
   if(qaInput) qaInput.addEventListener('keydown',e=>{ if(e.key==='Escape') hideQuickAdd(); });
   if(qaClose) qaClose.onclick=hideQuickAdd;
 
-  // Ctrl+Alt+T = quick add, Ctrl+Alt+D = widget
+  // global hotkeys: Ctrl+Alt+T = quick add, Ctrl+Alt+D = widget
   document.addEventListener('keydown',e=>{
     if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='t'||e.key==='T')){ e.preventDefault(); showQuickAdd(); }
     if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='d'||e.key==='D')){ e.preventDefault(); toggleTodoWidget(); }
   });
 
+  // widget buttons
   const twClose=$('#twClose'); if(twClose) twClose.onclick=()=>toggleTodoWidget();
   const twSettings=$('#twSettings'); if(twSettings) twSettings.onclick=openTodoSettings;
-
   const twAddForm=$('#twAddForm'), twInput=$('#twInput');
   if(twAddForm) twAddForm.addEventListener('submit',e=>{
     e.preventDefault();
     addTodo(twInput?twInput.value:'', todayKey(), 0);
     if(twInput) twInput.value='';
   });
-  
+
   document.addEventListener('todos:open',()=>openTodosDefault());
   document.addEventListener('todos:shown',()=>renderTodos());
 
