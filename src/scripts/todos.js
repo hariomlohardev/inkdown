@@ -1,8 +1,7 @@
 // Daily Todo system
-// - Floating draggable widget: toggle with Ctrl+Alt+D
-// - Day-based todos with pinned rollover
-// - Home section: today + previous days
-// - Dedicated Todo settings modal (rollover, hide done, auto-clean, export, danger zone)
+// - Home has a "📌 Todos" button → opens a dedicated Todos page
+// - Floating draggable widget: toggle with Ctrl+Alt+D (works on any page)
+// - Day-based todos with pinned rollover + settings modal
 import { $, esc } from './state.js';
 
 const TODO_KEY = 'inkdown:todos';
@@ -56,12 +55,10 @@ function fmtDate(key) {
   return nice;
 }
 
-/** Ensure today exists; roll over pinned todos; optionally auto-clean old completed. */
 export function ensureToday() {
   const data = loadData();
   const key = todayKey();
 
-  // Auto-clean completed todos older than 7 days
   if (data.settings.autoClean) {
     const cutoff = Date.now() - 7 * 86400000;
     let changed = false;
@@ -75,7 +72,6 @@ export function ensureToday() {
     if (changed) saveData(data);
   }
 
-  // Create today + roll over pins from the latest previous day
   if (!data.days[key]) {
     const prevKeys = Object.keys(data.days).filter(k => k < key).sort();
     const prev = prevKeys.length ? data.days[prevKeys[prevKeys.length - 1]] : null;
@@ -185,7 +181,7 @@ function secLabel(txt) {
 export function renderAllTodos() {
   lastRenderedKey = todayKey();
   renderWidget();
-  renderHome();
+  renderTodosPage();
 }
 
 function renderWidget() {
@@ -237,9 +233,9 @@ function renderWidget() {
   }
 }
 
-function renderHome() {
-  const section = $('#todoHome');
-  if (!section) return;
+function renderTodosPage() {
+  const page = $('#todosPage');
+  if (!page) return;
 
   ensureToday();
   const data = loadData();
@@ -303,6 +299,21 @@ function renderHome() {
     wrap.append(head, itemsBox);
     past.appendChild(wrap);
   });
+}
+
+/* ================= VIEWS ================= */
+export function showTodos() {
+  ensureToday();
+  document.body.dataset.view = 'todos';
+  document.title = 'Inkdown — Todos';
+  renderTodosPage();
+  $('#todosPage').scrollTop = 0;
+}
+
+function backToLibrary() {
+  document.body.dataset.view = 'library';
+  document.title = 'Inkdown — Library';
+  document.dispatchEvent(new CustomEvent('library:shown'));
 }
 
 /* ================= WIDGET: TOGGLE + DRAG ================= */
@@ -391,8 +402,7 @@ function saveSetting(key, value) {
   renderAllTodos();
 }
 
-/** Two-step confirm for destructive buttons */
-function arm(btn, fn, label = 'Sure?') {
+function arm(btn, fn, label = 'Click again to confirm') {
   btn.addEventListener('click', () => {
     if (btn.dataset.armed) {
       delete btn.dataset.armed;
@@ -450,7 +460,7 @@ function initSettings() {
     saveData(data);
     renderAllTodos();
     closeTodoSettings();
-  }, 'Click again to confirm');
+  });
 
   arm($('#tsClearAll'), () => {
     try {
@@ -461,13 +471,17 @@ function initSettings() {
     restorePos();
     renderAllTodos();
     closeTodoSettings();
-  }, 'Click again to confirm');
+  });
 }
 
 /* ================= INIT ================= */
 export function initTodos() {
   ensureToday();
   restorePos();
+
+  // Home button → Todos page, and back
+  $('#libTodos').onclick = showTodos;
+  $('#tdBack').onclick = backToLibrary;
 
   // Widget controls
   $('#twClose').onclick = toggleWidget;
@@ -478,7 +492,7 @@ export function initTodos() {
     $('#twInput').focus();
   });
 
-  // Home controls
+  // Todos page controls
   $('#thAddForm').addEventListener('submit', e => {
     e.preventDefault();
     addTodo($('#thInput').value);
@@ -489,7 +503,7 @@ export function initTodos() {
   initDrag();
   initSettings();
 
-  // Global keys: Ctrl+Alt+D toggles widget, Esc closes settings
+  // Keys: Ctrl+Alt+D toggles widget · Esc closes settings
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.altKey && e.code === 'KeyD') {
       e.preventDefault();
@@ -499,7 +513,7 @@ export function initTodos() {
     }
   });
 
-  // Refresh when returning home (catches date changes)
+  // Refresh todos whenever the library is shown (catches date changes)
   document.addEventListener('library:shown', () => {
     ensureToday();
     renderAllTodos();

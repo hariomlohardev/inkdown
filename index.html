@@ -37,6 +37,7 @@
         <div class="libTitle"><b>Inkdown</b><span>markdown library</span></div>
       </div>
       <div class="libActions">
+        <button class="libAction todoBtn" id="libTodos" title="Open your todos">📌 Todos</button>
         <button class="libAction primary" id="libNew">+ New file</button>
         <button class="libAction" id="libUpload">⬆ Upload</button>
         <button class="libAction" id="libSample">✨ Sample</button>
@@ -52,16 +53,40 @@
       <span id="libStats" aria-live="polite"></span>
     </div>
 
-    <!-- ===== TODOS SECTION (today + previous days) ===== -->
-    <section id="todoHome" class="todoHome" aria-label="Todos">
-      <div class="thHead">
-        <h2>📌 Todos</h2>
-        <div class="thProg">
-          <div class="thBar"><i id="thBarFill"></i></div>
-          <span id="thStats">0/0 today</span>
-        </div>
+    <div id="libGrid" class="libGrid" role="list"></div>
+    <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
+    <div id="libEmpty" class="libEmpty" hidden>
+      <div class="dropArrow" style="margin-bottom:18px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line stroke="var(--pink)" x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </div>
+      <h2>Your library is empty</h2>
+      <p>Drop <b>.md</b> files anywhere on this page, or start fresh.</p>
+      <button class="libAction primary" id="libEmptyNew" style="margin-top:18px">+ Create your first file</button>
+    </div>
+  </div>
+  <input type="file" id="libFileInput" multiple accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
+</section>
+
+<!-- ============ TODOS PAGE (opened via 📌 Todos button) ============ -->
+<section id="todosPage" aria-label="Todos">
+  <div class="todosInner">
+    <div class="todosHead">
+      <button class="btn" id="tdBack" title="Back to library" aria-label="Back to library">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <div class="todosTitle"><b>📌 Todos</b><span>day-wise tasks</span></div>
+      <div class="todosActions">
         <button class="libAction" id="thOpenWidget" title="Floating widget — Ctrl+Alt+D">Open widget</button>
         <button class="libAction" id="thSettings" title="Todo settings">⚙ Settings</button>
+      </div>
+    </div>
+
+    <div class="todoCard">
+      <div class="todosProg">
+        <div class="thBar"><i id="thBarFill"></i></div>
+        <span id="thStats">0/0 today</span>
       </div>
       <div class="thGrid">
         <div class="thToday">
@@ -77,22 +102,8 @@
           <div id="thPastList"></div>
         </div>
       </div>
-    </section>
-
-    <div id="libGrid" class="libGrid" role="list"></div>
-    <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
-    <div id="libEmpty" class="libEmpty" hidden>
-      <div class="dropArrow" style="margin-bottom:18px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line stroke="var(--pink)" x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-      </div>
-      <h2>Your library is empty</h2>
-      <p>Drop <b>.md</b> files anywhere on this page, or start fresh.</p>
-      <button class="libAction primary" id="libEmptyNew" style="margin-top:18px">+ Create your first file</button>
     </div>
   </div>
-  <input type="file" id="libFileInput" multiple accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
 </section>
 
 <!-- ============ READER APP ============ -->
@@ -309,7 +320,7 @@
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
 
-<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) — redesigned ============ -->
+<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============ -->
 <section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
   <div class="twHead" id="twHead">
     <span class="twGrip" aria-hidden="true">⠿</span>
