@@ -16,6 +16,14 @@ import { initAssist } from './assist.js';
 import { initPWA } from './pwa.js';
 import { restored } from './persist.js';
 
+// Global safety net: one bad error should never white-screen the whole app.
+window.addEventListener('error', (e) => {
+  try { console.error('[Inkdown] error:', e.message, e.filename, e.lineno); } catch (_) {}
+});
+window.addEventListener('unhandledrejection', (e) => {
+  try { console.error('[Inkdown] unhandled rejection:', e.reason); } catch (_) {}
+});
+
 function hideSplash() { document.body.classList.add('ready'); }
 
 // F11 → toggle native fullscreen (desktop build).
