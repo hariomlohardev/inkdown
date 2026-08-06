@@ -18,6 +18,31 @@ import { restored } from './persist.js';
 
 function hideSplash() { document.body.classList.add('ready'); }
 
+// F11 → toggle native fullscreen (desktop build).
+// Registered on the document so it fires regardless of which element has focus.
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F11' || e.code === 'F11') {
+    const api = window.pywebview && window.pywebview.api;
+    if (api && typeof api.toggle_fullscreen === 'function') {
+      e.preventDefault();
+      api.toggle_fullscreen();
+    }
+  }
+});
+
+// Wait until the PyWebView bridge (and our API) is actually available.
+function waitForApi(timeout = 6000) {
+  return new Promise(resolve => {
+    const start = Date.now();
+    (function poll() {
+      const api = window.pywebview && window.pywebview.api;
+      if (api && typeof api.get_launch_docs === 'function') { resolve(api); return; }
+      if (Date.now() - start > timeout) { resolve(null); return; }
+      setTimeout(poll, 100);
+    })();
+  });
+}
+
 function openSharedFromHash() {
   const h = location.hash;
   if (!h.startsWith('#doc=')) return false;
@@ -33,20 +58,19 @@ function openSharedFromHash() {
 }
 
 async function openLaunchFiles() {
-  const api = window.pywebview && window.pywebview.api;
-  if (!api || !api.get_launch_files) return false;
+  const api = await waitForApi();
+  if (!api) return false;
   let opened = false;
   try {
-    const paths = await api.get_launch_files();
-    if (paths && paths.length) {
-      for (const p of paths) {
-        const content = await api.read_external_file(p);
-        if (content == null) continue;
-        const name = p.split(/[\\/]/).pop();
-        const existing = getLibrary().find(f => f.name === name);
-        if (existing) openFile(existing);
-        else openFile(createFile(name, content));
-        opened = true;
+    const docs = await api.get_launch_docs();
+    if (docs && docs.length) {
+      for (const d of docs) {
+        try {
+          const existing = getLibrary().find(f => f.name === d.name);
+          if (existing) openFile(existing);
+          else openFile(createFile(d.name, d.content));
+          opened = true;
+        } catch (e) {}
       }
     }
   } catch (e) {}
