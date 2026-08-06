@@ -57,9 +57,9 @@
       </div>
       <div class="libActions">
         <button class="libAction todoBtn" id="libTodos" title="Open your todos">📌 Todos</button>
-        <button class="libAction primary" id="libNew">+ New file</button>
-        <button class="libAction" id="libUpload">⬆ Upload</button>
-        <button class="libAction" id="libFolder" title="Import a whole folder">📁 Folder</button>
+        <button class="libAction primary" id="libNew">+ New file</button><button class="libAction" id="libUpload" title="Import .md files">⬆ Upload</button>
+        <button class="libAction" id="libFolder" title="Import every .md from a disk folder">📁 Import folder</button>
+        <button class="libAction" id="libNewFolder" title="Create a folder to organize files">🗂 New Folder</button>
         <button class="libAction" id="libUrl" title="Import from URL / GitHub">🔗 URL</button>
         <button class="libAction" id="libSample">✨ Sample</button>
         <button class="libAction" id="installBtn" hidden>⬇ Install app</button>
@@ -72,6 +72,7 @@
       <input id="libSearch" type="text" placeholder="Search files…" autocomplete="off" spellcheck="false" aria-label="Search files">
       <span id="libStats" aria-live="polite"></span>
     </div>
+    <div id="libCrumbs" class="libCrumbs" aria-label="Folder location"></div>
     <div id="libGrid" class="libGrid" role="list"></div>
     <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
     <div id="libEmpty" class="libEmpty" hidden>

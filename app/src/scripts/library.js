@@ -1,71 +1,17 @@
-// Library home screen — grid of saved files, upload, delete, rename
-import { state, $, esc } from './state.js';
-import { getLibrary, deleteFile, createFile, upsertFile, uniqueName } from './storage.js';
+import { state, $, $$, esc } from './state.js';
+import {
+  getLibrary, saveLibrary, createFile, uniqueName,
+  getFolders, createFolder, renameFolder, deleteFolder, setFileFolder
+} from './storage.js';
 import { openFile, toast } from './ui.js';
 import { SAMPLE } from './samples.js';
 
-const TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+let currentFolder = '';   // '' = root
+let searchQuery = '';
 
-let query = '';
-
-export function initLibrary() {
-  $('#libNew').onclick = onNew;
-  $('#libEmptyNew').onclick = onNew;
-  $('#libUpload').onclick = () => $('#libFileInput').click();
-  $('#libSample').onclick = onSample;
-  $('#libFileInput').onchange = e => {
-    importFiles(e.target.files);
-    e.target.value = '';
-  };
-  $('#libSearch').addEventListener('input', e => {
-    query = e.target.value.trim().toLowerCase();
-    renderLibrary();
-  });
-  // Reader dispatches this when going back home
-  document.addEventListener('library:shown', renderLibrary);
-    // ---- Open a whole folder ----
-  const folderBtn = $('#libFolder');
-  const folderInput = $('#folderInput');
-  if (folderBtn && folderInput) {
-    folderBtn.onclick = () => folderInput.click();
-    folderInput.addEventListener('change', async e => {
-      const files = [...e.target.files].filter(f => /\.(md|markdown|mdown|txt)$/i.test(f.name));
-      if (!files.length) { toast('No markdown files found in that folder', 'warn'); return; }
-      let count = 0;
-      for (const f of files) {
-        const text = await readEntry(f);
-        createFile(uniqueName(f.name, getLibrary()), text);
-        count++;
-      }
-      renderLibrary();
-      toast('Imported ' + count + ' file' + (count > 1 ? 's' : ''));
-      e.target.value = '';
-    });
-  }
-
-  // ---- Import from URL / GitHub ----
-  const urlBtn = $('#libUrl');
-  if (urlBtn) {
-    urlBtn.onclick = async () => {
-      const input = prompt('Paste a raw Markdown URL (GitHub raw works best):');
-      if (!input) return;
-      const url = toRawGithub(input.trim());
-      toast('Fetching…');
-      try {
-        const text = await fetchUrlText(url);
-        if (!text) throw new Error('empty');
-        const name = url.split('/').pop().split('?')[0] || 'imported.md';
-        const rec = createFile(uniqueName(name, getLibrary()), text);
-        renderLibrary();
-        openFile(rec);
-        toast('Imported ' + name);
-      } catch (err) {
-        toast('Could not fetch that URL', 'warn');
-      }
-    };
-  }
-  bindDrop();
-}
+/* ---------- helpers ---------- */
+const fileFolder = f => f.folder || '';
+const filesIn = folder => getLibrary().filter(f => fileFolder(f) === folder);
 
 function readEntry(file) {
   return new Promise((res, rej) => {
@@ -82,181 +28,339 @@ function toRawGithub(url) {
 }
 async function fetchUrlText(url) {
   const api = window.pywebview && window.pywebview.api;
-  if (api && api.fetch_url) {
-    const t = await api.fetch_url(url);
-    if (t) return t;
-  }
+  if (api && api.fetch_url) { const t = await api.fetch_url(url); if (t) return t; }
   const r = await fetch(url);
   if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.text();
 }
+function iconBtn(symbol, title) {
+  const b = document.createElement('button');
+  b.className = 'fcIconBtn';
+  b.textContent = symbol;
+  b.title = title;
+  return b;
+}
+
+/* ---------- cards ---------- */
+function fileCard(f, showFolderBadge) {
+  const el = document.createElement('div');
+  el.className = 'fileCard';
+  el.setAttribute('role', 'listitem');
+  el.title = f.name;
+  el.draggable = true;
+
+  const words = ((f.md || '').trim().match(/\S+/g) || []).length;
+
+  const top = document.createElement('div'); top.className = 'fcTop';
+  const ico = document.createElement('div'); ico.className = 'fcIcon'; ico.textContent = 'M↓';
+  const actions = document.createElement('div'); actions.className = 'fcActions';
+  const mov = iconBtn('🗂', 'Move to folder');
+  mov.onclick = e => { e.stopPropagation(); showMoveMenu(f, el); };
+  const del = iconBtn('🗑', 'Delete');
+  del.onclick = e => { e.stopPropagation(); doDeleteFile(f, del); };
+  actions.append(mov, del);
+  top.append(ico, actions);
+
+  const nm = document.createElement('div'); nm.className = 'fcName'; nm.textContent = f.name;
+  const meta = document.createElement('div'); meta.className = 'fcMeta';
+  meta.textContent = words + ' words' + (showFolderBadge && f.folder ? ' · in ' + f.folder : '');
+
+  el.append(top, nm, meta);
+  el.onclick = () => openFile(f);
+
+  el.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('text/plain', f.id);
+    e.dataTransfer.effectAllowed = 'move';
+    el.classList.add('dragging');
+  });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+  return el;
+}
+
+function folderCard(name) {
+  const count = filesIn(name).length;
+  const el = document.createElement('div');
+  el.className = 'fileCard folderCard';
+  el.setAttribute('role', 'listitem');
+  el.title = name;
+
+  const top = document.createElement('div'); top.className = 'fcTop';
+  const ico = document.createElement('div'); ico.className = 'fcIcon folder'; ico.textContent = '📁';
+  const actions = document.createElement('div'); actions.className = 'fcActions';
+  const ren = iconBtn('✎', 'Rename folder');
+  ren.onclick = e => { e.stopPropagation(); doRenameFolder(name); };
+  const del = iconBtn('🗑', 'Delete folder');
+  del.onclick = e => { e.stopPropagation(); doDeleteFolder(name); };
+  actions.append(ren, del);
+  top.append(ico, actions);
+
+  const nm = document.createElement('div'); nm.className = 'fcName'; nm.textContent = name;
+  const meta = document.createElement('div'); meta.className = 'fcMeta';
+  meta.textContent = count + ' file' + (count === 1 ? '' : 's');
+
+  el.append(top, nm, meta);
+  el.onclick = () => { currentFolder = name; renderLibrary(); };
+  nm.ondblclick = e => { e.stopPropagation(); doRenameFolder(name); };
+
+  el.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; el.classList.add('dragover'); });
+  el.addEventListener('dragleave', () => el.classList.remove('dragover'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('dragover');
+    const fileId = e.dataTransfer.getData('text/plain');
+    if (fileId) { setFileFolder(fileId, name); renderLibrary(); toast('Moved to “' + name + '”'); }
+  });
+  return el;
+}
+
+function upCard() {
+  const el = document.createElement('div');
+  el.className = 'fileCard upCard';
+  el.title = 'Back to Library — or drop a file here to move it out';
+  el.innerHTML =
+    '<div class="fcTop"><div class="fcIcon folder">↩</div></div>' +
+    '<div class="fcName">..</div>' +
+    '<div class="fcMeta">Back to Library · drop a file to move it out</div>';
+  el.onclick = () => { currentFolder = ''; renderLibrary(); };
+  el.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; el.classList.add('dragover'); });
+  el.addEventListener('dragleave', () => el.classList.remove('dragover'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('dragover');
+    const fileId = e.dataTransfer.getData('text/plain');
+    if (fileId) { setFileFolder(fileId, ''); renderLibrary(); toast('Moved to Library'); }
+  });
+  return el;
+}
+
+/* ---------- breadcrumb ---------- */
+function renderCrumbs() {
+  const bar = $('#libCrumbs');
+  if (!bar) return;
+  bar.innerHTML = '';
+  const root = document.createElement('button');
+  root.className = 'crumb' + (currentFolder === '' ? ' here' : '');
+  root.textContent = '🗂 Library';
+  root.onclick = () => { currentFolder = ''; renderLibrary(); };
+  makeDropToRoot(root);
+  bar.appendChild(root);
+  if (currentFolder !== '') {
+    const sep = document.createElement('span'); sep.className = 'crumbSep'; sep.textContent = '▸';
+    const cur = document.createElement('span'); cur.className = 'crumb here'; cur.textContent = currentFolder;
+    bar.append(sep, cur);
+  }
+}
+function makeDropToRoot(el) {
+  el.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; el.classList.add('dragover'); });
+  el.addEventListener('dragleave', () => el.classList.remove('dragover'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('dragover');
+    const fileId = e.dataTransfer.getData('text/plain');
+    if (fileId) { setFileFolder(fileId, ''); renderLibrary(); toast('Moved to Library'); }
+  });
+}
+
+/* ---------- render ---------- */
+export function renderLibrary() {
+  const grid = $('#libGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  renderCrumbs();
+
+  const q = searchQuery.trim().toLowerCase();
+  if (q) {
+    const all = getLibrary().filter(f =>
+      (f.name || '').toLowerCase().includes(q) || (f.md || '').toLowerCase().includes(q));
+    $('#libNoMatch').hidden = all.length > 0;
+    if (!all.length) $('#libNoMatchQ').textContent = searchQuery;
+    $('#libEmpty').hidden = true;
+    all.forEach(f => grid.appendChild(fileCard(f, true)));
+    updateStats();
+    return;
+  }
+
+  $('#libNoMatch').hidden = true;
+  if (currentFolder === '') {
+    const folders = getFolders();
+    folders.forEach(name => grid.appendChild(folderCard(name)));
+    const files = filesIn('');
+    files.forEach(f => grid.appendChild(fileCard(f, false)));
+    $('#libEmpty').hidden = !(folders.length === 0 && files.length === 0);
+  } else {
+    grid.appendChild(upCard());
+    filesIn(currentFolder).forEach(f => grid.appendChild(fileCard(f, false)));
+    $('#libEmpty').hidden = true;
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const el = $('#libStats');
+  if (!el) return;
+  el.textContent = getLibrary().length + ' files · ' + getFolders().length + ' folders';
+}
+
+/* ---------- folder/file actions ---------- */
+function doNewFolder() {
+  const name = prompt('New folder name:');
+  if (name == null) return;
+  const t = name.trim();
+  if (!t) return;
+  if (getFolders().includes(t)) { toast('That folder already exists', 'warn'); return; }
+  createFolder(t);
+  renderLibrary();
+  toast('Folder “' + t + '” created');
+}
+function doRenameFolder(name) {
+  const nn = prompt('Rename folder:', name);
+  if (nn == null) return;
+  const t = nn.trim();
+  if (!t || t === name) return;
+  if (getFolders().includes(t)) { toast('A folder with that name already exists', 'warn'); return; }
+  renameFolder(name, t);
+  if (currentFolder === name) currentFolder = t;
+  renderLibrary();
+  toast('Folder renamed');
+}
+function doDeleteFolder(name) {
+  if (!confirm('Delete folder “' + name + '”? Its files will move to Library (they are NOT deleted).')) return;
+  deleteFolder(name);
+  if (currentFolder === name) currentFolder = '';
+  renderLibrary();
+  toast('Folder deleted');
+}
+function doDeleteFile(f, btn) {
+  if (btn && btn.dataset.armed) {
+    saveLibrary(getLibrary().filter(x => x.id !== f.id));
+    renderLibrary();
+    toast('Deleted ' + f.name);
+  } else if (btn) {
+    btn.dataset.armed = '1';
+    btn.textContent = '✕';
+    btn.classList.add('armed');
+    btn.title = 'Click again to confirm';
+    setTimeout(() => {
+      if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = '🗑'; btn.classList.remove('armed'); btn.title = 'Delete'; }
+    }, 2500);
+  }
+}
+
+/* ---------- move-to-folder popup ---------- */
+function showMoveMenu(f, anchorEl) {
+  closeMoveMenu();
+  const menu = document.createElement('div');
+  menu.className = 'moveMenu';
+  menu.id = 'moveMenu';
+  const add = (label, target) => {
+    const it = document.createElement('button');
+    it.className = 'moveItem' + (fileFolder(f) === target ? ' current' : '');
+    it.textContent = label;
+    it.onclick = e => {
+      e.stopPropagation();
+      setFileFolder(f.id, target);
+      closeMoveMenu();
+      renderLibrary();
+      toast(target ? 'Moved to “' + target + '”' : 'Moved to Library');
+    };
+    menu.appendChild(it);
+  };
+  add('🗂 Library (root)', '');
+  getFolders().forEach(name => add('📁 ' + name, name));
+  const rect = anchorEl.getBoundingClientRect();
+  menu.style.left = Math.min(rect.left, innerWidth - 230) + 'px';
+  menu.style.top = Math.min(rect.bottom + 6, innerHeight - 200) + 'px';
+  document.body.appendChild(menu);
+  setTimeout(() => document.addEventListener('click', closeMoveMenu, { once: true }), 0);
+}
+function closeMoveMenu() {
+  const m = $('#moveMenu');
+  if (m) m.remove();
+}
+
+/* ---------- init ---------- */
+export function initLibrary() {
+  const search = $('#libSearch');
+  if (search) search.addEventListener('input', e => { searchQuery = e.target.value; renderLibrary(); });
+
+  const libNew = $('#libNew');
+  if (libNew) libNew.onclick = () => {
+    const rec = createFile(uniqueName('untitled.md', getLibrary()), '', { folder: currentFolder });
+    renderLibrary();
+    openFile(rec, { edit: true });
+  };
+
+  const libNewFolder = $('#libNewFolder');
+  if (libNewFolder) libNewFolder.onclick = doNewFolder;
+
+  const libUpload = $('#libUpload'), libFileInput = $('#libFileInput');
+  if (libUpload && libFileInput) {
+    libUpload.onclick = () => libFileInput.click();
+    libFileInput.addEventListener('change', async e => {
+      const files = [...e.target.files];
+      if (!files.length) return;
+      let count = 0;
+      for (const f of files) {
+        createFile(uniqueName(f.name, getLibrary()), await readEntry(f), { folder: currentFolder });
+        count++;
+      }
+      renderLibrary();
+      toast('Imported ' + count + ' file' + (count > 1 ? 's' : ''));
+      e.target.value = '';
+    });
+  }
+
+  const libFolder = $('#libFolder'), folderInput = $('#folderInput');
+  if (libFolder && folderInput) {
+    libFolder.onclick = () => folderInput.click();
+    folderInput.addEventListener('change', async e => {
+      const files = [...e.target.files].filter(f => /\.(md|markdown|mdown|txt)$/i.test(f.name));
+      if (!files.length) { toast('No markdown files in that folder', 'warn'); return; }
+      let count = 0;
+      for (const f of files) {
+        createFile(uniqueName(f.name, getLibrary()), await readEntry(f), { folder: currentFolder });
+        count++;
+      }
+      renderLibrary();
+      toast('Imported ' + count + ' file' + (count > 1 ? 's' : ''));
+      e.target.value = '';
+    });
+  }
+
+  const libUrl = $('#libUrl');
+  if (libUrl) libUrl.onclick = async () => {
+    const input = prompt('Paste a raw Markdown URL (GitHub raw works best):');
+    if (!input) return;
+    const url = toRawGithub(input.trim());
+    toast('Fetching…');
+    try {
+      const text = await fetchUrlText(url);
+      if (!text) throw new Error('empty');
+      const name = url.split('/').pop().split('?')[0] || 'imported.md';
+      const rec = createFile(uniqueName(name, getLibrary()), text, { folder: currentFolder });
+      renderLibrary();
+      openFile(rec);
+      toast('Imported ' + name);
+    } catch (err) { toast('Could not fetch that URL', 'warn'); }
+  };
+
+  const libSample = $('#libSample');
+  if (libSample) libSample.onclick = () => {
+    const rec = createFile(uniqueName('sample-readme.md', getLibrary()), SAMPLE, { folder: currentFolder });
+    renderLibrary();
+    openFile(rec);
+    toast('Sample loaded');
+  };
+
+  const libTodos = $('#libTodos');
+  if (libTodos) libTodos.onclick = () => {
+    document.body.dataset.view = 'todos';
+    document.title = 'Inkdown — Todos';
+    document.dispatchEvent(new CustomEvent('todos:shown'));
+  };
+
+  renderLibrary();
+}
+
 export function showLibrary() {
   document.body.dataset.view = 'library';
   document.title = 'Inkdown — Library';
   renderLibrary();
-}
-
-export function renderLibrary() {
-  const files = getLibrary();
-  const grid = $('#libGrid');
-  grid.innerHTML = '';
-
-  const filtered = query
-    ? files.filter(f => f.name.toLowerCase().includes(query) || f.md.toLowerCase().includes(query))
-    : files;
-
-  // Stats line
-  const kb = Math.max(1, Math.round(JSON.stringify(files).length / 1024));
-  $('#libStats').textContent = files.length
-    ? files.length + ' file' + (files.length > 1 ? 's' : '') + ' · ' + kb + ' KB'
-    : '';
-
-  // Empty vs no-match states
-  $('#libEmpty').hidden = files.length > 0;
-  $('#libNoMatch').hidden = !(files.length > 0 && filtered.length === 0);
-  if (files.length > 0 && filtered.length === 0) {
-    $('#libNoMatchQ').textContent = query;
-  }
-
-  filtered.forEach((f, i) => {
-    const words = (f.md.trim().match(/\S+/g) || []).length;
-    const card = document.createElement('article');
-    card.className = 'fileCard';
-    card.setAttribute('role', 'listitem');
-    card.setAttribute('tabindex', '0');
-    card.style.animationDelay = Math.min(i * 0.04, 0.5) + 's';
-    card.innerHTML =
-      '<div class="fcTop">' +
-        '<span class="fcIcon">M<b>↓</b></span>' +
-        '<button class="fcDel" title="Delete file" aria-label="Delete ' + esc(f.name) + '">' + TRASH + '</button>' +
-      '</div>' +
-      '<h3 class="fcName" title="Double-click to rename">' + esc(f.name) + '</h3>' +
-      '<p class="fcMeta"><b>' + words.toLocaleString() + ' words</b><span>·</span>' + relTime(f.updatedAt || f.createdAt) + '</p>';
-
-    // Open on click / Enter
-    const open = () => openFile(f);
-    card.addEventListener('click', e => {
-      if (e.target.closest('.fcDel') || e.target.closest('.fcName[contenteditable="true"]')) return;
-      open();
-    });
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.target.closest('.fcName[contenteditable="true"]')) open();
-    });
-
-    // Delete (two-step confirm)
-    const del = card.querySelector('.fcDel');
-    del.addEventListener('click', e => {
-      e.stopPropagation();
-      if (del.dataset.armed) {
-        deleteFile(f.id);
-        renderLibrary();
-        toast('Deleted ' + f.name);
-      } else {
-        del.dataset.armed = '1';
-        del.classList.add('armed');
-        del.textContent = 'Sure?';
-        setTimeout(() => {
-          if (!del.isConnected) return;
-          delete del.dataset.armed;
-          del.classList.remove('armed');
-          del.innerHTML = TRASH;
-        }, 2600);
-      }
-    });
-
-    // Rename on double-click
-    const nameEl = card.querySelector('.fcName');
-    nameEl.addEventListener('dblclick', e => {
-      e.stopPropagation();
-      nameEl.contentEditable = 'true';
-      nameEl.focus();
-      const range = document.createRange();
-      range.selectNodeContents(nameEl);
-      const sel = getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    });
-    nameEl.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); }
-      if (e.key === 'Escape') { nameEl.textContent = f.name; nameEl.blur(); }
-    });
-    nameEl.addEventListener('blur', () => {
-      nameEl.contentEditable = 'false';
-      const newName = nameEl.textContent.trim();
-      if (newName && newName !== f.name) {
-        upsertFile({ id: f.id, name: newName, updatedAt: Date.now() });
-        toast('Renamed to ' + newName);
-      }
-      renderLibrary();
-    });
-
-    grid.appendChild(card);
-  });
-}
-
-/* ---- actions ---- */
-function onNew() {
-  const name = uniqueName('untitled.md', getLibrary());
-  const rec = createFile(name, '');
-  openFile(rec, { edit: true });
-  toast('Created ' + name);
-}
-
-function onSample() {
-  const name = uniqueName('sample-readme.md', getLibrary());
-  const rec = createFile(name, SAMPLE);
-  openFile(rec);
-  toast('Sample loaded');
-}
-
-export async function importFiles(fileList) {
-  let count = 0;
-  for (const f of fileList) {
-    if (!/\.(md|markdown|mdown|txt)$/i.test(f.name)) continue;
-    try {
-      const text = await f.text();
-      const name = uniqueName(f.name, getLibrary());
-      createFile(name, text);
-      count++;
-    } catch (e) {}
-  }
-  renderLibrary();
-  if (count) toast('Imported ' + count + ' file' + (count > 1 ? 's' : ''));
-  else toast('No markdown files found', 'warn');
-}
-
-/* ---- drag & drop import ---- */
-function bindDrop() {
-  const lib = $('#library');
-  let depth = 0;
-  lib.addEventListener('dragenter', e => {
-    e.preventDefault();
-    depth++;
-    lib.classList.add('dragging');
-  });
-  lib.addEventListener('dragover', e => e.preventDefault());
-  lib.addEventListener('dragleave', e => {
-    e.preventDefault();
-    if (--depth <= 0) lib.classList.remove('dragging');
-  });
-  lib.addEventListener('drop', e => {
-    e.preventDefault();
-    depth = 0;
-    lib.classList.remove('dragging');
-    if (e.dataTransfer.files.length) importFiles(e.dataTransfer.files);
-  });
-}
-
-/* ---- helpers ---- */
-function relTime(ts) {
-  if (!ts) return '';
-  const d = Date.now() - ts;
-  const m = Math.floor(d / 60000);
-  if (m < 1) return 'just now';
-  if (m < 60) return m + 'm ago';
-  const h = Math.floor(m / 60);
-  if (h < 24) return h + 'h ago';
-  const days = Math.floor(h / 24);
-  if (days < 7) return days + 'd ago';
-  return new Date(ts).toLocaleDateString();
 }

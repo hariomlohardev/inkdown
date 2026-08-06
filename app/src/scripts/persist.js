@@ -9,6 +9,7 @@ const PERSIST_KEYS = [
   'inkdown:doc',       // legacy single doc
   'inkdown:theme',     // light/dark
   'inkdown:read',      // reading preferences
+  'inkdown:folders',
   'inkdown:todoPos'    // widget position
 ];
 

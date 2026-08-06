@@ -24,6 +24,49 @@ export function saveLibrary(files) {
   }
 }
 
+const FOLDERS_KEY = 'inkdown:folders';
+
+export function getFolders() {
+  try { return JSON.parse(localStorage.getItem(FOLDERS_KEY)) || []; }
+  catch (e) { return []; }
+}
+export function saveFolders(folders) {
+  try { localStorage.setItem(FOLDERS_KEY, JSON.stringify(folders)); return true; }
+  catch (e) { return false; }
+}
+export function createFolder(name) {
+  const t = (name || '').trim();
+  if (!t) return null;
+  const folders = getFolders();
+  if (!folders.includes(t)) { folders.push(t); saveFolders(folders); }
+  return t;
+}
+export function renameFolder(oldName, newName) {
+  const t = (newName || '').trim();
+  if (!t) return;
+  const folders = getFolders();
+  const i = folders.indexOf(oldName);
+  if (i === -1 || folders.includes(t)) return;
+  folders[i] = t;
+  saveFolders(folders);
+  const files = getLibrary();
+  files.forEach(f => { if ((f.folder || '') === oldName) f.folder = t; });
+  saveLibrary(files);
+}
+export function deleteFolder(name) {
+  saveFolders(getFolders().filter(f => f !== name));
+  const files = getLibrary();
+  files.forEach(f => { if ((f.folder || '') === name) f.folder = ''; });  // files go to root, not deleted
+  saveLibrary(files);
+}
+export function setFileFolder(fileId, folderName) {
+  const files = getLibrary();
+  const f = files.find(x => x.id === fileId);
+  if (!f) return;
+  f.folder = folderName || '';
+  saveLibrary(files);
+}
+
 export function getFile(id) {
   return getLibrary().find(f => f.id === id) || null;
 }
