@@ -1,0 +1,21 @@
+#tabBar { display:none; align-items:stretch; gap:4px; padding:6px 10px 0;
+  background:var(--surface); border-bottom:1px solid var(--line);
+  overflow-x:auto; scrollbar-width:none; }
+#tabBar::-webkit-scrollbar { display:none; }
+body[data-view="reader"] #tabBar { display:flex; }
+
+.tab { display:flex; align-items:center; gap:8px; padding:7px 10px 9px;
+  border-radius:8px 8px 0 0; border:1px solid transparent; border-bottom:none;
+  color:var(--muted); font-size:12.5px; font-weight:600; cursor:pointer;
+  max-width:200px; white-space:nowrap; position:relative; top:1px; }
+.tab:hover { background:var(--surface2); color:var(--ink2); }
+.tab.active { background:var(--bg); border-color:var(--line); color:var(--ink); }
+.tab.active::after { content:""; position:absolute; left:8px; right:8px; bottom:-1px;
+  height:2px; background:var(--accent); border-radius:2px; }
+.tabName { overflow:hidden; text-overflow:ellipsis; }
+.tabClose { width:18px; height:18px; border-radius:5px; display:grid; place-items:center;
+  color:var(--muted); font-size:14px; line-height:1; }
+.tabClose:hover { background:var(--accent-soft); color:var(--accent-ink); }
+.tabPlus { width:30px; align-self:center; padding:4px 8px; border-radius:7px;
+  color:var(--muted); font-size:16px; flex:0 0 auto; }
+.tabPlus:hover { background:var(--surface2); color:var(--accent-ink); }

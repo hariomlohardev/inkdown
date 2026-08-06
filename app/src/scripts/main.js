@@ -1,7 +1,7 @@
 import { initState } from './state.js';
-import { migrateLegacy } from './storage.js';
+import { migrateLegacy, createFile, getLibrary } from './storage.js';
 import { initTheme } from './theme.js';
-import { initUI, setupKeyboard, loadDoc, toast } from './ui.js';
+import { initUI, setupKeyboard, toast, openFile } from './ui.js';
 import { initTOC } from './toc.js';
 import { initNavigation } from './navigation.js';
 import { initEditor } from './editor.js';
@@ -14,18 +14,7 @@ import { initTodos } from './todos.js';
 import { initChart } from './chart.js';
 import { initAssist } from './assist.js';
 import { initPWA } from './pwa.js';
-import { restored } from './persist.js';   // ← NEW
-
-// F11 → toggle native fullscreen (desktop build only; no-op in a normal browser)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'F11') {
-    const api = window.pywebview && window.pywebview.api;
-    if (api && typeof api.toggle_fullscreen === 'function') {
-      e.preventDefault();
-      api.toggle_fullscreen();
-    }
-  }
-});
+import { restored } from './persist.js';
 
 function hideSplash() { document.body.classList.add('ready'); }
 
@@ -35,42 +24,48 @@ function openSharedFromHash() {
   try {
     const md = decodeURIComponent(escape(atob(h.slice(5))));
     if (md) {
-      loadDoc(md, 'shared-' + Date.now().toString(36) + '.md');
-      document.body.dataset.view = 'reader';
+      const rec = { id: 'shared-' + Date.now().toString(36), name: 'shared.md', md, highlights: [], goal: 0, scroll: 0 };
+      openFile(rec);
       return true;
     }
   } catch (e) {}
   return false;
 }
 
+async function openLaunchFiles() {
+  const api = window.pywebview && window.pywebview.api;
+  if (!api || !api.get_launch_files) return false;
+  let opened = false;
+  try {
+    const paths = await api.get_launch_files();
+    if (paths && paths.length) {
+      for (const p of paths) {
+        const content = await api.read_external_file(p);
+        if (content == null) continue;
+        const name = p.split(/[\\/]/).pop();
+        const existing = getLibrary().find(f => f.name === name);
+        if (existing) openFile(existing);
+        else openFile(createFile(name, content));
+        opened = true;
+      }
+    }
+  } catch (e) {}
+  return opened;
+}
+
 (async function boot() {
-  await restored;                       // ← NEW: load saved data from disk first
+  await restored;
   setTimeout(hideSplash, 4000);
 
-  initTheme();
-  initState();
-  migrateLegacy();
-
-  initUI();
-  initTOC();
-  initNavigation();
-  initEditor();
-  initSearch();
-  initHighlight();
-  initViewer();
-  initQuality();
-  initLibrary();
-  initTodos();
-  initChart();
-  initAssist();
-  initPWA();
+  initTheme(); initState(); migrateLegacy();
+  initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
+  initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
   setupKeyboard();
 
-  if (!openSharedFromHash()) showLibrary();
+  const shared = openSharedFromHash();
+  const launched = await openLaunchFiles();
+  if (!shared && !launched) showLibrary();
 
   hideSplash();
-
-  if (!window.marked || !window.DOMPurify) {
-    toast('CDN libraries failed — some features limited', 'warn');
-  }
+  if (!window.marked || !window.DOMPurify) toast('CDN libraries failed — some features limited', 'warn');
 })();

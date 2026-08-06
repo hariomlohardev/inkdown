@@ -23,9 +23,73 @@ export function initLibrary() {
   });
   // Reader dispatches this when going back home
   document.addEventListener('library:shown', renderLibrary);
+    // ---- Open a whole folder ----
+  const folderBtn = $('#libFolder');
+  const folderInput = $('#folderInput');
+  if (folderBtn && folderInput) {
+    folderBtn.onclick = () => folderInput.click();
+    folderInput.addEventListener('change', async e => {
+      const files = [...e.target.files].filter(f => /\.(md|markdown|mdown|txt)$/i.test(f.name));
+      if (!files.length) { toast('No markdown files found in that folder', 'warn'); return; }
+      let count = 0;
+      for (const f of files) {
+        const text = await readEntry(f);
+        createFile(uniqueName(f.name, getLibrary()), text);
+        count++;
+      }
+      renderLibrary();
+      toast('Imported ' + count + ' file' + (count > 1 ? 's' : ''));
+      e.target.value = '';
+    });
+  }
+
+  // ---- Import from URL / GitHub ----
+  const urlBtn = $('#libUrl');
+  if (urlBtn) {
+    urlBtn.onclick = async () => {
+      const input = prompt('Paste a raw Markdown URL (GitHub raw works best):');
+      if (!input) return;
+      const url = toRawGithub(input.trim());
+      toast('Fetching…');
+      try {
+        const text = await fetchUrlText(url);
+        if (!text) throw new Error('empty');
+        const name = url.split('/').pop().split('?')[0] || 'imported.md';
+        const rec = createFile(uniqueName(name, getLibrary()), text);
+        renderLibrary();
+        openFile(rec);
+        toast('Imported ' + name);
+      } catch (err) {
+        toast('Could not fetch that URL', 'warn');
+      }
+    };
+  }
   bindDrop();
 }
 
+function readEntry(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsText(file);
+  });
+}
+function toRawGithub(url) {
+  const m = url.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/);
+  if (m) return 'https://raw.githubusercontent.com/' + m[1] + '/' + m[2] + '/' + m[3];
+  return url;
+}
+async function fetchUrlText(url) {
+  const api = window.pywebview && window.pywebview.api;
+  if (api && api.fetch_url) {
+    const t = await api.fetch_url(url);
+    if (t) return t;
+  }
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.text();
+}
 export function showLibrary() {
   document.body.dataset.view = 'library';
   document.title = 'Inkdown — Library';

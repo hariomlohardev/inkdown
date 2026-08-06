@@ -6,7 +6,7 @@ export const STORAGE_KEYS = {
 };
 
 export const state = {
-  fileId: null,            // ← currently open library file id
+  fileId: null,
   md: '',
   name: 'untitled.md',
   dirty: false,
@@ -16,7 +16,10 @@ export const state = {
   highlights: [],
   scroll: 0,
   collapsed: new Set(),
-  lastJump: null
+  lastJump: null,
+  // NEW — open tabs
+  tabs: [],
+  activeTabId: null,
 };
 
 export const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';

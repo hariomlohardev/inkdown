@@ -10,6 +10,7 @@ import { upsertFile, createFile, getLibrary, uniqueName } from './storage.js';
 import { ED_ACTS } from './editor.js';
 import { openSearch, closeSearch } from './search.js';
 import { SAMPLE } from './samples.js';
+import * as tabs from './tabs.js';
 
 const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
@@ -48,21 +49,33 @@ const renderPreviewDebounced = debounce(() => renderView(false), 280);
 
 /* ================= FILE OPEN / BACK ================= */
 export function openFile(rec, opts = {}) {
-  state.fileId = rec.id;
-  document.body.classList.remove('focus');
-  document.body.dataset.view = 'reader';
-  loadDoc(rec.md, rec.name, true, rec);
-  if (opts.edit) setEditing(true);
+  tabs.openTab(rec, opts);
 }
-
 export function backToLibrary() {
+  tabs.snapshotCurrent();
   if (state.dirty) saveDoc(false);
-  if (state.editing) setEditing(false);
   document.body.dataset.view = 'library';
   document.title = 'Inkdown — Library';
   document.dispatchEvent(new CustomEvent('library:shown'));
+  tabs.renderTabBar();
 }
 
+function activateUI(tab) {
+  document.body.classList.remove('focus');
+  document.body.dataset.view = 'reader';
+  document.body.classList.toggle('editing', !!tab.editing);
+  const be = $('#btnEdit'); if (be) be.classList.toggle('active', !!tab.editing);
+  state.editorEl.value = state.md;
+  $('#docTitle').textContent = state.name;
+  $('#stName').textContent = state.name;
+  document.title = state.name + ' — Inkdown';
+  if (state.dirty) { $('#saveDot').classList.add('dirty'); $('#saveTxt').textContent = 'Unsaved changes'; }
+  else { $('#saveDot').classList.remove('dirty'); $('#saveTxt').textContent = 'Saved'; }
+  renderView(false).then(() => {
+    if (state.scroll) state.scrollArea.scrollTop = state.scroll;
+    if (tab.editing) state.editorEl.focus();
+  });
+}
 /* ================= SAVE / DIRTY ================= */
 export function markDirty() {
   state.dirty = true;
@@ -156,6 +169,7 @@ export function initUI() {
   initRename();
   initReading();
   initSaveExport();
+  tabs.init({ onActivate: activateUI, onEmpty: backToLibrary, onPlus: backToLibrary });
 }
 
 function bindStaticButtons() {

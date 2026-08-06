@@ -27,6 +27,37 @@ def data_dir():
     os.makedirs(d, exist_ok=True)
     return d
 
+LAUNCH_FILES = []
+
+def parse_args():
+    for a in sys.argv[1:]:
+        p = os.path.abspath(a)
+        if os.path.isfile(p):
+            LAUNCH_FILES.append(p)
+
+# inside class Api:
+    def get_launch_files(self):
+        global LAUNCH_FILES
+        files = LAUNCH_FILES[:]
+        LAUNCH_FILES = []
+        return files
+
+    def read_external_file(self, path):
+        try:
+            with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                return f.read()
+        except Exception:
+            return None
+
+    def fetch_url(self, url):
+        import urllib.request
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return r.read().decode('utf-8', errors='ignore')
+        except Exception:
+            return None
+        
 DATA_FILE = os.path.join(data_dir(), 'inkdown-data.json')
 
 class Api:
@@ -79,6 +110,7 @@ def start_server(root):
 
 def main():
     set_app_user_model_id()
+    parse_args()          # ← capture double-clicked / passed .md files
     import webview
     import updater
 
