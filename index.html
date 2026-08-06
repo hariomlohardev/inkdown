@@ -61,6 +61,7 @@
           <span id="thStats">0/0 today</span>
         </div>
         <button class="libAction" id="thOpenWidget" title="Floating widget — Ctrl+Alt+D">Open widget</button>
+        <button class="libAction" id="thSettings" title="Todo settings">⚙ Settings</button>
       </div>
       <div class="thGrid">
         <div class="thToday">
@@ -79,15 +80,11 @@
     </section>
 
     <div id="libGrid" class="libGrid" role="list"></div>
-
     <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
-
     <div id="libEmpty" class="libEmpty" hidden>
       <div class="dropArrow" style="margin-bottom:18px">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line stroke="var(--pink)" x1="12" y1="15" x2="12" y2="3"/>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line stroke="var(--pink)" x1="12" y1="15" x2="12" y2="3"/>
         </svg>
       </div>
       <h2>Your library is empty</h2>
@@ -312,28 +309,72 @@
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
 
-<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============ -->
+<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) — redesigned ============ -->
 <section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
   <div class="twHead" id="twHead">
-    <span class="twDot"></span>
-    <b id="twDate">Today</b>
-    <span class="twCount" id="twCount">0/0</span>
-    <button class="twPinSet" id="twSettings" title="Todo settings">⚙</button>
-    <button class="twClose" id="twClose" title="Close (Ctrl+Alt+D)">✕</button>
+    <span class="twGrip" aria-hidden="true">⠿</span>
+    <div class="twTitleWrap">
+      <b id="twDate">Today</b>
+      <span class="twSub" id="twSub">Add your first task</span>
+    </div>
+    <span class="twChip" id="twCount">0/0</span>
+    <button class="twIcon" id="twSettings" title="Todo settings" aria-label="Todo settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <button class="twIcon" id="twClose" title="Close (Ctrl+Alt+D)" aria-label="Close widget">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
-  <div class="twSettings" id="twSettingsPanel" hidden>
-    <label class="twToggleRow">
-      <input type="checkbox" id="twRollover" checked>
-      <span>Carry 📌 pinned todos to the next day</span>
-    </label>
-    <p class="twHint">Every new morning, pinned todos reappear automatically (unchecked).</p>
-  </div>
+  <div class="twProg"><i id="twProgFill"></i></div>
+  <div class="twBanner" id="twBanner" hidden>🎉 All done for today!</div>
   <div class="twBody" id="twList"></div>
   <form class="twAdd" id="twAddForm">
-    <input id="twInput" placeholder="Add a todo for today…" autocomplete="off" maxlength="200">
-    <button type="submit" title="Add">+</button>
+    <input id="twInput" placeholder="Add a todo…" autocomplete="off" maxlength="200">
+    <button type="submit" title="Add" aria-label="Add todo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
   </form>
+  <div class="twFoot">Ctrl+Alt+D to toggle · 📌 pins roll to tomorrow</div>
 </section>
+
+<!-- ============ TODO SETTINGS MODAL ============ -->
+<div id="todoSettings" class="tdModal" hidden role="dialog" aria-modal="true" aria-label="Todo settings">
+  <div class="tdPanel">
+    <button class="closeX" id="tsClose" aria-label="Close settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>⚙ Todo settings</h2>
+    <div class="tsStats" id="tsStats"></div>
+
+    <div class="tsGroup">
+      <div class="tsLabel">Behaviour</div>
+      <label class="tsRow">
+        <div class="tsTxt"><b>Carry pinned todos forward</b><span>📌 pinned items auto-reappear every new day (unchecked)</span></div>
+        <input type="checkbox" id="tsRollover" checked>
+      </label>
+      <label class="tsRow">
+        <div class="tsTxt"><b>Hide completed</b><span>Don't show checked-off todos in today's lists</span></div>
+        <input type="checkbox" id="tsHideDone">
+      </label>
+      <label class="tsRow">
+        <div class="tsTxt"><b>Auto-clean old completed</b><span>Delete completed todos older than 7 days</span></div>
+        <input type="checkbox" id="tsAutoClean">
+      </label>
+    </div>
+
+    <div class="tsGroup">
+      <div class="tsLabel">Data</div>
+      <button class="tsBtn" id="tsExport">⬇&nbsp;&nbsp;Export todos (.json)</button>
+      <button class="tsBtn" id="tsResetPos">↺&nbsp;&nbsp;Reset widget position</button>
+    </div>
+
+    <div class="tsGroup danger">
+      <div class="tsLabel">Danger zone</div>
+      <button class="tsBtn warn" id="tsClearToday">Clear today's todos</button>
+      <button class="tsBtn warn" id="tsClearAll">Delete ALL todo data</button>
+    </div>
+  </div>
+</div>
 
 <div id="overlay">
   <div class="panel">
