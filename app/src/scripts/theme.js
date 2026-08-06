@@ -65,6 +65,7 @@ function initSettingsPanel() {
   $$('.themeOption').forEach(btn => {
     btn.addEventListener('click', () => setThemeMode(btn.dataset.themeValue));
   });
+  document.addEventListener('settings:open', open);
 }
 
 export function initTheme() {

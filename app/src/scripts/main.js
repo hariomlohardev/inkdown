@@ -9,7 +9,7 @@ import { initSearch } from './search.js';
 import { initHighlight } from './highlight.js';
 import { initViewer } from './viewer.js';
 import { initQuality } from './quality.js';
-import { initLibrary, showLibrary } from './library.js';
+import { initLibrary, showLibrary } from './home.js';
 import { initTodos } from './todos.js';
 import { initChart } from './chart.js';
 import { initAssist } from './assist.js';

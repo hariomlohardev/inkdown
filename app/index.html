@@ -42,50 +42,93 @@
 <div id="ambience"><div class="glow g1"></div><div class="glow g2"></div></div>
 <div id="progress"></div>
 
-<!-- ============ LIBRARY (HOME) ============ -->
-<section id="library" aria-label="File library">
-  <div class="libInner">
-    <div class="libHeader">
-      <div class="libBrand">
-        <div class="logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 5v11l4.5-3.8L13 16V5" stroke="var(--bg)" stroke-width="2.4"/>
-            <path d="M17 10v9m0 0l-3-3m3 3l3-3" stroke="var(--pink)" stroke-width="2.2"/>
-          </svg>
-        </div>
-        <div class="libTitle"><b>Inkdown</b><span>markdown library</span></div>
+
+<!-- ============ HOME (LIBRARY) ============ -->
+<section id="home" aria-label="Home">
+  <aside class="homeSide">
+    <div class="brand sideBrand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5v11l4.5-3.8L13 16V5" stroke="var(--bg)" stroke-width="2.4"/>
+          <path d="M17 10v9m0 0l-3-3m3 3l3-3" stroke="var(--pink)" stroke-width="2.2"/>
+        </svg>
       </div>
-      <div class="libActions">
-        <button class="libAction todoBtn" id="libTodos" title="Open your todos">📌 Todos</button>
-        <button class="libAction primary" id="libNew">+ New file</button><button class="libAction" id="libUpload" title="Import .md files">⬆ Upload</button>
-        <button class="libAction" id="libFolder" title="Import every .md from a disk folder">📁 Import folder</button>
-        <button class="libAction" id="libNewFolder" title="Create a folder to organize files">🗂 New Folder</button>
-        <button class="libAction" id="libUrl" title="Import from URL / GitHub">🔗 URL</button>
-        <button class="libAction" id="libSample">✨ Sample</button>
-        <button class="libAction" id="installBtn" hidden>⬇ Install app</button>
-        <button class="btn" id="libSettings" title="Settings" aria-label="Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <div class="wordmark"><b>Inkdown</b><span>readme studio</span></div>
+    </div>
+
+    <nav class="sideNav" id="homeNav">
+      <button class="navItem" data-nav="all" id="navAll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>All files</span><em class="count" id="navAllCount">0</em>
+      </button>
+      <button class="navItem" data-nav="todos" id="navTodos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Todos</span>
+      </button>
+    </nav>
+
+    <div class="sideSec">
+      <div class="sideSecHead"><span>Folders</span><button class="miniBtn" id="sideNewFolder" title="New folder">+ New</button></div>
+      <div id="sideFolders" class="sideFolders"></div>
+    </div>
+
+    <div class="sideFoot">
+      <button class="navItem" id="sideSettings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+      <button class="navItem ghost" id="sideSample" title="Create a sample README">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10.7l-5.8 1.9L12 18.4l-2.2-5.8L4 10.7l6.1-1.9z"/></svg>
+        <span>Sample doc</span>
+      </button>
+    </div>
+
+    <button id="libSettings" hidden aria-hidden="true"></button>
+    <button id="libTodos" hidden aria-hidden="true"></button>
+  </aside>
+
+  <div class="homeMain">
+    <div class="viewHead">
+      <div class="greet">
+        <h1 id="greetTitle">All files</h1>
+        <p id="greetSub"></p>
+      </div>
+      <div class="viewTools">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input id="libSearch" placeholder="Search files…  ( / )" autocomplete="off" spellcheck="false">
+        </div>
+        <button class="iconBtn2" id="libFolder" title="Import a folder of .md files from disk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
+        </button>
+        <button class="iconBtn2" id="libUrl" title="Import from URL / GitHub">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+        <button class="btn primary newFileBtn" id="libNew">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>New file</span>
         </button>
       </div>
     </div>
-    <div class="libToolbar">
-      <input id="libSearch" type="text" placeholder="Search files…" autocomplete="off" spellcheck="false" aria-label="Search files">
-      <span id="libStats" aria-live="polite"></span>
-    </div>
-    <div id="libCrumbs" class="libCrumbs" aria-label="Folder location"></div>
-    <div id="libGrid" class="libGrid" role="list"></div>
-    <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
-    <div id="libEmpty" class="libEmpty" hidden>
-      <div class="dropArrow" style="margin-bottom:18px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line stroke="var(--pink)" x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
+
+    <div class="homeScroll">
+      <div class="statsRow" id="statsRow">
+        <div class="statCard"><div class="statIco a1">📄</div><div class="statTxt"><b id="statFiles">0</b><span>Files</span></div></div>
+        <div class="statCard"><div class="statIco a2">📁</div><div class="statTxt"><b id="statFolders">0</b><span>Folders</span></div></div>
+        <div class="statCard"><div class="statIco a3">✍️</div><div class="statTxt"><b id="statWords">0</b><span>Words</span></div></div>
+        <div class="statCard"><div class="statIco a4">🕒</div><div class="statTxt"><b id="statRecent">—</b><span>Last edited</span></div></div>
       </div>
-      <h2>Your library is empty</h2>
-      <p>Drop <b>.md</b> files anywhere on this page, or start fresh.</p>
-      <button class="libAction primary" id="libEmptyNew" style="margin-top:18px">+ Create your first file</button>
+
+      <div class="recentWrap" id="recentWrap">
+        <div class="recentHead"><span>Recently edited</span></div>
+        <div class="recentRow" id="recentRow"></div>
+      </div>
+
+      <div id="libGrid" class="libGrid" role="list"></div>
+      <span id="libStats" hidden></span>
     </div>
   </div>
+
   <input type="file" id="libFileInput" multiple accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
   <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
 </section>
