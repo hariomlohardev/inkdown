@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Inkdown — A beautiful README viewer, editor and daily todo app">
+<meta name="description" content="Inkdown — README viewer, editor, todos & rendering power">
 <title>Inkdown — Library</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M20 16v22l12-10 12 10V16' stroke='%23ffffff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M32 40v12m0 0l-6-6m6 6l6-6' stroke='%23ff2e88' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,12 +18,15 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<!-- NEW: image export + backup zip -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body data-view="library">
 <div id="ambience"><div class="glow g1"></div><div class="glow g2"></div></div>
 <div id="progress"></div>
 
-<!-- ============ LIBRARY (HOME SCREEN) ============ -->
+<!-- ============ LIBRARY (HOME) ============ -->
 <section id="library" aria-label="File library">
   <div class="libInner">
     <div class="libHeader">
@@ -47,12 +50,10 @@
         </button>
       </div>
     </div>
-
     <div class="libToolbar">
       <input id="libSearch" type="text" placeholder="Search files…" autocomplete="off" spellcheck="false" aria-label="Search files">
       <span id="libStats" aria-live="polite"></span>
     </div>
-
     <div id="libGrid" class="libGrid" role="list"></div>
     <div id="libNoMatch" class="libNoMatch" hidden>No files match “<b id="libNoMatchQ"></b>”.</div>
     <div id="libEmpty" class="libEmpty" hidden>
@@ -69,7 +70,7 @@
   <input type="file" id="libFileInput" multiple accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
 </section>
 
-<!-- ============ TODOS PAGE (opened via 📌 Todos button) ============ -->
+<!-- ============ TODOS PAGE ============ -->
 <section id="todosPage" aria-label="Todos">
   <div class="todosInner">
     <div class="todosHead">
@@ -82,7 +83,6 @@
         <button class="libAction" id="thSettings" title="Todo settings">⚙ Settings</button>
       </div>
     </div>
-
     <div class="todoCard">
       <div class="todosProg">
         <div class="thBar"><i id="thBarFill"></i></div>
@@ -121,14 +121,12 @@
       </div>
       <div class="wordmark"><b>Inkdown</b><span>readme studio</span></div>
     </div>
-
     <div class="docTitleWrap" title="Click to rename">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
       </svg>
       <span id="docTitle" contenteditable="true" spellcheck="false" role="textbox" aria-label="Document title"></span>
     </div>
-
     <div class="actions">
       <button class="btn" id="btnToc" title="Contents table (Ctrl+\)" aria-label="Toggle contents table">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -164,6 +162,9 @@
             <input type="range" id="pwRange" min="560" max="1100" step="20" aria-label="Page width">
             <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">W</span>
           </div>
+          <!-- NEW: code rendering toggle -->
+          <div class="rsLabel">Code</div>
+          <label class="rsToggle"><input type="checkbox" id="lnToggle"><span>Show line numbers</span></label>
         </div>
       </div>
       <button class="btn" id="btnOpen" title="Import file (Ctrl+O)" aria-label="Import file">
@@ -186,12 +187,28 @@
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
         </button>
+        <!-- NEW: expanded export menu -->
         <div class="menu" id="exportMenu" role="menu">
-          <button data-act="md" role="menuitem">⬇&nbsp;&nbsp;Download .md</button>
-          <button data-act="copy" role="menuitem">⧉&nbsp;&nbsp;Copy Markdown</button>
+          <div class="menuLabel">Export look</div>
+          <div class="exportThemes">
+            <label><input type="radio" name="expTheme" value="minimal" checked> Minimal</label>
+            <label><input type="radio" name="expTheme" value="classic"> Classic</label>
+            <label><input type="radio" name="expTheme" value="github"> GitHub</label>
+          </div>
           <hr>
+          <button data-act="md" role="menuitem">⬇&nbsp;&nbsp;Download .md</button>
           <button data-act="html" role="menuitem">&lt;/&gt;&nbsp;&nbsp;Export as HTML</button>
-          <button data-act="print" role="menuitem">⎙&nbsp;&nbsp;Print / PDF</button>
+          <button data-act="pdf" role="menuitem">📄&nbsp;&nbsp;Save as PDF</button>
+          <button data-act="png" role="menuitem">🖼&nbsp;&nbsp;Export as image</button>
+          <hr>
+          <button data-act="copy" role="menuitem">⧉&nbsp;&nbsp;Copy Markdown</button>
+          <button data-act="rich" role="menuitem">⧉&nbsp;&nbsp;Copy rendered</button>
+          <button data-act="share" role="menuitem">🔗&nbsp;&nbsp;Copy share link</button>
+          <hr>
+          <button data-act="backup" role="menuitem">💾&nbsp;&nbsp;Download backup (.zip)</button>
+          <button data-act="synccopy" role="menuitem">🔁&nbsp;&nbsp;Copy sync code</button>
+          <button data-act="syncimport" role="menuitem">🔁&nbsp;&nbsp;Import sync code</button>
+          <button data-act="print" role="menuitem">⎙&nbsp;&nbsp;Print</button>
           <div class="hint">Ctrl+S save · Ctrl+E edit · Ctrl+K search<br>Ctrl+Alt+D todos · F focus · Ctrl+\ contents</div>
         </div>
       </div>
@@ -320,7 +337,7 @@
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
 
-<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) — Notion-style ============ -->
+<!-- ============ FLOATING TODO WIDGET ============ -->
 <section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
   <div class="twHead" id="twHead">
     <div class="twTitleWrap">
@@ -354,34 +371,40 @@
     </button>
     <h2>⚙ Todo settings</h2>
     <div class="tsStats" id="tsStats"></div>
-
     <div class="tsGroup">
       <div class="tsLabel">Behaviour</div>
-      <label class="tsRow">
-        <div class="tsTxt"><b>Carry pinned todos forward</b><span>📌 pinned items auto-reappear every new day (unchecked)</span></div>
-        <input type="checkbox" id="tsRollover" checked>
-      </label>
-      <label class="tsRow">
-        <div class="tsTxt"><b>Hide completed</b><span>Don't show checked-off todos in today's lists</span></div>
-        <input type="checkbox" id="tsHideDone">
-      </label>
-      <label class="tsRow">
-        <div class="tsTxt"><b>Auto-clean old completed</b><span>Delete completed todos older than 7 days</span></div>
-        <input type="checkbox" id="tsAutoClean">
-      </label>
+      <label class="tsRow"><div class="tsTxt"><b>Carry pinned todos forward</b><span>📌 pinned items auto-reappear every new day (unchecked)</span></div><input type="checkbox" id="tsRollover" checked></label>
+      <label class="tsRow"><div class="tsTxt"><b>Hide completed</b><span>Don't show checked-off todos in today's lists</span></div><input type="checkbox" id="tsHideDone"></label>
+      <label class="tsRow"><div class="tsTxt"><b>Auto-clean old completed</b><span>Delete completed todos older than 7 days</span></div><input type="checkbox" id="tsAutoClean"></label>
     </div>
-
     <div class="tsGroup">
       <div class="tsLabel">Data</div>
       <button class="tsBtn" id="tsExport">⬇&nbsp;&nbsp;Export todos (.json)</button>
       <button class="tsBtn" id="tsResetPos">↺&nbsp;&nbsp;Reset widget position</button>
     </div>
-
     <div class="tsGroup danger">
       <div class="tsLabel">Danger zone</div>
       <button class="tsBtn warn" id="tsClearToday">Clear today's todos</button>
       <button class="tsBtn warn" id="tsClearAll">Delete ALL todo data</button>
     </div>
+  </div>
+</div>
+
+<!-- NEW: Chart modal -->
+<div id="chartModal" class="chartModal" hidden role="dialog" aria-modal="true" aria-label="Chart">
+  <div class="chartPanel">
+    <div class="chartHead">
+      <b id="chartTitle">Chart</b>
+      <div class="chartModes">
+        <button id="chartBar" class="on">Bar</button>
+        <button id="chartLine">Line</button>
+      </div>
+      <button class="closeX" id="chartClose" aria-label="Close chart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="chartLegend" class="chartLegend"></div>
+    <div id="chartWrap"><canvas id="chartCanvas"></canvas></div>
   </div>
 </div>
 

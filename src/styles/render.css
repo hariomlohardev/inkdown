@@ -1,0 +1,71 @@
+/* ---- Callouts / GitHub alerts ---- */
+.callout { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; background: var(--surface); font-style: normal; }
+.callout-label { display: flex; align-items: center; gap: 7px; font-family: var(--disp); font-weight: 700; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 6px; }
+.callout-ico { font-size: 14px; }
+.callout p { margin: 0; }
+.callout p + p { margin-top: 6px; }
+.callout-warning, .callout-caution { border-left-color: #e0a000; }
+.callout-warning .callout-label, .callout-caution .callout-label { color: #a87800; }
+
+/* ---- Footnotes ---- */
+.markdown-body { scroll-behavior: smooth; }
+.fn-ref a { color: var(--accent-ink); text-decoration: none; font-weight: 700; padding: 0 2px; }
+.fn-ref a:hover { text-decoration: underline; }
+.footnotes { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 16px; font-size: .92em; color: var(--ink2); }
+.footnotes ol { padding-left: 20px; }
+.footnotes li { margin: 6px 0; }
+.fn-back { color: var(--accent-ink); text-decoration: none; margin-left: 4px; }
+.fn-back:hover { text-decoration: underline; }
+
+/* ---- Figures / captions / sizing ---- */
+.markdown-body figure { margin: 1.2em 0; text-align: center; }
+.markdown-body figure img { display: inline-block; }
+.markdown-body figcaption { margin-top: 8px; font-size: .88em; color: var(--muted); font-style: italic; }
+
+/* ---- Code line numbers + highlight marks ---- */
+.markdown-body pre code.lined { display: block; }
+.cl { display: flex; align-items: stretch; }
+.cl .ln { display: none; flex: 0 0 auto; min-width: 2em; text-align: right; padding-right: 1em; color: #62726a; user-select: none; }
+code.numbered .cl .ln { display: block; }
+.cl .lc { flex: 1; white-space: pre; }
+.cl.mark { background: rgba(255,46,136,.12); box-shadow: inset 2px 0 0 var(--pink); }
+
+/* ---- PlantUML ---- */
+.puml { text-align: center; margin: 1.2em 0; }
+.puml img { max-width: 100%; background: #fff; border-radius: 8px; padding: 6px; }
+
+/* ---- Math errors + equation numbers ---- */
+.math-error { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-soft); border: 1px dashed var(--accent); border-radius: 6px; padding: 2px 8px; }
+.math-error code { font-family: var(--mono); font-size: .9em; color: var(--accent-ink); }
+.math-badge { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #fff; background: var(--accent); border-radius: 4px; padding: 2px 6px; }
+.markdown-body { counter-reset: eq; }
+.katex-display { counter-increment: eq; position: relative; }
+.katex-display::after { content: "(" counter(eq) ")"; position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* ---- Chart from table ---- */
+.tableWrap { position: relative; }
+.chartBtn { position: absolute; top: 8px; right: 8px; z-index: 2; font-family: var(--mono); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--surface); color: var(--ink2); transition: .15s; }
+.chartBtn:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+
+.chartModal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(6px); }
+.chartModal[hidden] { display: none; }
+.chartPanel { width: min(720px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; animation: twIn .25s cubic-bezier(.2,.9,.3,1.1) both; }
+.chartHead { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.chartHead b { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; flex: 1; }
+.chartModes { display: flex; gap: 4px; background: var(--surface2); border: 1px solid var(--line); border-radius: 9px; padding: 3px; }
+.chartModes button { font-family: var(--mono); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 6px; color: var(--muted); }
+.chartModes button.on { background: var(--accent); color: #16000a; }
+.chartLegend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: var(--ink2); }
+.chartLegend span { display: inline-flex; align-items: center; gap: 6px; }
+.chartLegend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+#chartWrap { width: 100%; overflow-x: auto; }
+
+/* ---- Reading-settings toggle row ---- */
+.rsToggle { display: flex; align-items: center; gap: 10px; padding: 8px 4px; font-size: 13px; font-weight: 600; color: var(--ink2); cursor: pointer; }
+.rsToggle input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+/* ---- Export theme radios ---- */
+.menuLabel { font-family: var(--mono); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding: 6px 12px 4px; }
+.exportThemes { display: flex; flex-direction: column; gap: 4px; padding: 2px 12px 6px; }
+.exportThemes label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink2); cursor: pointer; padding: 4px 0; }
+.exportThemes input { accent-color: var(--accent); }
