@@ -1,20 +1,304 @@
-/* ===== Home settings modal ===== */
-.settingsBox { width: min(430px, 100%); }
-
-.setRow { display: flex; align-items: center; gap: 12px; padding: 4px 4px 10px; }
-.setTxt b { font-size: 13.5px; display: block; letter-spacing: -0.01em; }
-.setTxt span { font-size: 11.5px; color: var(--muted); }
-
-.themeSeg {
-  display: flex; gap: 6px;
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: 10px; padding: 4px;
+/* ========================================================================
+   SETTINGS MODAL
+   ======================================================================== */
+.settingsModal {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  padding: 20px;
 }
-.themeOption {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-  font-size: 12.5px; font-weight: 600; padding: 9px 6px;
-  border-radius: 7px; color: var(--muted); text-align: center;
-  transition: background .15s, color .15s;
+
+.settingsModal[hidden] {
+  display: none;
 }
-.themeOption:hover { background: var(--surface2); color: var(--ink2); }
-.themeOption.on { background: var(--accent); color: #16000a; font-weight: 700; }
+
+.settingsBox {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: 85vh;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  animation: settingsIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+
+@keyframes settingsIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+.settingsClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.settingsClose:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.settingsClose svg {
+  width: 18px;
+  height: 18px;
+}
+
+.settingsBox h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  padding-right: 40px;
+}
+
+.settingsScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.settingsSection {
+  margin-bottom: 28px;
+}
+
+.settingsSection:last-child {
+  margin-bottom: 0;
+}
+
+.settingsSection h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px 0;
+}
+
+.settingsGroup {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.settingsRow:hover {
+  background: var(--surface);
+}
+
+.settingsText {
+  flex: 1;
+  min-width: 0;
+}
+
+.settingsText b {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.settingsText span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.settingsSelect {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.settingsSelect:focus {
+  border-color: var(--accent);
+}
+
+/* Toggle switch */
+.settingsToggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.settingsToggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  inset: 0;
+  background: var(--line2);
+  border-radius: 24px;
+  transition: background 0.2s;
+}
+
+.toggleSlider:before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.settingsToggle input:checked + .toggleSlider {
+  background: var(--accent);
+}
+
+.settingsToggle input:checked + .toggleSlider:before {
+  transform: translateX(20px);
+}
+
+/* Buttons */
+.settingsBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.settingsBtn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.settingsBtn.danger {
+  color: #c0392b;
+}
+
+.settingsBtn.danger:hover {
+  background: rgba(192, 57, 43, 0.1);
+  border-color: #c0392b;
+}
+
+.settingsBtn.warn {
+  color: #e0a000;
+}
+
+.settingsBtn.warn:hover {
+  background: rgba(224, 160, 0, 0.1);
+  border-color: #e0a000;
+}
+
+.settingsBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Keyboard shortcuts */
+.shortcutsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shortcutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.shortcutRow:hover {
+  background: var(--surface);
+}
+
+.shortcutKey {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--ink2);
+}
+
+.shortcutDesc {
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .settingsBox {
+    padding: 20px 16px;
+  }
+  
+  .settingsBox h2 {
+    font-size: 20px;
+  }
+  
+  .settingsRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .settingsSelect {
+    width: 100%;
+  }
+  
+  .shortcutRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}

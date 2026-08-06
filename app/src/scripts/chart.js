@@ -10,11 +10,29 @@ const NEUTRALS = ['#6b7280', '#a3a3a3', '#c4c7c5', '#52525b'];
 export function initChart() {
   modal = $('#chartModal');
   canvas = $('#chartCanvas');
+  
+  // FIX: Defensive check so it doesn't crash if the HTML is missing
+  if (!canvas) {
+    console.warn('[Inkdown] Chart canvas (#chartCanvas) not found. Charts disabled.');
+    return;
+  }
+  
   ctx = canvas.getContext('2d');
-  $('#chartClose').onclick = closeChart;
-  modal.addEventListener('click', e => { if (e.target === modal) closeChart(); });
-  $('#chartBar').onclick = () => { mode = 'bar'; setMode(); draw(); };
-  $('#chartLine').onclick = () => { mode = 'line'; setMode(); draw(); };
+  
+  const closeBtn = $('#chartClose');
+  if (closeBtn) closeBtn.onclick = closeChart;
+  
+  if (modal) {
+    modal.addEventListener('click', e => { 
+      if (e.target === modal) closeChart(); 
+    });
+  }
+  
+  const barBtn = $('#chartBar');
+  if (barBtn) barBtn.onclick = () => { mode = 'bar'; setMode(); draw(); };
+  
+  const lineBtn = $('#chartLine');
+  if (lineBtn) lineBtn.onclick = () => { mode = 'line'; setMode(); draw(); };
 }
 
 function setMode() {

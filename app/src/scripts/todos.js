@@ -10,6 +10,10 @@ let todoData = { days:{}, settings:{...DEFAULT_SETTINGS} };
 const CHECK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 const TRASH_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 const FILE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+const PIN_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>';
+
+const ICON_EMPTY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>';
+const ICON_DONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
 /* ---------- helpers ---------- */
 function todayKey(offset=0){ const d=new Date(); d.setDate(d.getDate()+offset); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -19,6 +23,25 @@ function endOfWeekKey(){ const d=new Date(); d.setDate(d.getDate()+(0-d.getDay()
 function isLaterThisWeek(k){ return k>todayKey() && k<=endOfWeekKey() && k!==todayKey(1); }
 function isFutureBeyondWeek(k){ return k>endOfWeekKey(); }
 function isPast(k){ return k<todayKey(); }
+
+function fmtDate(key){
+  const [y,m,d]=key.split('-').map(Number);
+  const dt=new Date(y,m-1,d);
+  const t=new Date();
+  const yest=new Date(t); yest.setDate(t.getDate()-1);
+  const yKey=yest.getFullYear()+'-'+String(yest.getMonth()+1).padStart(2,'0')+'-'+String(yest.getDate()).padStart(2,'0');
+  const nice=dt.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+  if(key===todayKey()) return 'Today · '+nice;
+  if(key===yKey) return 'Yesterday · '+nice;
+  return nice;
+}
+function fmtDayLabel(key){
+  if(key===todayKey()) return 'Today';
+  if(key===todayKey(-1)) return 'Yesterday';
+  const [y,m,d]=key.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+}
+function fmtDayShort(key){ const [y,m,d]=key.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
 
 function loadData(){ try{ const raw=localStorage.getItem(TODO_KEY); if(raw){ const p=JSON.parse(raw); if(p&&p.days) todoData={days:p.days,settings:Object.assign({},DEFAULT_SETTINGS,p.settings||{})}; } }catch(e){} }
 function saveData(){ try{ localStorage.setItem(TODO_KEY, JSON.stringify(todoData)); }catch(e){} }
@@ -46,13 +69,7 @@ function autoCleanup(){
   }
   if(changed) saveData();
 }
-function fmtDayLabel(key){
-  if(key===todayKey()) return 'Today';
-  if(key===todayKey(-1)) return 'Yesterday';
-  const [y,m,d]=key.split('-').map(Number);
-  return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
-}
-function fmtDayShort(key){ const [y,m,d]=key.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+
 function sortItems(arr){ return arr.slice().sort((a,b)=>{ if(a.pinned!==b.pinned) return (b.pinned?1:0)-(a.pinned?1:0); if(a.done!==b.done) return (a.done?1:0)-(b.done?1:0); return (a.order||0)-(b.order||0); }); }
 function computeStreak(){
   let streak=0, offset=0;
@@ -315,42 +332,163 @@ function initSettings(){
 }
 
 /* =========================================================
-   FLOATING TODO WIDGET  (Ctrl+Alt+D)
+   FLOATING TODO WIDGET (Ctrl+Alt+W) — Notion-style
    ========================================================= */
-function toggleTodoWidget(){
-  const w=$('#todoWidget');
-  if(!w){ toast('Widget not found — check index.html','warn'); return; }
-  w.hidden=!w.hidden;
-  if(!w.hidden) renderWidget();
+function secLabel(txt) {
+  const d = document.createElement('div');
+  d.className = 'twSec';
+  d.textContent = txt;
+  return d;
 }
-window.toggleTodoWidget=toggleTodoWidget;
 
-function renderWidget(){
-  const list=$('#twList'); if(!list) return;
-  const day=ensureToday();
-  const total=day.items.length, done=day.items.filter(i=>i.done).length;
-  const fill=$('#twProgFill'); if(fill) fill.style.width=(total?Math.round(done/total*100):0)+'%';
-  const dt=$('#twDate'); if(dt) dt.textContent='Today';
-  const sub=$('#twSub'); if(sub) sub.textContent= total===0? 'No to-dos yet' : done+' of '+total+' done';
-  list.innerHTML='';
-  let items=sortItems(day.items);
-  if(todoData.settings.hideDone) items=items.filter(i=>!i.done);
-  if(!items.length){ list.innerHTML='<div class="twEmpty">Nothing for today 🎉</div>'; return; }
-  items.forEach(it=>list.appendChild(widgetItemEl(it)));
+function widgetItemRow(item) {
+  const row = document.createElement('div');
+  row.className = 'todoRow' + (item.done ? ' done' : '');
+
+  const check = document.createElement('button');
+  check.className = 'trCheck';
+  check.title = item.done ? 'Mark as not done' : 'Mark as done';
+  check.innerHTML = CHECK_SVG;
+  check.onclick = (e) => { e.stopPropagation(); toggleTodo(todayKey(), item.id); };
+
+  const text = document.createElement('span');
+  text.className = 'trText';
+  text.textContent = item.text;
+
+  const pin = document.createElement('button');
+  pin.className = 'trPin' + (item.pinned ? ' pinned' : '');
+  pin.title = item.pinned ? 'Unpin' : 'Pin — carries over to the next day';
+  pin.innerHTML = PIN_SVG;
+  pin.onclick = (e) => { e.stopPropagation(); togglePin(todayKey(), item.id); };
+
+  const del = document.createElement('button');
+  del.className = 'trDel';
+  del.title = 'Delete';
+  del.innerHTML = TRASH_SVG;
+  del.onclick = (e) => { e.stopPropagation(); deleteTodo(todayKey(), item.id); };
+
+  row.append(check, text, pin, del);
+  return row;
 }
-function widgetItemEl(item){
-  const el=document.createElement('div');
-  el.className='twItem'+(item.done?' done':'')+' prio-'+(item.priority||0);
-  const check=document.createElement('button'); check.className='todoCheck'; check.innerHTML=CHECK_SVG;
-  check.title=item.done?'Mark as not done':'Mark as done';
-  check.onclick=()=>toggleTodo(todayKey(),item.id);
-  const prio=document.createElement('button'); prio.className='prio p'+(item.priority||0);
-  prio.title='Priority'; prio.onclick=(e)=>{e.stopPropagation(); cyclePriority(todayKey(),item.id);};
-  const text=document.createElement('span'); text.className='twText'; text.textContent=item.text;
-  const del=document.createElement('button'); del.className='twDel'; del.innerHTML=TRASH_SVG;
-  del.title='Delete'; del.onclick=(e)=>{e.stopPropagation(); deleteTodo(todayKey(),item.id);};
-  el.append(check,prio,text,del);
-  return el;
+
+function renderWidget() {
+  const widget = $('#todoWidget');
+  if (!widget || widget.hidden) return;
+
+  ensureToday();
+  const data = todoData;
+  const key = todayKey();
+  const day = data.days[key] || { items: [] };
+  const hideDone = data.settings.hideDone === true;
+
+  const total = day.items.length;
+  const done = day.items.filter(i => i.done).length;
+
+  const dateEl = $('#twDate');
+  if (dateEl) dateEl.textContent = fmtDate(key);
+  
+  const subEl = $('#twSub');
+  if (subEl) {
+    subEl.textContent =
+      total === 0 ? 'No to-dos yet'
+      : done === total ? 'All done ✨'
+      : done + ' of ' + total + ' done';
+  }
+
+  const fillEl = $('#twProgFill');
+  if (fillEl) fillEl.style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+
+  const list = $('#twList');
+  if (!list) return;
+  list.innerHTML = '';
+  
+  let items = sortItems(day.items);
+  if (hideDone) items = items.filter(i => !i.done);
+
+  if (!items.length) {
+    const allDone = total > 0;
+    list.innerHTML =
+      '<div class="twEmpty">' +
+        '<div class="twEmptyIcon">' + (allDone ? ICON_DONE : ICON_EMPTY) + '</div>' +
+        '<div class="twEmptyText">' + (allDone ? 'Everything is done' : 'No to-dos for today') + '</div>' +
+        '<div class="twEmptyHint">' + (allDone ? 'Nice work — enjoy your day' : 'Add one below to get started') + '</div>' +
+      '</div>';
+    return;
+  }
+
+  const pinned = items.filter(i => i.pinned);
+  const rest = items.filter(i => !i.pinned);
+  if (pinned.length) {
+    list.appendChild(secLabel('Pinned'));
+    pinned.forEach(i => list.appendChild(widgetItemRow(i)));
+  }
+  if (rest.length) {
+    if (pinned.length) list.appendChild(secLabel('To-do'));
+    rest.forEach(i => list.appendChild(widgetItemRow(i)));
+  }
+}
+
+function toggleTodoWidget() {
+  const w = $('#todoWidget');
+  if (!w) {
+    console.warn('[Inkdown] Widget not found');
+    return;
+  }
+  if (w.hidden) {
+    ensureToday();
+    w.hidden = false;
+    renderWidget();
+    setTimeout(() => $('#twInput')?.focus(), 60);
+  } else {
+    w.hidden = true;
+  }
+}
+
+window.toggleTodoWidget = toggleTodoWidget;
+
+function initDrag() {
+  const w = $('#todoWidget');
+  const head = $('#twHead');
+  if (!w || !head) return;
+  
+  let drag = null;
+
+  head.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    drag = { dx: e.clientX - w.offsetLeft, dy: e.clientY - w.offsetTop };
+    try { head.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  head.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const x = Math.min(Math.max(8, e.clientX - drag.dx), Math.max(8, innerWidth - w.offsetWidth - 8));
+    const y = Math.min(Math.max(8, e.clientY - drag.dy), Math.max(8, innerHeight - 52));
+    w.style.left = x + 'px';
+    w.style.top = y + 'px';
+  });
+  const end = () => {
+    if (!drag) return;
+    drag = null;
+    try {
+      localStorage.setItem('inkdown:todoPos', JSON.stringify({ left: w.style.left, top: w.style.top }));
+    } catch (e) {}
+  };
+  head.addEventListener('pointerup', end);
+  head.addEventListener('pointercancel', end);
+}
+
+function restorePos() {
+  const w = $('#todoWidget');
+  if (!w) return;
+  try {
+    const p = JSON.parse(localStorage.getItem('inkdown:todoPos'));
+    if (p && p.left && p.top) {
+      w.style.left = p.left;
+      w.style.top = p.top;
+      return;
+    }
+  } catch (e) {}
+  w.style.left = Math.max(8, innerWidth - 354) + 'px';
+  w.style.top = '76px';
 }
 
 /* ---------- open / widget nav ---------- */
@@ -360,41 +498,49 @@ export function showTodos(){ openTodosDefault(); }
 
 /* ---------- init ---------- */
 export function initTodos(){
-  loadData(); autoCleanup(); ensureToday();
+  try {
+    loadData(); autoCleanup(); ensureToday();
 
-  const navAll=$('#todoNavAll'); if(navAll) navAll.onclick=()=>showLibrary();
-  const settingsBtn=$('#todoSettingsBtn'); if(settingsBtn) settingsBtn.onclick=openTodoSettings;
-  const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleTodoWidget;
+    const navAll=$('#todoNavAll'); if(navAll) navAll.onclick=()=>showLibrary();
+    const settingsBtn=$('#todoSettingsBtn'); if(settingsBtn) settingsBtn.onclick=openTodoSettings;
+    const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleTodoWidget;
+    
+    const homeWidgetBtn = $('#homeWidgetBtn'); if(homeWidgetBtn) homeWidgetBtn.onclick = toggleTodoWidget;
+    const readerWidgetBtn = $('#readerWidgetBtn'); if(readerWidgetBtn) readerWidgetBtn.onclick = toggleTodoWidget;
 
-  const addForm=$('#thAddForm'), addInput=$('#thInput'), addDue=$('#thDue');
-  if(addForm) addForm.addEventListener('submit',e=>{ e.preventDefault();
-    addTodo(addInput?addInput.value:'', addDue?addDue.value:todayKey(), 0);
-    if(addInput) addInput.value=''; if(addInput) addInput.focus(); });
+    const addForm=$('#thAddForm'), addInput=$('#thInput'), addDue=$('#thDue');
+    if(addForm) addForm.addEventListener('submit',e=>{ e.preventDefault();
+      addTodo(addInput?addInput.value:'', addDue?addDue.value:todayKey(), 0);
+      if(addInput) addInput.value=''; if(addInput) addInput.focus(); });
 
-  const qaForm=$('#qaForm'), qaInput=$('#qaInput'), qaClose=$('#qaClose');
-  if(qaForm) qaForm.addEventListener('submit',e=>{e.preventDefault(); submitQuickAdd();});
-  if(qaInput) qaInput.addEventListener('keydown',e=>{ if(e.key==='Escape') hideQuickAdd(); });
-  if(qaClose) qaClose.onclick=hideQuickAdd;
+    const qaForm=$('#qaForm'), qaInput=$('#qaInput'), qaClose=$('#qaClose');
+    if(qaForm) qaForm.addEventListener('submit',e=>{e.preventDefault(); submitQuickAdd();});
+    if(qaInput) qaInput.addEventListener('keydown',e=>{ if(e.key==='Escape') hideQuickAdd(); });
+    if(qaClose) qaClose.onclick=hideQuickAdd;
 
-  // global hotkeys: Ctrl+Alt+T = quick add, Ctrl+Alt+D = widget
-  document.addEventListener('keydown',e=>{
-    if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='t'||e.key==='T')){ e.preventDefault(); showQuickAdd(); }
-    if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='d'||e.key==='D')){ e.preventDefault(); toggleTodoWidget(); }
-  });
+    document.addEventListener('keydown',e=>{
+      if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='t'||e.key==='T')){ e.preventDefault(); showQuickAdd(); }
+      if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='w'||e.key==='W')){ e.preventDefault(); toggleTodoWidget(); }
+    });
 
-  // widget buttons
-  const twClose=$('#twClose'); if(twClose) twClose.onclick=()=>toggleTodoWidget();
-  const twSettings=$('#twSettings'); if(twSettings) twSettings.onclick=openTodoSettings;
-  const twAddForm=$('#twAddForm'), twInput=$('#twInput');
-  if(twAddForm) twAddForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    addTodo(twInput?twInput.value:'', todayKey(), 0);
-    if(twInput) twInput.value='';
-  });
+    const twClose=$('#twClose'); if(twClose) twClose.onclick=()=>toggleTodoWidget();
+    const twSettings=$('#twSettings'); if(twSettings) twSettings.onclick=openTodoSettings;
+    const twAddForm=$('#twAddForm'), twInput=$('#twInput');
+    if(twAddForm) twAddForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      addTodo(twInput?twInput.value:'', todayKey(), 0);
+      if(twInput) twInput.value='';
+    });
 
-  document.addEventListener('todos:open',()=>openTodosDefault());
-  document.addEventListener('todos:shown',()=>renderTodos());
+    document.addEventListener('todos:open',()=>openTodosDefault());
+    document.addEventListener('todos:shown',()=>renderTodos());
 
-  initSettings();
-  renderTodos();
+    initSettings();
+    initDrag();
+    restorePos();
+    renderTodos();
+    console.log('[Inkdown] Todos initialized successfully.');
+  } catch (err) {
+    console.error('[Inkdown] FATAL: Todos failed to initialize:', err);
+  }
 }

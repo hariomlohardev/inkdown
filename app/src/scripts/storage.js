@@ -2,6 +2,21 @@
 import { state } from './state.js';
 
 const LIB_KEY = 'inkdown:library';
+const FOLDERS_KEY = 'inkdown:folders';
+const VER_KEY = 'inkdown:versions';
+
+// Export all storage keys for use in other modules (settings, backup, etc.)
+export const STORAGE_KEYS = {
+  LIBRARY: LIB_KEY,
+  FOLDERS: FOLDERS_KEY,
+  VERSIONS: VER_KEY,
+  TODOS: 'inkdown:todos',
+  SETTINGS: 'inkdown:settings',
+  DOC: 'inkdown:doc',  // legacy
+  THEME: 'inkdown:theme',
+  READ: 'inkdown:read',
+  TODO_POS: 'inkdown:todoPos'
+};
 
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -24,16 +39,16 @@ export function saveLibrary(files) {
   }
 }
 
-const FOLDERS_KEY = 'inkdown:folders';
-
 export function getFolders() {
   try { return JSON.parse(localStorage.getItem(FOLDERS_KEY)) || []; }
   catch (e) { return []; }
 }
+
 export function saveFolders(folders) {
   try { localStorage.setItem(FOLDERS_KEY, JSON.stringify(folders)); return true; }
   catch (e) { return false; }
 }
+
 export function createFolder(name) {
   const t = (name || '').trim();
   if (!t) return null;
@@ -41,6 +56,7 @@ export function createFolder(name) {
   if (!folders.includes(t)) { folders.push(t); saveFolders(folders); }
   return t;
 }
+
 export function renameFolder(oldName, newName) {
   const t = (newName || '').trim();
   if (!t) return;
@@ -53,12 +69,14 @@ export function renameFolder(oldName, newName) {
   files.forEach(f => { if ((f.folder || '') === oldName) f.folder = t; });
   saveLibrary(files);
 }
+
 export function deleteFolder(name) {
   saveFolders(getFolders().filter(f => f !== name));
   const files = getLibrary();
   files.forEach(f => { if ((f.folder || '') === name) f.folder = ''; });  // files go to root, not deleted
   saveLibrary(files);
 }
+
 export function setFileFolder(fileId, folderName) {
   const files = getLibrary();
   const f = files.find(x => x.id === fileId);
@@ -116,7 +134,7 @@ export function uniqueName(base, files) {
 /** Import a document saved by the OLD single-file version */
 export function migrateLegacy() {
   try {
-    const legacy = localStorage.getItem('inkdown:doc');
+    const legacy = localStorage.getItem(STORAGE_KEYS.DOC);
     if (!legacy) return;
     if (getLibrary().length === 0) {
       const rec = JSON.parse(legacy);
@@ -129,13 +147,11 @@ export function migrateLegacy() {
         });
       }
     }
-    localStorage.removeItem('inkdown:doc');
+    localStorage.removeItem(STORAGE_KEYS.DOC);
   } catch (e) {}
 }
 
 /* ---- versions (keyed per file id now) ---- */
-const VER_KEY = 'inkdown:versions';
-
 export function pushVersion() {
   try {
     const key = state.fileId || state.name;

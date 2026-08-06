@@ -15,6 +15,7 @@ import { initChart } from './chart.js';
 import { initAssist } from './assist.js';
 import { initPWA } from './pwa.js';
 import { restored } from './persist.js';
+import { initSettings } from './settings.js';
 
 // Global safety net: one bad error should never white-screen the whole app.
 window.addEventListener('error', (e) => {
@@ -92,6 +93,7 @@ async function openLaunchFiles() {
   initTheme(); initState(); migrateLegacy();
   initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
   initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
+  initSettings();
   setupKeyboard();
 
   const shared = openSharedFromHash();
