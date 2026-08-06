@@ -159,27 +159,6 @@ function renderStats(){
   set('#statWords', words >= 1000 ? (words/1000).toFixed(1)+'k' : String(words));
   set('#statRecent', last ? relTime(last) : '—');
 }
-function renderRecent(){
-  const wrap = $('#recentWrap');
-  const row = $('#recentRow');
-  if (!wrap || !row) return;
-  const files = getLibrary()
-    .filter(f => (f.updatedAt || f.createdAt))
-    .sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0))
-    .slice(0,6);
-  if (!files.length){ wrap.style.display = 'none'; return; }
-  wrap.style.display = '';
-  row.innerHTML = '';
-  files.forEach(f => {
-    const chip = document.createElement('button');
-    chip.className = 'recentChip';
-    chip.title = f.name;
-    chip.innerHTML = '<span class="rIco">' + escHtml(iconLetters(f.name)) + '</span><span class="rTxt"><b></b><span>' + relTime(f.updatedAt||f.createdAt) + '</span></span>';
-    chip.querySelector('b').textContent = f.name;
-    chip.onclick = () => openFile(f);
-    row.appendChild(chip);
-  });
-}
 
 /* ---------- cards ---------- */
 function fileCard(f, showFolder){
@@ -301,7 +280,6 @@ export function renderLibrary(){
   renderSidebar();
   updateGreeting();
   renderStats();
-  renderRecent();
   grid.innerHTML = '';
 
   const q = searchQuery.trim().toLowerCase();
