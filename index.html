@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Inkdown — A beautiful README viewer and editor with minimal design">
+<meta name="description" content="Inkdown — A beautiful README viewer, editor and daily todo app">
 <title>Inkdown — Library</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M20 16v22l12-10 12 10V16' stroke='%23ffffff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M32 40v12m0 0l-6-6m6 6l6-6' stroke='%23ff2e88' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,6 +51,32 @@
       <input id="libSearch" type="text" placeholder="Search files…" autocomplete="off" spellcheck="false" aria-label="Search files">
       <span id="libStats" aria-live="polite"></span>
     </div>
+
+    <!-- ===== TODOS SECTION (today + previous days) ===== -->
+    <section id="todoHome" class="todoHome" aria-label="Todos">
+      <div class="thHead">
+        <h2>📌 Todos</h2>
+        <div class="thProg">
+          <div class="thBar"><i id="thBarFill"></i></div>
+          <span id="thStats">0/0 today</span>
+        </div>
+        <button class="libAction" id="thOpenWidget" title="Floating widget — Ctrl+Alt+D">Open widget</button>
+      </div>
+      <div class="thGrid">
+        <div class="thToday">
+          <div class="thLabel">Today</div>
+          <div id="thTodayList" class="thList"></div>
+          <form class="twAdd" id="thAddForm">
+            <input id="thInput" placeholder="Add a todo for today…" autocomplete="off" maxlength="200">
+            <button type="submit" title="Add">+</button>
+          </form>
+        </div>
+        <div class="thPast">
+          <div class="thLabel">Previous days</div>
+          <div id="thPastList"></div>
+        </div>
+      </div>
+    </section>
 
     <div id="libGrid" class="libGrid" role="list"></div>
 
@@ -158,7 +184,7 @@
           <hr>
           <button data-act="html" role="menuitem">&lt;/&gt;&nbsp;&nbsp;Export as HTML</button>
           <button data-act="print" role="menuitem">⎙&nbsp;&nbsp;Print / PDF</button>
-          <div class="hint">Ctrl+S save · Ctrl+E edit · Ctrl+K search<br>F focus · Ctrl+\ contents · Ctrl+[ jump back</div>
+          <div class="hint">Ctrl+S save · Ctrl+E edit · Ctrl+K search<br>Ctrl+Alt+D todos · F focus · Ctrl+\ contents</div>
         </div>
       </div>
       <button class="btn" id="btnTheme" title="Toggle theme" aria-label="Toggle light/dark theme">
@@ -285,6 +311,29 @@
 </div>
 <button id="hlBtn">🖍 Highlight</button>
 <div id="imgView"><img id="imgBig" alt=""><div id="imgHint">scroll to zoom · drag to pan · double-click to reset · click to close</div></div>
+
+<!-- ============ FLOATING TODO WIDGET (Ctrl+Alt+D) ============ -->
+<section id="todoWidget" class="todoWidget" hidden aria-label="Todo widget">
+  <div class="twHead" id="twHead">
+    <span class="twDot"></span>
+    <b id="twDate">Today</b>
+    <span class="twCount" id="twCount">0/0</span>
+    <button class="twPinSet" id="twSettings" title="Todo settings">⚙</button>
+    <button class="twClose" id="twClose" title="Close (Ctrl+Alt+D)">✕</button>
+  </div>
+  <div class="twSettings" id="twSettingsPanel" hidden>
+    <label class="twToggleRow">
+      <input type="checkbox" id="twRollover" checked>
+      <span>Carry 📌 pinned todos to the next day</span>
+    </label>
+    <p class="twHint">Every new morning, pinned todos reappear automatically (unchecked).</p>
+  </div>
+  <div class="twBody" id="twList"></div>
+  <form class="twAdd" id="twAddForm">
+    <input id="twInput" placeholder="Add a todo for today…" autocomplete="off" maxlength="200">
+    <button type="submit" title="Add">+</button>
+  </form>
+</section>
 
 <div id="overlay">
   <div class="panel">

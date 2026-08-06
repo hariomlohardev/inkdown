@@ -10,11 +10,12 @@ import { initHighlight } from './highlight.js';
 import { initViewer } from './viewer.js';
 import { initQuality } from './quality.js';
 import { initLibrary, showLibrary } from './library.js';
+import { initTodos } from './todos.js';   // ← NEW
 
 (async function boot() {
   initTheme();
   initState();
-  migrateLegacy();     // bring over any old single-file save
+  migrateLegacy();
 
   initUI();
   initTOC();
@@ -25,9 +26,10 @@ import { initLibrary, showLibrary } from './library.js';
   initViewer();
   initQuality();
   initLibrary();
+  initTodos();          // ← NEW: todo widget + home section
   setupKeyboard();
 
-  showLibrary();       // ← app boots into the Library home screen
+  showLibrary();
 
   if (!window.marked || !window.DOMPurify) {
     toast('CDN libraries failed — rendering is limited', 'warn');

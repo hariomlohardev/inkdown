@@ -1,20 +1,20 @@
-# app.py
 import os
 import sys
 import webview
 
-def get_html_path():
-    """Locates the HTML file path even after bundling into an .exe"""
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, 'index.html')
-    return os.path.abspath('index.html')
+def get_asset_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 if __name__ == '__main__':
-    # Get the correct path of the HTML file
-    html_file = get_html_path()
+    # Get the correct path for your main HTML file
+    html_file = get_asset_path('index.html')
     
-    # Create a clean window without a browser interface
-    webview.create_window('My App Window', html_file, width=800, height=600)
-    
-    # Start the application window
+    # Open the window pointing to your HTML file
+    webview.create_window('Inkdown', html_file, width=1024, height=768)
     webview.start()

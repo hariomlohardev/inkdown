@@ -8,5 +8,6 @@
 @import './editor.css';
 @import './markdown.css';
 @import './overlay.css';
-@import './library.css';   /* ← NEW */
+@import './library.css';
+@import './todos.css';      /* ← NEW */
 @import './responsive.css';

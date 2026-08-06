@@ -1,0 +1,184 @@
+/* ========================================================================
+   TODO — home section, shared rows, floating widget
+   ======================================================================== */
+
+/* ---- Home section ---- */
+.todoHome {
+  margin-bottom: 26px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 22px;
+  animation: libIn 0.5s 0.03s cubic-bezier(.2,.8,.2,1) both;
+}
+.thHead {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.thHead h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+.thProg {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1; min-width: 180px; max-width: 340px;
+}
+.thBar { flex: 1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.thBar i {
+  display: block; height: 100%; width: 0%;
+  background: var(--accent); border-radius: 3px;
+  transition: width 0.3s;
+}
+#thStats { font-family: var(--mono); font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.thGrid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+.thLabel {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.24em;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.thLabel::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.thList {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 10px; max-height: 260px; overflow-y: auto;
+}
+
+/* ---- Todo row (shared by widget + home) ---- */
+.todoRow {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface2);
+  transition: border-color .15s, opacity .2s;
+}
+.todoRow:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.todoRow.done { opacity: 0.55; }
+.todoRow.done .trText { text-decoration: line-through; }
+.trCheck {
+  width: 18px; height: 18px; flex: 0 0 auto;
+  border: 2px solid var(--line2); border-radius: 6px;
+  display: grid; place-items: center;
+  background: var(--surface); transition: .15s;
+}
+.trCheck:hover { border-color: var(--accent); }
+.todoRow.done .trCheck { background: var(--accent); border-color: var(--accent); }
+.trCheck svg { width: 11px; height: 11px; opacity: 0; stroke: #16000a; }
+.todoRow.done .trCheck svg { opacity: 1; }
+.trText { flex: 1; font-size: 13.5px; font-weight: 600; overflow-wrap: anywhere; }
+.trPin, .trDel {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: grid; place-items: center; color: var(--muted);
+  transition: .15s; flex: 0 0 auto;
+}
+.trPin:hover { color: var(--accent-ink); background: var(--accent-soft); }
+.trPin.pinned { color: var(--accent); }
+.trPin.pinned svg { fill: color-mix(in srgb, var(--accent) 25%, transparent); }
+.trPin svg, .trDel svg { width: 13px; height: 13px; }
+.trDel:hover { color: var(--accent-hi); background: var(--accent-soft); }
+
+/* ---- Add form (shared) ---- */
+.twAdd { display: flex; gap: 8px; }
+.twAdd input {
+  flex: 1; font-family: var(--mono); font-size: 12.5px;
+  padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--bg2); color: var(--ink); outline: none;
+  transition: .2s; min-width: 0;
+}
+.twAdd input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--surface);
+}
+.twAdd button {
+  width: 38px; height: 38px; flex: 0 0 auto;
+  border-radius: 10px; background: var(--accent); color: #16000a;
+  font-size: 18px; font-weight: 800; transition: .15s;
+}
+.twAdd button:hover { background: var(--accent-hi); transform: translateY(-1px); }
+
+/* ---- Previous days ---- */
+.pastDay {
+  border: 1px solid var(--line); border-radius: 11px;
+  margin-bottom: 8px; overflow: hidden; background: var(--surface2);
+}
+.pdHead {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; cursor: pointer;
+  font-size: 12.5px; font-weight: 700;
+  transition: .15s; width: 100%; text-align: left;
+}
+.pdHead:hover { background: var(--accent-soft); }
+.pdDate { flex: 1; }
+.pdMeta { font-family: var(--mono); font-size: 10px; color: var(--muted); font-weight: 400; }
+.pdChev { color: var(--muted); font-size: 9px; transition: transform .2s; }
+.pastDay.open .pdChev { transform: rotate(90deg); }
+.pdItems {
+  display: none; padding: 8px 10px 10px;
+  flex-direction: column; gap: 6px;
+  border-top: 1px solid var(--line);
+}
+.pastDay.open .pdItems { display: flex; }
+.tdEmpty {
+  color: var(--muted); font-family: var(--mono);
+  font-size: 11px; text-align: center; padding: 18px 0;
+}
+
+/* ---- Floating widget ---- */
+.todoWidget {
+  position: fixed; z-index: 75;
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(480px, 80vh);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+  animation: twIn 0.25s cubic-bezier(.2,.9,.3,1.2) both;
+}
+.todoWidget[hidden] { display: none; }
+@keyframes twIn { from { opacity: 0; transform: translateY(10px) scale(.97); } }
+
+.twHead {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface2);
+  border-radius: 16px 16px 0 0;
+  cursor: grab; user-select: none; touch-action: none;
+}
+.twHead:active { cursor: grabbing; }
+.twDot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2.4s infinite; flex: 0 0 auto; }
+.twHead b { font-size: 13px; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.twCount {
+  margin-left: auto; font-family: var(--mono);
+  font-size: 10px; color: var(--muted); flex: 0 0 auto;
+}
+.twPinSet, .twClose {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: grid; place-items: center; color: var(--muted);
+  transition: .15s; flex: 0 0 auto; font-size: 13px;
+}
+.twPinSet:hover, .twClose:hover { color: var(--accent-ink); background: var(--accent-soft); }
+
+.twSettings {
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+  background: var(--bg2);
+}
+.twSettings[hidden] { display: none; }
+.twToggleRow {
+  display: flex; gap: 9px; align-items: center;
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.twToggleRow input { accent-color: var(--accent); width: 15px; height: 15px; }
+.twHint { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 8px; }
+
+.twBody {
+  flex: 1; overflow-y: auto; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.todoWidget .twAdd {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--line);
+}
+
+/* Hide widget in focus mode */
+body.focus #todoWidget { display: none !important; }
+
+@media (max-width: 760px) {
+  .thGrid { grid-template-columns: 1fr; }
+}
