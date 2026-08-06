@@ -400,11 +400,7 @@ export function initLibrary(){
   if (navAll) navAll.onclick = () => { currentFolder=''; if(search){search.value=''; searchQuery='';} renderLibrary(); };
 
   const navTodos = $('#navTodos');
-  if (navTodos) navTodos.onclick = () => {
-    document.body.dataset.view = 'todos';
-    document.title = 'Inkdown — Todos';
-    document.dispatchEvent(new CustomEvent('todos:shown'));
-  };
+  if (navTodos) navTodos.onclick = () => document.dispatchEvent(new CustomEvent('todos:open'));
   const legacyTodos = $('#libTodos');
   if (legacyTodos) legacyTodos.onclick = () => { if(navTodos) navTodos.onclick(); };
 
