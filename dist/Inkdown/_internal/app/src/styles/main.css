@@ -1,0 +1,20 @@
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './toc.css';
+@import './editor.css';
+@import './markdown.css';
+@import './overlay.css';
+@import './library.css';
+<<<<<<< HEAD:src/styles/main.css
+@import './todos.css';
+@import './render.css';   /* NEW — callouts, footnotes, code lines, figures, charts */
+@import './print.css';    /* NEW — print-perfect mode */
+@import './responsive.css';
+=======
+@import './todos.css';      /* ← NEW */
+@import './responsive.css';
+@import './assist.css';   /* NEW */
+@import './settings.css';
+>>>>>>> newfeatures:dist/Inkdown/_internal/app/src/styles/main.css

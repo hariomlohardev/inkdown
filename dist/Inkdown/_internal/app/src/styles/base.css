@@ -1,0 +1,29 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--disp);
+  color: var(--ink);
+  background: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
+  background-size: 24px 24px;
+  transition: background-color var(--t-slow), color var(--t-slow);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--pink); color: #16000a; }
+button { font-family: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 8px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); border: 3px solid transparent; background-clip: content-box; }
+
+#ambience { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.glow { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.9; }
+.g1 { width: 52vw; height: 52vw; top: -18vw; left: -14vw; background: radial-gradient(circle, var(--glow1), transparent 65%); animation: drift1 26s ease-in-out infinite alternate; }
+.g2 { width: 46vw; height: 46vw; bottom: -16vw; right: -12vw; background: radial-gradient(circle, var(--glow2), transparent 65%); animation: drift2 32s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(6vw, 4vh) scale(1.08); } }
+@keyframes drift2 { to { transform: translate(-5vw, -5vh) scale(1.1); } }
+
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; z-index: 70; transform-origin: 0 50%; transform: scaleX(0); background: var(--accent); transition: transform 0.12s linear; border-radius: 0 3px 3px 0; }

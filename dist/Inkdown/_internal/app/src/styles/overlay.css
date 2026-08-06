@@ -1,0 +1,24 @@
+#overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--t-normal); }
+#overlay.open { opacity: 1; pointer-events: auto; }
+.panel { width: min(620px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); padding: 34px; position: relative; transform: translateY(16px) scale(0.97); transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.15); }
+#overlay.open .panel { transform: none; }
+.closeX { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; color: var(--muted); transition: var(--t-normal); }
+.closeX:hover { background: var(--accent-soft); color: var(--accent-ink); transform: rotate(90deg); }
+.closeX svg { width: 15px; height: 15px; }
+.dropHero { border: 2px dashed var(--line2); border-radius: 16px; padding: 44px 26px; text-align: center; position: relative; transition: var(--t-normal); background: var(--surface2); }
+#overlay.dragging .dropHero { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.015); box-shadow: 0 0 0 6px var(--accent-soft); }
+.dropHero::before, .dropHero::after { content: ""; position: absolute; width: 22px; height: 22px; border: 3px solid var(--accent); opacity: 0; transition: var(--t-normal); }
+.dropHero::before { top: -2px; left: -2px; border-right: none; border-bottom: none; border-radius: 10px 0 0 0; }
+.dropHero::after { bottom: -2px; right: -2px; border-left: none; border-top: none; border-radius: 0 0 10px 0; }
+#overlay.dragging .dropHero::before, #overlay.dragging .dropHero::after { opacity: 1; }
+.dropArrow { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; background: var(--ink); display: grid; place-items: center; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35); animation: bob 2.2s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(7px); } }
+.dropArrow svg { width: 24px; height: 24px; }
+.dropHero h2 { font-size: clamp(1.4rem, 3.5vw, 1.9rem); font-weight: 800; letter-spacing: -0.03em; }
+.dropHero p { color: var(--muted); font-size: 14px; margin-top: 8px; font-family: var(--serif); }
+.openRow { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.pill { flex: 1; min-width: 130px; display: flex; align-items: center; justify-content: center; gap: 9px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; font-size: 13.5px; color: var(--ink2); transition: var(--t-normal); }
+.pill svg { width: 15px; height: 15px; color: var(--muted); transition: var(--t-normal); }
+.pill:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); color: var(--accent-ink); }
+.pill:hover svg { color: var(--accent); }
+.privacy { text-align: center; margin-top: 18px; font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
