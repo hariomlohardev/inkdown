@@ -183,7 +183,6 @@ build.bat
 ```python
 def hello():
     print("Hello, World!")
-```
 
 $$
 E = mc^2
@@ -388,7 +387,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 - **Issues:** [GitHub Issues](https://github.com/hariomlohardev/inkdown/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/hariomlohardev/inkdown/discussions)
-- **Email:** support@inkdown.app
 
 ---
 
