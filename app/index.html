@@ -574,6 +574,25 @@
   </div>
 </div>
 
+
+<!-- ============ COMMAND PALETTE (Ctrl+P) ============ -->
+<div id="cmdPalette" class="cmdPalette" hidden role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmdBox">
+    <div class="cmdInputWrap">
+      <svg class="cmdSearchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input type="text" id="cmdInput" placeholder="Type a command or search files…" autocomplete="off" spellcheck="false">
+      <kbd class="cmdEsc">Esc</kbd>
+    </div>
+    <div class="cmdResults" id="cmdResults"></div>
+    <div class="cmdFooter">
+      <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+      <span><kbd>Enter</kbd> Select</span>
+      <span><kbd>Esc</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+
 <!-- ============ READER / EDITOR ============ -->
 <div id="app">
   <header>

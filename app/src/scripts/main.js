@@ -18,6 +18,7 @@ import { restored } from './persist.js';
 import { initSettings } from './settings.js';
 import { initSlides } from './slides.js';
 import { initShortcuts } from './shortcuts.js';
+import { initPalette } from './palette.js';
 
 
 // Global safety net: one bad error should never white-screen the whole app.
@@ -99,6 +100,7 @@ async function openLaunchFiles() {
   initSettings();
   initSlides();
   initShortcuts();
+  initPalette();
   setupKeyboard();
 
   const shared = openSharedFromHash();

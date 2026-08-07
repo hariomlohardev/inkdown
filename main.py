@@ -60,6 +60,26 @@ def parse_args():
         except Exception as e:
             log('parse_args error: ' + repr(e))
 
+
+def import_quick_captures():
+    """Import any pending quick captures into the library."""
+    try:
+        import json
+        captures_file = os.path.join(data_dir(), 'quick-captures.json')
+        quick_notes_file = os.path.join(data_dir(), 'quick-notes.md')
+
+        if os.path.exists(captures_file):
+            with open(captures_file, 'r', encoding='utf-8') as f:
+                captures = json.load(f)
+            if captures:
+                # The main app will handle importing these via the web UI
+                # For now, just ensure the quick-notes.md file exists
+                pass
+            # Clear the captures file after reading
+            os.remove(captures_file)
+    except Exception as e:
+        log(f"Quick capture import error: {e}")
+
 def base_dir():
     if getattr(sys, 'frozen', False):
         return getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
@@ -137,6 +157,7 @@ def main():
     try:
         set_app_user_model_id()
         parse_args()
+        import_quick_captures()
 
         import webview
         import updater

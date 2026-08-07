@@ -484,3 +484,69 @@ export function showLibrary(){
   document.title = 'Inkdown — Library';
   renderLibrary();
 }
+
+
+
+
+
+
+
+
+
+// Command palette events
+document.addEventListener('library:new', () => {
+  const btn = $('#libNew');
+  if (btn) btn.click();
+});
+document.addEventListener('library:newfolder', () => {
+  const btn = $('#sideNewFolder');
+  if (btn) btn.click();
+});
+document.addEventListener('file:open', (e) => {
+  if (e.detail && e.detail.file) {
+    openFile(e.detail.file);
+  }
+});
+document.addEventListener('app:toggleedit', () => {
+  const btn = $('#btnEdit');
+  if (btn) btn.click();
+});
+document.addEventListener('app:focus', () => {
+  const btn = $('#btnFocus');
+  if (btn) btn.click();
+});
+document.addEventListener('app:search', () => {
+  const btn = $('#btnSearch');
+  if (btn) btn.click();
+});
+document.addEventListener('slides:show', () => {
+  // Import showSlides if available
+  document.dispatchEvent(new CustomEvent('slides:open'));
+});
+document.addEventListener('todo:quickadd', () => {
+  document.dispatchEvent(new CustomEvent('quickadd:open'));
+});
+document.addEventListener('export:pdf', () => {
+  const btn = document.querySelector('[data-act="pdf"]');
+  if (btn) btn.click();
+});
+document.addEventListener('export:html', () => {
+  const btn = document.querySelector('[data-act="html"]');
+  if (btn) btn.click();
+});
+document.addEventListener('export:png', () => {
+  const btn = document.querySelector('[data-act="png"]');
+  if (btn) btn.click();
+});
+document.addEventListener('export:share', () => {
+  const btn = document.querySelector('[data-act="share"]');
+  if (btn) btn.click();
+});
+document.addEventListener('settings:export', () => {
+  const btn = $('#settingsExportAll');
+  if (btn) btn.click();
+});
+document.addEventListener('shortcuts:open', () => {
+  const modal = $('#shortcutsModal');
+  if (modal) modal.hidden = false;
+});
