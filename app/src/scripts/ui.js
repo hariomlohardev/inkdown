@@ -25,6 +25,29 @@ export function toast(msg, type = 'ok') {
   }, 2300);
 }
 
+
+/** Restore saved scroll position after file is rendered */
+function restoreScrollPosition(file) {
+  if (!file || typeof file.scroll !== 'number' || file.scroll <= 0) return;
+  
+  const scrollArea = $('#scrollArea');
+  if (!scrollArea) return;
+
+  // Wait for render to settle, then scroll
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+      const targetScroll = Math.min(file.scroll, maxScroll);
+      
+      if (targetScroll > 0) {
+        scrollArea.scrollTop = targetScroll;
+        updateReadProgress();
+        updateMMThumb();
+      }
+    }, 50);
+  });
+}
+
 /* ================= RENDER PIPELINE ================= */
 export async function renderView(animate = false) {
   const target = state.editing ? state.previewEl : state.docEl;
@@ -50,7 +73,10 @@ const renderPreviewDebounced = debounce(() => renderView(false), 280);
 /* ================= FILE OPEN / BACK ================= */
 export function openFile(rec, opts = {}) {
   tabs.openTab(rec, opts);
+  // 🎯 Restore scroll position for the opened file
+  restoreScrollPosition(rec);
 }
+
 export function backToLibrary() {
   tabs.snapshotCurrent();
   if (state.dirty) saveDoc(false);
@@ -71,11 +97,25 @@ function activateUI(tab) {
   document.title = state.name + ' — Inkdown';
   if (state.dirty) { $('#saveDot').classList.add('dirty'); $('#saveTxt').textContent = 'Unsaved changes'; }
   else { $('#saveDot').classList.remove('dirty'); $('#saveTxt').textContent = 'Saved'; }
+  
   renderView(false).then(() => {
-    if (state.scroll) state.scrollArea.scrollTop = state.scroll;
+    // 🎯 Restore scroll position when switching to this tab
+    if (state.scroll && state.scroll > 0) {
+      const scrollArea = $('#scrollArea');
+      if (scrollArea) {
+        const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+        const targetScroll = Math.min(state.scroll, maxScroll);
+        if (targetScroll > 0) {
+          scrollArea.scrollTop = targetScroll;
+          updateReadProgress();
+          updateMMThumb();
+        }
+      }
+    }
     if (tab.editing) state.editorEl.focus();
   });
 }
+
 /* ================= SAVE / DIRTY ================= */
 export function markDirty() {
   state.dirty = true;
@@ -136,7 +176,7 @@ export async function loadDoc(md, name, animate = true, rec) {
   closeSearch();
   if (state.editing) state.editorEl.value = md;
   await renderView(animate);
-  if (state.scroll && !state.editing) state.scrollArea.scrollTop = state.scroll;
+  // 🎯 Scroll restoration happens via doc:rendered event listener now
 }
 
 export function setEditing(on) {
@@ -169,7 +209,34 @@ export function initUI() {
   initRename();
   initReading();
   initSaveExport();
+  initScrollMemory();
   tabs.init({ onActivate: activateUI, onEmpty: backToLibrary, onPlus: backToLibrary });
+}
+
+/** Wire up scroll position memory */
+function initScrollMemory() {
+  // Restore scroll position after every render (for re-renders)
+  document.addEventListener('doc:rendered', () => {
+    if (!state.fileId || state.editing) return;
+    if (!state.scroll || state.scroll <= 0) return;
+    
+    const scrollArea = $('#scrollArea');
+    if (!scrollArea) return;
+
+    setTimeout(() => {
+      const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+      const targetScroll = Math.min(state.scroll, maxScroll);
+      if (targetScroll > 0) {
+        // Only restore if we're significantly off (avoids fighting with user scroll)
+        const currentDiff = Math.abs(scrollArea.scrollTop - targetScroll);
+        if (currentDiff > 100) {
+          scrollArea.scrollTop = targetScroll;
+          updateReadProgress();
+          updateMMThumb();
+        }
+      }
+    }, 100);
+  });
 }
 
 function bindStaticButtons() {

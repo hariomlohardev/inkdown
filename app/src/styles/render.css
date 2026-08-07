@@ -1,0 +1,48 @@
+/* User highlights — inline styles handle colors, this is just the base */
+.hl {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+  position: relative;
+}
+
+.hl:hover {
+  filter: brightness(0.92);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.hl:active {
+  transform: scale(0.98);
+}
+
+/* Highlight floating button */
+#hlBtn {
+  position: fixed;
+  z-index: 400;
+  display: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.15s ease;
+}
+
+#hlBtn:hover {
+  background: var(--accent-hi);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 46, 136, 0.35);
+}
+
+/* Print: preserve highlights */
+@media print {
+  .hl {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
