@@ -149,6 +149,10 @@ function renderSlide(index) {
     html = addListStagger(html);
 
     frame.innerHTML = html;
+
+    // 🧮 Render math formulas AFTER HTML is in the DOM
+    renderMathIn(frame);
+
     frame.style.animation = 'none';
     void frame.offsetWidth; // force reflow
     frame.style.animation = '';
@@ -173,6 +177,28 @@ function renderMarkdown(md) {
     return html;
   } catch (e) {
     return escHtml(md);
+  }
+}
+
+/* ---------- Render KaTeX math inside a container ---------- */
+function renderMathIn(container) {
+  if (!container || !window.renderMathInElement) return;
+  try {
+    window.renderMathInElement(container, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false },
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\begin{equation}', right: '\\end{equation}', display: true }
+      ],
+      throwOnError: false,
+      errorColor: '#ff2e88',
+      strict: false,
+      trust: true
+    });
+  } catch (e) {
+    console.warn('[Slides] Math render error:', e);
   }
 }
 
@@ -202,11 +228,14 @@ function openFullSlide() {
 
   content.className = 'fullSlideContent slideContent';
   content.innerHTML = slideContent.innerHTML;
+
+  // 🧮 Re-render math in the full-screen copy
+  // (innerHTML copy doesn't bring rendered KaTeX spans, just raw $..$ text)
+  renderMathIn(content);
+
   overlay.classList.remove('closing');
   overlay.hidden = false;
   overlay.scrollTop = 0;
-  // Don't block body scroll — let widget remain interactive
-  // document.body.style.overflow = 'hidden'; // removed so widget stays accessible
 }
 
 function closeFullSlide() {

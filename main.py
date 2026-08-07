@@ -465,7 +465,7 @@ def main():
             width=1280, height=820,
             min_size=(820, 600),
             background_color='#0a0a0a',
-            text_select=False,
+            text_select=True,
             js_api=api,
         )
         _MAIN_WINDOW['ref'] = window
