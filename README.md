@@ -355,7 +355,7 @@ Contributions are welcome! Here's how to help:
 
 ```bash
 # Install dev dependencies
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 
 # Run tests
 pytest
