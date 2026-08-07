@@ -1,20 +1,29 @@
+# UTF-8
 VSVersionInfo(
   ffi=FixedFileInfo(
     filevers=(1, 0, 0, 0),
     prodvers=(1, 0, 0, 0),
-    mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1, subtype=0x0, date=(0, 0)
-  ),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+    ),
   kids=[
-    StringFileInfo([StringTable('040904B0', [
-      StringStruct('CompanyName', 'Inkdown'),
-      StringStruct('FileDescription', 'Inkdown — README Studio'),
-      StringStruct('FileVersion', '1.0.0.0'),
-      StringStruct('InternalName', 'Inkdown'),
-      StringStruct('LegalCopyright', '© 2025 Inkdown'),
-      StringStruct('OriginalFilename', 'Inkdown.exe'),
-      StringStruct('ProductName', 'Inkdown'),
-      StringStruct('ProductVersion', '1.0.0.0')
-    ])]),
-    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',
+        [StringStruct(u'CompanyName', u'Inkdown'),
+        StringStruct(u'FileDescription', u'Inkdown - README Studio'),
+        StringStruct(u'FileVersion', u'1.0.0.0'),
+        StringStruct(u'InternalName', u'Inkdown'),
+        StringStruct(u'LegalCopyright', u'Inkdown'),
+        StringStruct(u'OriginalFilename', u'Inkdown.exe'),
+        StringStruct(u'ProductName', u'Inkdown'),
+        StringStruct(u'ProductVersion', u'1.0.0.0')])
+      ]),
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
 )

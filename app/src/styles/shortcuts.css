@@ -1,0 +1,138 @@
+/* ========================================================================
+   KEYBOARD SHORTCUTS MODAL — NOTION STYLE
+   ======================================================================== */
+.shortcutsModal {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  padding: 20px;
+  animation: scFadeIn .2s ease both;
+}
+@keyframes scFadeIn { from { opacity: 0; } }
+.shortcutsModal[hidden] { display: none; }
+
+.shortcutsBox {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 85vh;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.25), var(--shadow);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: scSlideUp .25s cubic-bezier(.3,.8,.3,1) both;
+}
+@keyframes scSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.shortcutsClose {
+  position: absolute; top: 16px; right: 16px; z-index: 5;
+  width: 32px; height: 32px; border-radius: 8px;
+  display: grid; place-items: center; color: var(--muted);
+  transition: all .15s;
+}
+.shortcutsClose:hover { background: var(--surface2); color: var(--ink); }
+.shortcutsClose svg { width: 16px; height: 16px; }
+
+/* Header */
+.shortcutsHeader {
+  display: flex; align-items: center; gap: 14px;
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.shortcutsIcon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--accent-soft); color: var(--accent);
+  display: grid; place-items: center; flex: 0 0 auto;
+}
+.shortcutsIcon svg { width: 22px; height: 22px; }
+.shortcutsHeader h2 {
+  font-size: 18px; font-weight: 800; letter-spacing: -.02em;
+  color: var(--ink); margin: 0; line-height: 1.2;
+}
+.shortcutsHeader p {
+  font-size: 12.5px; color: var(--muted); margin: 3px 0 0;
+}
+
+/* Search */
+.shortcutsSearch {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.shortcutsSearch svg { width: 16px; height: 16px; color: var(--muted); flex: 0 0 auto; }
+.shortcutsSearch input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 14px; color: var(--ink); min-width: 0;
+}
+.shortcutsSearch input::placeholder { color: var(--muted); }
+
+/* Body */
+.shortcutsBody {
+  flex: 1; overflow-y: auto; padding: 8px 12px 12px;
+  min-height: 0;
+}
+
+/* Category */
+.scCategory { margin-bottom: 6px; }
+.scCategoryLabel {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+  padding: 14px 12px 8px;
+  position: sticky; top: 0;
+  background: var(--surface);
+  z-index: 2;
+}
+
+/* Row */
+.scRow {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 9px 12px; border-radius: 9px; transition: background .12s;
+}
+.scRow:hover { background: var(--surface2); }
+.scDesc { font-size: 13.5px; color: var(--ink2); font-weight: 500; }
+.scKeys { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+.scPlus { font-size: 11px; color: var(--muted); padding: 0 1px; }
+
+/* kbd styling — Notion style */
+.scKeys kbd, .shortcutsFooter kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; height: 24px; padding: 0 7px;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--ink);
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 var(--line);
+}
+
+/* No results */
+.scNoResults {
+  text-align: center; padding: 48px 20px; color: var(--muted);
+}
+.scNoResultsIcon { font-size: 36px; margin-bottom: 10px; opacity: .6; }
+
+/* Footer */
+.shortcutsFooter {
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2);
+}
+.shortcutsFooter .scPlus { font-size: 10px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .shortcutsBox { max-height: 92vh; border-radius: 14px; }
+  .shortcutsHeader { padding: 18px 18px 14px; }
+  .shortcutsSearch { padding: 12px 18px; }
+  .shortcutsBody { padding: 4px 8px 8px; }
+  .scRow { padding: 8px 10px; }
+  .shortcutsFooter { padding: 12px 18px; }
+}

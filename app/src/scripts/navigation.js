@@ -7,6 +7,8 @@ let crumbData = [];
 export function initNavigation() {
   // Minimap: click or drag to teleport through the document
   const mm = $('#minimap');
+  if (!mm) return;   // Early exit if minimap doesn't exist
+  
   let drag = false;
 
   const go = e => {
@@ -37,12 +39,15 @@ export function initNavigation() {
   }, { passive: true });
 
   // Back-to-top button
-  $('#toTop').onclick = () => state.scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+  const toTop = $('#toTop');
+  if (toTop) toTop.onclick = () => state.scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /** Cache heading positions + rebuild minimap ticks. Call after every render. */
 export function measureNav() {
   crumbData = [];
+  if (!state.scrollArea || !state.docEl) return;
+  
   const sTop = state.scrollArea.scrollTop;
   const sRect = state.scrollArea.getBoundingClientRect();
 
@@ -62,6 +67,7 @@ export function measureNav() {
 /** Sticky breadcrumb trail showing the current section path. */
 export function updateCrumbs() {
   const c = $('#crumbs');
+  if (!c) return;
 
   if (state.editing || document.body.classList.contains('focus')) {
     c.classList.remove('show');
@@ -106,6 +112,8 @@ export function updateCrumbs() {
 /** Draw one tick per top-level block on the minimap strip. */
 function buildMinimap(sRect, sTop) {
   const mm = $('#minimap');
+  if (!mm) return;
+  
   mm.querySelectorAll('.tick').forEach(t => t.remove());
 
   const total = state.scrollArea.scrollHeight;
@@ -134,6 +142,8 @@ function buildMinimap(sRect, sTop) {
 /** Move the viewport thumb on the minimap. */
 export function updateMMThumb() {
   const th = $('#mmThumb');
+  if (!th) return;   // Null-safe
+  
   const total = state.scrollArea.scrollHeight;
   if (!total) return;
 
@@ -143,19 +153,33 @@ export function updateMMThumb() {
 
 /** Progress bar + "% read / minutes left" + toTop visibility + crumbs. */
 export function updateReadProgress() {
+  if (!state.scrollArea) return;   // Early exit if scroll area not ready
+  
   const max = state.scrollArea.scrollHeight - state.scrollArea.clientHeight;
   const pct = max > 0 ? Math.round(state.scrollArea.scrollTop / max * 100) : 0;
 
-  $('#progress').style.transform = 'scaleX(' + (max > 0 ? state.scrollArea.scrollTop / max : 0) + ')';
-
-  const words = (state.md.trim().match(/\S+/g) || []).length;
-  const left = Math.max(0, Math.ceil(words / 220 * (1 - state.scrollArea.scrollTop / Math.max(1, max))));
-
-  if (!state.editing) {
-    $('#stProg').textContent = pct + '% read' + (pct > 0 && pct < 100 ? ' · ~' + left + 'm left' : '');
+  // Null-safe progress bar update
+  const progress = $('#progress');
+  if (progress) {
+    progress.style.transform = 'scaleX(' + (max > 0 ? state.scrollArea.scrollTop / max : 0) + ')';
   }
 
-  $('#toTop').classList.toggle('show', state.scrollArea.scrollTop > 600);
+  const words = (state.md || '').trim().match(/\S+/g) || [];
+  const left = Math.max(0, Math.ceil(words.length / 220 * (1 - state.scrollArea.scrollTop / Math.max(1, max))));
+
+  if (!state.editing) {
+    const stProg = $('#stProg');
+    if (stProg) {
+      stProg.textContent = pct + '% read' + (pct > 0 && pct < 100 ? ' · ~' + left + 'm left' : '');
+    }
+  }
+
+  // Null-safe toTop button
+  const toTop = $('#toTop');
+  if (toTop) {
+    toTop.classList.toggle('show', state.scrollArea.scrollTop > 600);
+  }
+  
   updateCrumbs();
   updateMMThumb();
 }

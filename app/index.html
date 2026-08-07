@@ -436,6 +436,144 @@
   </div>
 </section>
 
+
+<!-- ============ SLIDES PAGE ============ -->
+<section id="slidesPage" aria-label="Presentation">
+  <div class="slidesTopbar">
+    <button class="slidesExit" id="slidesExit" title="Exit (Esc)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="slidesTitle" id="slidesDocTitle">Presentation</div>
+    <div class="slidesCounter"><span id="slidesCurrent">1</span> / <span id="slidesTotal">1</span></div>
+    <button class="slidesFullscreen" id="slidesFullscreen" title="Fullscreen (F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+  </div>
+
+  <div class="slidesStage" id="slidesStage">
+    <button class="slidesNav prev" id="slidesPrev" title="Previous (←)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+
+    <div class="slideFrame" id="slideFrame">
+      <div class="slideContent" id="slideContent"></div>
+      <div class="slideFade"></div>
+      <button class="openFullSlide" id="openFullSlide" hidden>
+        Open full slide
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      </button>
+    </div>
+
+    <button class="slidesNav next" id="slidesNext" title="Next (→)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div class="slidesProgress">
+    <div class="slidesProgressBar"><i id="slidesProgressFill"></i></div>
+    <div class="slidesDots" id="slidesDots"></div>
+  </div>
+</section>
+
+<!-- ============ CONTEXT MENU ============ -->
+<div id="ctxMenu" class="ctxMenu" hidden>
+  <button class="ctxItem" id="ctxPresent">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    Present as Slides
+  </button>
+</div>
+
+<!-- ============ FULL SLIDE OVERLAY ============ -->
+<div id="fullSlideOverlay" class="fullSlideOverlay" hidden>
+  <button class="fullSlideClose" id="fullSlideClose" title="Close (Esc)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="fullSlideContent" id="fullSlideContent"></div>
+</div>
+
+<!-- ============ KEYBOARD SHORTCUTS MODAL ============ -->
+<div id="shortcutsModal" class="shortcutsModal" hidden role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+  <div class="shortcutsBox">
+    <button class="shortcutsClose" id="shortcutsClose" title="Close (Esc)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    
+    <div class="shortcutsHeader">
+      <div class="shortcutsIcon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M6 14h.01M10 14h4M18 14h.01"/></svg>
+      </div>
+      <div>
+        <h2>Keyboard Shortcuts</h2>
+        <p>Speed up your workflow</p>
+      </div>
+    </div>
+
+    <div class="shortcutsSearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input type="text" id="shortcutsSearchInput" placeholder="Search shortcuts…">
+    </div>
+
+    <div class="shortcutsBody" id="shortcutsBody">
+      <!-- General -->
+      <div class="scCategory" data-category="general">
+        <div class="scCategoryLabel">General</div>
+        <div class="scRow" data-search="save document"><span class="scDesc">Save document</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>S</kbd></span></div>
+        <div class="scRow" data-search="edit mode toggle edit"><span class="scDesc">Toggle edit mode</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>E</kbd></span></div>
+        <div class="scRow" data-search="open file import"><span class="scDesc">Open / Import file</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>O</kbd></span></div>
+        <div class="scRow" data-search="search document find"><span class="scDesc">Search document</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>K</kbd></span></div>
+        <div class="scRow" data-search="contents table of contents toc sidebar"><span class="scDesc">Toggle contents table</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>\</kbd></span></div>
+        <div class="scRow" data-search="focus mode zen distraction"><span class="scDesc">Focus mode</span><span class="scKeys"><kbd>F</kbd></span></div>
+        <div class="scRow" data-search="fullscreen full screen"><span class="scDesc">Fullscreen (desktop)</span><span class="scKeys"><kbd>F11</kbd></span></div>
+        <div class="scRow" data-search="close dialog exit cancel"><span class="scDesc">Close dialogs / Exit</span><span class="scKeys"><kbd>Esc</kbd></span></div>
+        <div class="scRow" data-search="shortcuts help keys keyboard"><span class="scDesc">Show shortcuts</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>/</kbd></span></div>
+      </div>
+
+      <!-- Editing -->
+      <div class="scCategory" data-category="editing">
+        <div class="scCategoryLabel">Editing</div>
+        <div class="scRow" data-search="bold text strong"><span class="scDesc">Bold text</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>B</kbd></span></div>
+        <div class="scRow" data-search="italic text emphasis"><span class="scDesc">Italic text</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>I</kbd></span></div>
+        <div class="scRow" data-search="inline code snippet"><span class="scDesc">Inline code</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>`</kbd></span></div>
+      </div>
+
+      <!-- Todos -->
+      <div class="scCategory" data-category="todos">
+        <div class="scCategoryLabel">Todos</div>
+        <div class="scRow" data-search="quick add todo task new"><span class="scDesc">Quick add todo</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>Alt</kbd><span class="scPlus">+</span><kbd>T</kbd></span></div>
+        <div class="scRow" data-search="widget floating popup todo"><span class="scDesc">Toggle todo widget</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>Alt</kbd><span class="scPlus">+</span><kbd>W</kbd></span></div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="scCategory" data-category="navigation">
+        <div class="scCategoryLabel">Navigation</div>
+        <div class="scRow" data-search="back jump return previous"><span class="scDesc">Jump back after heading click</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>[</kbd></span></div>
+        <div class="scRow" data-search="back to top scroll top"><span class="scDesc">Scroll to top</span><span class="scKeys"><kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>Home</kbd></span></div>
+      </div>
+
+      <!-- Slides -->
+      <div class="scCategory" data-category="slides">
+        <div class="scCategoryLabel">Slides</div>
+        <div class="scRow" data-search="next slide forward right"><span class="scDesc">Next slide</span><span class="scKeys"><kbd>→</kbd></span></div>
+        <div class="scRow" data-search="previous slide back left"><span class="scDesc">Previous slide</span><span class="scKeys"><kbd>←</kbd></span></div>
+        <div class="scRow" data-search="first slide home start"><span class="scDesc">First slide</span><span class="scKeys"><kbd>Home</kbd></span></div>
+        <div class="scRow" data-search="last slide end final"><span class="scDesc">Last slide</span><span class="scKeys"><kbd>End</kbd></span></div>
+        <div class="scRow" data-search="exit slides presentation close"><span class="scDesc">Exit slides</span><span class="scKeys"><kbd>Esc</kbd></span></div>
+        <div class="scRow" data-search="fullscreen slides presentation"><span class="scDesc">Fullscreen slides</span><span class="scKeys"><kbd>F</kbd></span></div>
+      </div>
+
+      <!-- No results -->
+      <div class="scNoResults" id="scNoResults" hidden>
+        <div class="scNoResultsIcon">🔍</div>
+        <div>No shortcuts found</div>
+      </div>
+    </div>
+
+    <div class="shortcutsFooter">
+      <span>Press <kbd>Ctrl</kbd><span class="scPlus">+</span><kbd>/</kbd> anytime to open this</span>
+    </div>
+  </div>
+</div>
+
 <!-- ============ READER / EDITOR ============ -->
 <div id="app">
   <header>

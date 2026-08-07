@@ -16,7 +16,8 @@ import { initAssist } from './assist.js';
 import { initPWA } from './pwa.js';
 import { restored } from './persist.js';
 import { initSettings } from './settings.js';
-
+import { initSlides } from './slides.js';
+import { initShortcuts } from './shortcuts.js';
 
 
 // Global safety net: one bad error should never white-screen the whole app.
@@ -96,6 +97,8 @@ async function openLaunchFiles() {
   initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
   initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
   initSettings();
+  initSlides();
+  initShortcuts();
   setupKeyboard();
 
   const shared = openSharedFromHash();
