@@ -1,179 +1,156 @@
 """
-Inkdown Daemon — Background process for:
-- System tray icon
-- Global hotkeys
-- Quick Capture widget
+Inkdown Daemon - No Global Hotkeys
+Just tray icon + manual Quick Capture from tray menu
 """
 import os
 import sys
+import subprocess
 import threading
-import json
 import time
+import traceback
 from datetime import datetime
-
-# Third-party
-try:
-    import webview
-except ImportError:
-    print("ERROR: pywebview not installed. Run: pip install pywebview")
-    sys.exit(1)
-
-try:
-    import keyboard
-except ImportError:
-    print("ERROR: keyboard not installed. Run: pip install keyboard")
-    sys.exit(1)
+from pathlib import Path
 
 try:
     import pystray
     from PIL import Image, ImageDraw
 except ImportError:
-    print("ERROR: pystray or Pillow not installed. Run: pip install pystray pillow")
+    print("ERROR: 'pystray' or 'Pillow' not installed. Run: pip install pystray pillow")
     sys.exit(1)
 
+# Configuration
+SCRIPT_DIR = Path(__file__).parent
+DATA_DIR = Path(os.environ.get('APPDATA', os.path.expanduser('~'))) / 'Inkdown'
+HEARTBEAT_FILE = DATA_DIR / 'daemon-heartbeat.txt'
+CRASH_LOG = DATA_DIR / 'daemon-crash.log'
 
-# ---------- Config ----------
-APP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app')
-DATA_DIR = os.path.join(os.environ.get('APPDATA', os.path.expanduser('~')), 'Inkdown')
-CAPTURES_FILE = os.path.join(DATA_DIR, 'quick-captures.json')
-QUICK_NOTES_FILE = os.path.join(DATA_DIR, 'quick-notes.md')
-HOTKEY_OPEN = 'ctrl+alt+space'
-HOTKEY_CAPTURE = 'ctrl+alt+c'
-
-capture_window = None
-main_window = None
+running = True
 
 
-# ---------- Capture API ----------
-class CaptureApi:
-    def save_capture(self, text):
-        """Save captured text to Quick Notes file."""
+def log(msg, level='INFO'):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_line = f"[{timestamp}] {level}: {msg}"
+    print(log_line)
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        with open(CRASH_LOG, 'a', encoding='utf-8') as f:
+            f.write(log_line + '\n')
+    except:
+        pass
+
+
+def write_heartbeat():
+    while running:
         try:
-            os.makedirs(DATA_DIR, exist_ok=True)
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
-            entry = f"\n\n## {timestamp}\n\n{text}\n\n---\n"
-
-            with open(QUICK_NOTES_FILE, 'a', encoding='utf-8') as f:
-                f.write(entry)
-
-            # Also save to JSON for the main app to import
-            captures = []
-            if os.path.exists(CAPTURES_FILE):
-                try:
-                    with open(CAPTURES_FILE, 'r', encoding='utf-8') as f:
-                        captures = json.load(f)
-                except:
-                    captures = []
-
-            captures.append({'text': text, 'at': timestamp})
-            with open(CAPTURES_FILE, 'w', encoding='utf-8') as f:
-                json.dump(captures, f, ensure_ascii=False)
-
-            return True
-        except Exception as e:
-            print(f"Capture save error: {e}")
-            return False
-
-    def close_window(self):
-        global capture_window
-        if capture_window:
-            capture_window.destroy()
-            capture_window = None
-
-
-# ---------- Quick Capture Window ----------
-def open_capture():
-    global capture_window
-    if capture_window:
-        try:
-            capture_window.show()
-            return
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            HEARTBEAT_FILE.write_text(datetime.now().isoformat())
         except:
-            capture_window = None
-
-    capture_path = os.path.join(APP_DIR, 'capture.html')
-    if not os.path.exists(capture_path):
-        print(f"ERROR: {capture_path} not found")
-        return
-
-    capture_window = webview.create_window(
-        'Quick Capture',
-        capture_path,
-        width=440,
-        height=300,
-        resizable=False,
-        fullscreen=False,
-        on_top=True,
-        frameless=True,
-        background_color='#1a1a2e',
-        js_api=CaptureApi()
-    )
+            pass
+        time.sleep(30)
 
 
-# ---------- Main App ----------
 def open_main_app():
-    """Launch or focus the main Inkdown app."""
-    main_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'main.py')
-    if os.path.exists(main_py):
-        os.system(f'start "" python "{main_py}"')
+    """Launch the main Inkdown app."""
+    try:
+        main_py = SCRIPT_DIR / 'main.py'
+        if main_py.exists():
+            log("Launching main app...")
+            subprocess.Popen(
+                [sys.executable, str(main_py)],
+                creationflags=subprocess.CREATE_NEW_CONSOLE
+            )
+        else:
+            log(f"main.py not found: {main_py}", 'ERROR')
+    except Exception as e:
+        log(f"Error launching main app: {e}", 'ERROR')
 
 
-# ---------- Hotkeys ----------
-def setup_hotkeys():
-    keyboard.add_hotkey(HOTKEY_OPEN, open_main_app)
-    keyboard.add_hotkey(HOTKEY_CAPTURE, open_capture)
-    print(f"Hotkeys registered: {HOTKEY_OPEN} (open), {HOTKEY_CAPTURE} (capture)")
+def open_capture():
+    """Launch Quick Capture window."""
+    try:
+        main_py = SCRIPT_DIR / 'main.py'
+        if main_py.exists():
+            log("Launching Quick Capture...")
+            subprocess.Popen(
+                [sys.executable, str(main_py), '--capture'],
+                creationflags=subprocess.CREATE_NEW_CONSOLE
+            )
+        else:
+            log(f"main.py not found: {main_py}", 'ERROR')
+    except Exception as e:
+        log(f"Error launching capture: {e}", 'ERROR')
 
 
-# ---------- System Tray ----------
 def create_tray_icon():
-    # Create a simple icon
+    """Create system tray icon."""
     image = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
-    # Pink rounded square
     draw.rounded_rectangle([8, 8, 56, 56], radius=12, fill=(255, 46, 136, 255))
-    # White "I" letter
     draw.rectangle([28, 20, 36, 44], fill=(255, 255, 255, 255))
 
-    def on_open(icon, item):
-        open_main_app()
-
-    def on_capture(icon, item):
-        open_capture()
-
-    def on_exit(icon, item):
-        icon.stop()
-        keyboard.unhook_all()
-        os._exit(0)
-
     menu = pystray.Menu(
-        pystray.MenuItem('Open Inkdown', on_open, default=True),
-        pystray.MenuItem('Quick Capture', on_capture),
+        pystray.MenuItem('Open Inkdown', lambda icon, item: open_main_app(), default=True),
+        pystray.MenuItem('Quick Capture', lambda icon, item: open_capture()),
         pystray.Menu.SEPARATOR,
-        pystray.MenuItem('Exit', on_exit),
+        pystray.MenuItem('Exit', lambda icon, item: exit_daemon(icon)),
     )
 
-    icon = pystray.Icon('Inkdown', image, 'Inkdown', menu)
-    return icon
+    return pystray.Icon('Inkdown', image, 'Inkdown Daemon', menu)
 
 
-# ---------- Main ----------
+def exit_daemon(icon):
+    global running
+    running = False
+    icon.stop()
+    log("Daemon exiting...")
+
+
 def main():
-    print("=" * 50)
-    print("  Inkdown Daemon Starting")
-    print("=" * 50)
-    print(f"  Data dir: {DATA_DIR}")
-    print(f"  App dir:  {APP_DIR}")
-    print(f"  Hotkeys:  {HOTKEY_OPEN}, {HOTKEY_CAPTURE}")
-    print("=" * 50)
+    global running
 
-    os.makedirs(DATA_DIR, exist_ok=True)
-    setup_hotkeys()
+    log("=" * 50)
+    log("Inkdown Daemon Starting (No Hotkeys)")
+    log(f"Script dir: {SCRIPT_DIR}")
+    log(f"Data dir: {DATA_DIR}")
+    log("=" * 50)
 
+    # Ensure data directory exists
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Write initial heartbeat
+    try:
+        HEARTBEAT_FILE.write_text(datetime.now().isoformat())
+    except:
+        pass
+
+    # NO HOTKEYS - removed keyboard import and setup_hotkeys()
+
+    # Start heartbeat thread
+    hb_thread = threading.Thread(target=write_heartbeat, daemon=True)
+    hb_thread.start()
+
+    # Create and run tray icon
+    log("Creating tray icon...")
     icon = create_tray_icon()
-    print("Tray icon created. Running in background...")
-    icon.run()
+
+    log("Daemon running. Tray icon active. (No global hotkeys)")
+
+    try:
+        icon.run()
+    except KeyboardInterrupt:
+        log("Interrupted by user")
+    except Exception as e:
+        log(f"Daemon crashed: {e}", 'ERROR')
+        log(traceback.format_exc(), 'ERROR')
+    finally:
+        running = False
+        log("Daemon stopped")
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        log(f"FATAL: {e}", 'FATAL')
+        log(traceback.format_exc(), 'FATAL')
+        sys.exit(1)

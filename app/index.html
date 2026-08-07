@@ -367,6 +367,155 @@
         </div>
       </div>
 
+      <!-- Storage Usage -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">📊</div>
+          <div>
+            <h3>Storage Usage</h3>
+            <span>Monitor your browser storage</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Current usage</b>
+              <span id="settingsStorageUsed">Calculating...</span>
+            </div>
+          </div>
+          <div class="storageBar">
+            <div class="storageFill" id="settingsStorageFill"></div>
+          </div>
+          <div class="storageLegend">
+            <span class="legend-item safe">Safe (&lt;70%)</span>
+            <span class="legend-item warning">Warning (70-90%)</span>
+            <span class="legend-item critical">Critical (90-95%)</span>
+            <span class="legend-item blocked">Blocked (&gt;95%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backups -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">💾</div>
+          <div>
+            <h3>Backups</h3>
+            <span>Protect your data</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Auto-backup</b>
+              <span>Automatic backup every 24 hours</span>
+            </div>
+            <label class="setToggle">
+              <input type="checkbox" id="settingsAutoBackup" checked>
+              <span class="setToggleSlider"></span>
+            </label>
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsCreateBackup">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Create Backup Now</span>
+            </button>
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsExportBackup">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export Backup (.zip)</span>
+            </button>
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsImportBackup">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Import Backup (.zip)</span>
+            </button>
+            <input type="file" id="settingsBackupFile" accept=".zip" hidden>
+          </div>
+          <div class="backupList" id="backupList"></div>
+        </div>
+      </div>
+
+            <!-- Hotkeys & Daemon -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">⌨️</div>
+          <div>
+            <h3>Hotkeys & Daemon</h3>
+            <span>Global shortcuts and background service</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Daemon status</b>
+              <span id="settingsDaemonStatus">Checking...</span>
+            </div>
+            <span class="statusIndicator" id="daemonStatusDot"></span>
+          </div>
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Open Inkdown hotkey</b>
+              <span>Global shortcut to open the app</span>
+            </div>
+            <input type="text" id="settingsHotkeyOpen" class="setInput" value="ctrl+alt+space" placeholder="ctrl+alt+space">
+          </div>
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Quick Capture hotkey</b>
+              <span>Global shortcut for quick capture</span>
+            </div>
+            <input type="text" id="settingsHotkeyCapture" class="setInput" value="ctrl+alt+c" placeholder="ctrl+alt+c">
+          </div>
+          <div class="setRow">
+            <button class="setBtn" id="settingsSaveHotkeys">
+              <span>Save Hotkeys</span>
+            </button>
+            <button class="setBtn" id="settingsResetHotkeys">
+              <span>Reset to Defaults</span>
+            </button>
+          </div>
+          <div class="hotkeyHelp">
+            <p><strong>Format:</strong> modifier+key (e.g., ctrl+alt+space)</p>
+            <p><strong>Modifiers:</strong> ctrl, alt, shift, win</p>
+            <p><strong>Note:</strong> Changes take effect after daemon restart</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Limits -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">📁</div>
+          <div>
+            <h3>Library Status</h3>
+            <span>File count and limits</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Files in library</b>
+              <span id="settingsFileCount">0 / 500 files</span>
+            </div>
+          </div>
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Archived files</b>
+              <span id="settingsArchivedCount">0 files</span>
+            </div>
+          </div>
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Max file size</b>
+              <span>10 MB per file</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Keyboard Shortcuts -->
       <div class="setSection">
         <div class="setSectionHead">

@@ -20,6 +20,12 @@ import { initSlides } from './slides.js';
 import { initShortcuts } from './shortcuts.js';
 import { initPalette } from './palette.js';
 
+import { initStorageMonitor } from './storage-monitor.js';
+import { initBackupManager } from './backup-manager.js';
+import { updateStorageUI, initBackupHandlers, initHotkeySettings } from './settings.js';
+import * as StorageMonitor from './storage-monitor.js';
+
+
 
 // Global safety net: one bad error should never white-screen the whole app.
 window.addEventListener('error', (e) => {
@@ -28,6 +34,7 @@ window.addEventListener('error', (e) => {
 window.addEventListener('unhandledrejection', (e) => {
   try { console.error('[Inkdown] unhandled rejection:', e.reason); } catch (_) {}
 });
+window.StorageMonitor = StorageMonitor;
 
 function hideSplash() { document.body.classList.add('ready'); }
 
@@ -41,6 +48,10 @@ document.addEventListener('keydown', (e) => {
       api.toggle_fullscreen();
     }
   }
+});
+
+document.addEventListener('settings:open', () => {
+  setTimeout(updateStorageUI, 100);
 });
 
 // Wait until the PyWebView bridge (and our API) is actually available.
@@ -98,6 +109,10 @@ async function openLaunchFiles() {
   initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
   initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
   initSettings();
+  initStorageMonitor();
+  initBackupManager();
+  initBackupHandlers();
+  initHotkeySettings();
   initSlides();
   initShortcuts();
   initPalette();

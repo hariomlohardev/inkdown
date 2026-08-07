@@ -1,5 +1,136 @@
 // Persistence layer — multi-file library model
 import { state } from './state.js';
+// ========== STORAGE LIMITS & VALIDATION ==========
+
+export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const WARN_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_FILES = 500;
+export const WARN_FILES = 400;
+export const ARCHIVE_FOLDER = '_archive';
+
+/** Validate file size before import */
+export function validateFileSize(file) {
+  const size = file.size || 0;
+
+  if (size === 0) {
+    return { valid: false, size, level: 'empty', message: 'File is empty' };
+  }
+
+  if (size > MAX_FILE_SIZE) {
+    return {
+      valid: false,
+      size,
+      level: 'too-large',
+      message: 'File too large (' + formatSize(size) + '). Maximum is ' + formatSize(MAX_FILE_SIZE) + '.'
+    };
+  }
+
+  if (size > WARN_FILE_SIZE) {
+    return {
+      valid: true,
+      size,
+      level: 'large',
+      message: 'Large file detected (' + formatSize(size) + '). Performance may be affected.'
+    };
+  }
+
+  return { valid: true, size, level: 'ok', message: '' };
+}
+
+function formatSize(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+/** Get count of non-archived files */
+export function getFileCount() {
+  const files = getLibrary();
+  return files.filter(f => f.folder !== ARCHIVE_FOLDER).length;
+}
+
+/** Check if a new file can be added */
+export function canAddFile() {
+  const count = getFileCount();
+
+  if (count >= MAX_FILES) {
+    return {
+      allowed: false,
+      count,
+      reason: 'Library is full (' + count + '/' + MAX_FILES + ' files). Delete or archive files to add more.'
+    };
+  }
+
+  if (count >= WARN_FILES) {
+    return {
+      allowed: true,
+      count,
+      reason: 'Library is getting full (' + count + '/' + MAX_FILES + ' files). Consider archiving old files.'
+    };
+  }
+
+  return { allowed: true, count, reason: '' };
+}
+
+/** Archive a file (move to archive folder) */
+export function archiveFile(fileId) {
+  const files = getLibrary();
+  const file = files.find(f => f.id === fileId);
+  if (!file) return false;
+
+  file.folder = ARCHIVE_FOLDER;
+  file.archivedAt = Date.now();
+  return saveLibrary(files);
+}
+
+/** Unarchive a file (move to root) */
+export function unarchiveFile(fileId) {
+  const capacity = canAddFile();
+  if (!capacity.allowed) {
+    return { success: false, reason: capacity.reason };
+  }
+
+  const files = getLibrary();
+  const file = files.find(f => f.id === fileId);
+  if (!file) return { success: false, reason: 'File not found' };
+
+  file.folder = '';
+  delete file.archivedAt;
+  const success = saveLibrary(files);
+  return { success, reason: success ? '' : 'Save failed' };
+}
+
+/** Get archived files */
+export function getArchivedFiles() {
+  return getLibrary().filter(f => f.folder === ARCHIVE_FOLDER);
+}
+
+/** Validate filename for safety */
+export function sanitizeFilename(name) {
+  if (!name) return 'untitled.md';
+
+  // Remove dangerous characters
+  let safe = name
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '')  // Remove invalid filename chars
+    .replace(/\.\./g, '')                      // Remove path traversal
+    .trim();
+
+  // Limit length
+  if (safe.length > 100) {
+    const ext = safe.includes('.') ? '.' + safe.split('.').pop() : '.md';
+    safe = safe.slice(0, 100 - ext.length) + ext;
+  }
+
+  // Ensure .md extension
+  if (!safe.match(/\.(md|markdown|mdown|txt)$/i)) {
+    safe += '.md';
+  }
+
+  return safe || 'untitled.md';
+}
+
 
 const LIB_KEY = 'inkdown:library';
 const FOLDERS_KEY = 'inkdown:folders';
@@ -32,9 +163,29 @@ export function getLibrary() {
 
 export function saveLibrary(files) {
   try {
-    localStorage.setItem(LIB_KEY, JSON.stringify(files));
+    const data = JSON.stringify(files);
+    const dataSize = data.length * 2; // UTF-16
+
+    // Check quota before saving
+    if (typeof window !== 'undefined' && window.StorageMonitor) {
+      const status = window.StorageMonitor.getQuotaStatus();
+      if (!status.canSave) {
+        document.dispatchEvent(new CustomEvent('storage:blocked', { detail: status }));
+        return false;
+      }
+    }
+
+    localStorage.setItem(LIB_KEY, data);
+
+    // Notify storage monitor
+    if (typeof window !== 'undefined' && window.StorageMonitor) {
+      window.StorageMonitor.checkAndNotify();
+    }
+
     return true;
   } catch (e) {
+    console.error('[Storage] Save failed:', e);
+    document.dispatchEvent(new CustomEvent('storage:error', { detail: { error: e.message } }));
     return false;
   }
 }

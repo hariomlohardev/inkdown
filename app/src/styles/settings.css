@@ -137,3 +137,247 @@ body:not([data-view="settings"]) #settingsPage { display: none; }
   .setThemeOpt { flex: 1; text-align: center; }
   .setStorageBar { flex: 1 1 auto; width: 100%; }
 }
+
+
+
+
+/* ========== STORAGE BAR ========== */
+.storageBar {
+  height: 10px;
+  background: var(--surface2);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.storageFill {
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  transition: width 0.4s ease, background 0.3s ease;
+  background: #4caf50;
+}
+
+.storageFill.level-safe { background: #4caf50; }
+.storageFill.level-warning { background: #ff9800; }
+.storageFill.level-critical { background: #f44336; }
+.storageFill.level-blocked { background: #d32f2f; }
+
+.storageLegend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-item::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-item.safe::before { background: #4caf50; }
+.legend-item.warning::before { background: #ff9800; }
+.legend-item.critical::before { background: #f44336; }
+.legend-item.blocked::before { background: #d32f2f; }
+
+/* ========== BACKUP LIST ========== */
+.backupList {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.backupItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.backupItem:hover {
+  background: var(--surface2);
+}
+
+.backupInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.backupInfo b {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.backupInfo span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.backupActions {
+  display: flex;
+  gap: 6px;
+}
+
+.backupBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.backupBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.backupBtn.danger:hover {
+  border-color: #f44336;
+  color: #f44336;
+}
+
+/* ========== STORAGE BLOCKED DIALOG ========== */
+.storageBlockedDialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.sbdBox {
+  width: min(440px, 90vw);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.sbdBox h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.sbdBox p {
+  font-size: 14px;
+  color: var(--ink2);
+  margin-bottom: 10px;
+}
+
+.sbdBox ul {
+  margin: 10px 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.sbdBox li {
+  margin-bottom: 6px;
+}
+
+.sbdActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.sbdBtn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sbdBtn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.sbdBtn:hover {
+  opacity: 0.9;
+}
+
+
+
+
+/* ========== HOTKEY SETTINGS ========== */
+.setInput {
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--ink);
+  width: 180px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.setInput:focus {
+  border-color: var(--accent);
+}
+
+.statusIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9e9e9e;
+  transition: background 0.3s;
+}
+
+.statusIndicator.running {
+  background: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+.statusIndicator.stopped {
+  background: #f44336;
+}
+
+.hotkeyHelp {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hotkeyHelp p {
+  margin-bottom: 4px;
+}
+
+.hotkeyHelp strong {
+  color: var(--ink2);
+}

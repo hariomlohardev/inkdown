@@ -3,6 +3,12 @@ import { getLibrary, saveLibrary, STORAGE_KEYS } from './storage.js';
 import { setThemeMode, getMode } from './theme.js';
 import { toast } from './ui.js';
 
+// Add these imports at the top
+import { calculateStorageUsage, getQuotaStatus, formatBytes } from './storage-monitor.js';
+import { createBackup, getBackups, restoreBackup, deleteBackup, exportBackupAsZip, importBackupFromZip, formatBackupTime } from './backup-manager.js';
+import { getFileCount, getArchivedFiles, MAX_FILES } from './storage.js';
+
+
 const DEFAULT_SETTINGS = {
   theme: 'system',
   defaultFont: 'serif',
@@ -46,25 +52,6 @@ export function updateSetting(key, value) {
 
 function applySetting(key, value) {
   if (key === 'theme') setThemeMode(value);
-}
-
-/* ---------- Storage calculation ---------- */
-function calculateStorageUsage() {
-  let total = 0;
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    const value = localStorage.getItem(key);
-    if (value) total += (key.length + value.length) * 2;
-  }
-  return total;
-}
-
-function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
 /* ---------- Export / Import ---------- */
@@ -232,4 +219,308 @@ export function initSettings() {
   document.addEventListener('settings:open', showSettingsPage);
 
   console.log('[Inkdown] Settings page initialized');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Add this function to update the storage/backup UI
+export function updateStorageUI() {
+  // Storage usage
+  const status = getQuotaStatus();
+  const storageUsed = $('#settingsStorageUsed');
+  const storageFill = $('#settingsStorageFill');
+
+  if (storageUsed) {
+    storageUsed.textContent = formatBytes(status.used) + ' of ' + formatBytes(status.limit) + ' (' + status.percent + '%)';
+  }
+
+  if (storageFill) {
+    storageFill.style.width = Math.min(status.percent, 100) + '%';
+    storageFill.className = 'storageFill level-' + status.level;
+  }
+
+  // File counts
+  const fileCount = $('#settingsFileCount');
+  const archivedCount = $('#settingsArchivedCount');
+
+  if (fileCount) {
+    fileCount.textContent = getFileCount() + ' / ' + MAX_FILES + ' files';
+  }
+
+  if (archivedCount) {
+    archivedCount.textContent = getArchivedFiles().length + ' files';
+  }
+
+  // Backup list
+  renderBackupList();
+}
+
+function renderBackupList() {
+  const list = $('#backupList');
+  if (!list) return;
+
+  const backups = getBackups();
+
+  if (backups.length === 0) {
+    list.innerHTML = '<div class="backupEmpty">No backups yet. Create one to protect your data.</div>';
+    return;
+  }
+
+  list.innerHTML = backups.map(b => `
+    <div class="backupItem" data-id="${b.id}">
+      <div class="backupInfo">
+        <b>${b.reason === 'daily-auto' ? '🕐 Daily backup' : b.reason === 'manual' ? '💾 Manual backup' : '📦 ' + b.reason}</b>
+        <span>${formatBackupTime(b.timestamp)} · ${b.fileCount} files · ${(b.size / 1024).toFixed(1)} KB</span>
+      </div>
+      <div class="backupActions">
+        <button class="backupBtn restore" data-action="restore">Restore</button>
+        <button class="backupBtn danger" data-action="delete">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Wire up buttons
+  list.querySelectorAll('.backupItem').forEach(item => {
+    const id = item.dataset.id;
+
+    item.querySelector('[data-action="restore"]').onclick = async () => {
+      if (confirm('Restore this backup? Current data will be backed up first.')) {
+        const result = await restoreBackup(id);
+        if (result.success) {
+          alert('Backup restored successfully. Reloading...');
+          location.reload();
+        } else {
+          alert('Restore failed: ' + result.error);
+        }
+      }
+    };
+
+    item.querySelector('[data-action="delete"]').onclick = () => {
+      if (confirm('Delete this backup?')) {
+        deleteBackup(id);
+        renderBackupList();
+      }
+    };
+  });
+}
+
+// Add these event handlers in initSettings()
+export function initBackupHandlers() {
+  // Create backup
+  const createBtn = $('#settingsCreateBackup');
+  if (createBtn) {
+    createBtn.onclick = async () => {
+      createBtn.disabled = true;
+      createBtn.textContent = 'Creating...';
+
+      const result = await createBackup('manual');
+
+      createBtn.disabled = false;
+      createBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Create Backup Now</span>';
+
+      if (result.success) {
+        renderBackupList();
+        document.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Backup created', type: 'success' } }));
+      } else {
+        alert('Backup failed: ' + result.error);
+      }
+    };
+  }
+
+  // Export backup
+  const exportBtn = $('#settingsExportBackup');
+  if (exportBtn) {
+    exportBtn.onclick = async () => {
+      exportBtn.disabled = true;
+      const result = await exportBackupAsZip();
+      exportBtn.disabled = false;
+
+      if (!result.success) {
+        alert('Export failed: ' + result.error);
+      }
+    };
+  }
+
+  // Import backup
+  const importBtn = $('#settingsImportBackup');
+  const importFile = $('#settingsBackupFile');
+  if (importBtn && importFile) {
+    importBtn.onclick = () => importFile.click();
+    importFile.onchange = async (e) => {
+      if (e.target.files[0]) {
+        if (confirm('Import this backup? Current data will be backed up first.')) {
+          const result = await importBackupFromZip(e.target.files[0]);
+          if (result.success) {
+            alert('Backup imported. Reloading...');
+            location.reload();
+          } else {
+            alert('Import failed: ' + result.error);
+          }
+        }
+        e.target.value = '';
+      }
+    };
+  }
+}
+
+
+
+
+
+
+
+// Hotkey management
+export async function initHotkeySettings() {
+  const openInput = $('#settingsHotkeyOpen');
+  const captureInput = $('#settingsHotkeyCapture');
+  const saveBtn = $('#settingsSaveHotkeys');
+  const resetBtn = $('#settingsResetHotkeys');
+  const statusText = $('#settingsDaemonStatus');
+  const statusDot = $('#daemonStatusDot');
+
+  if (!openInput || !captureInput) return;
+
+  // Load current hotkeys from daemon
+  await loadHotkeyConfig();
+
+  // Update daemon status periodically
+  updateDaemonStatus();
+  setInterval(updateDaemonStatus, 30000);
+
+  // Save hotkeys
+  if (saveBtn) {
+    saveBtn.onclick = async () => {
+      const openHotkey = openInput.value.trim().toLowerCase();
+      const captureHotkey = captureInput.value.trim().toLowerCase();
+
+      // Validate
+      if (!validateHotkey(openHotkey)) {
+        toast('Invalid "Open" hotkey format', 'error');
+        return;
+      }
+      if (!validateHotkey(captureHotkey)) {
+        toast('Invalid "Capture" hotkey format', 'error');
+        return;
+      }
+      if (openHotkey === captureHotkey) {
+        toast('Hotkeys must be different', 'error');
+        return;
+      }
+
+      // Save via pywebview API
+      const api = window.pywebview && window.pywebview.api;
+      if (api && api.save_hotkey_config) {
+        const result = await api.save_hotkey_config({
+          open_app: openHotkey,
+          quick_capture: captureHotkey,
+          custom: true,
+          last_updated: new Date().toISOString()
+        });
+
+        if (result) {
+          toast('Hotkeys saved. Restart daemon to apply.', 'success');
+        } else {
+          toast('Failed to save hotkeys', 'error');
+        }
+      } else {
+        toast('Hotkey API not available (desktop only)', 'warn');
+      }
+    };
+  }
+
+  // Reset to defaults
+  if (resetBtn) {
+    resetBtn.onclick = async () => {
+      openInput.value = 'ctrl+alt+space';
+      captureInput.value = 'ctrl+alt+c';
+
+      const api = window.pywebview && window.pywebview.api;
+      if (api && api.save_hotkey_config) {
+        await api.save_hotkey_config({
+          open_app: 'ctrl+alt+space',
+          quick_capture: 'ctrl+alt+c',
+          custom: false,
+          last_updated: new Date().toISOString()
+        });
+        toast('Hotkeys reset to defaults', 'success');
+      }
+    };
+  }
+}
+
+async function loadHotkeyConfig() {
+  const api = window.pywebview && window.pywebview.api;
+  if (api && api.get_hotkey_config) {
+    const config = await api.get_hotkey_config();
+    if (config) {
+      const openInput = $('#settingsHotkeyOpen');
+      const captureInput = $('#settingsHotkeyCapture');
+      if (openInput) openInput.value = config.open_app || 'ctrl+alt+space';
+      if (captureInput) captureInput.value = config.quick_capture || 'ctrl+alt+c';
+    }
+  }
+}
+
+async function updateDaemonStatus() {
+  const statusText = $('#settingsDaemonStatus');
+  const statusDot = $('#daemonStatusDot');
+
+  const api = window.pywebview && window.pywebview.api;
+  if (api && api.get_daemon_status) {
+    const status = await api.get_daemon_status();
+
+    if (status && status.running) {
+      if (statusText) statusText.textContent = 'Running (last heartbeat: ' + formatAge(status.age_seconds) + ')';
+      if (statusDot) statusDot.className = 'statusIndicator running';
+    } else {
+      if (statusText) statusText.textContent = 'Not running';
+      if (statusDot) statusDot.className = 'statusIndicator stopped';
+    }
+  } else {
+    if (statusText) statusText.textContent = 'Desktop app only';
+    if (statusDot) statusDot.className = 'statusIndicator';
+  }
+}
+
+function formatAge(seconds) {
+  if (seconds === null || seconds === undefined) return 'unknown';
+  if (seconds < 60) return Math.round(seconds) + 's ago';
+  if (seconds < 3600) return Math.round(seconds / 60) + 'm ago';
+  return Math.round(seconds / 3600) + 'h ago';
+}
+
+function validateHotkey(hotkey) {
+  if (!hotkey) return false;
+
+  const parts = hotkey.split('+');
+  if (parts.length < 2) return false;
+
+  const validModifiers = ['ctrl', 'alt', 'shift', 'win'];
+  const modifiers = parts.slice(0, -1);
+  const key = parts[parts.length - 1];
+
+  // All but last must be modifiers
+  for (const mod of modifiers) {
+    if (!validModifiers.includes(mod)) return false;
+  }
+
+  // Last must be a valid key
+  if (!key || key.length === 0) return false;
+
+  // Check for reserved combinations
+  const reserved = ['ctrl+alt+del', 'win+l', 'ctrl+shift+esc'];
+  if (reserved.includes(hotkey)) return false;
+
+  return true;
 }
