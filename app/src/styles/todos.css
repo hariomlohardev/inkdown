@@ -1,107 +1,210 @@
-/* =========================================================
-   TODOS VIEW
-   ========================================================= */
-body[data-view="todos"] #todosPage { display:flex; }
+/* ========================================================================
+   VIEW SWITCHING
+   ======================================================================== */
+body[data-view="todos"] #todosPage { display: flex; }
 body[data-view="todos"] #home,
-body[data-view="todos"] #app { display:none !important; }
-body:not([data-view="todos"]) #todosPage { display:none; }
-#todosPage { height:100dvh; }
-
-/* add-todo bar */
-.todoAdd { display:flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:6px 6px 6px 14px; margin:4px 0 18px; transition:.15s; }
-.todoAdd:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
-.todoAdd input { flex:1; border:none; background:transparent; outline:none; font-size:13.5px; color:var(--ink); min-width:0; }
-.todoAdd select { border:1px solid var(--line); background:var(--surface2); color:var(--ink2); border-radius:9px; padding:0 8px; font-size:12px; height:34px; outline:none; cursor:pointer; max-width:130px; }
-.todoAdd select:focus { border-color:var(--accent); }
-.todoAdd button { width:34px; height:34px; border-radius:9px; background:var(--accent); color:#16000a; font-size:18px; font-weight:700; display:grid; place-items:center; transition:.15s; flex:0 0 auto; }
-.todoAdd button:hover { background:var(--accent-hi); }
-
-/* sections / views */
-.todoSection,.viewSection { margin-bottom:20px; }
-.viewSecHead { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
-.viewSecHead::after { content:""; flex:1; height:1px; background:var(--line); }
-.viewSecHead em { font-style:normal; color:var(--accent-ink); }
-.viewList { display:flex; flex-direction:column; gap:8px; }
-.todoProgress { height:6px; border-radius:3px; background:var(--surface2); overflow:hidden; margin:0 0 18px; }
-.todoProgress i { display:block; height:100%; width:0; background:var(--accent); border-radius:3px; transition:width .3s; }
-
-/* todo item */
-.todoItem { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; transition:.15s; }
-.todoItem:hover { border-color:var(--line2); box-shadow:var(--shadow); }
-.todoItem.pinned { border-color:color-mix(in srgb,var(--accent) 40%,var(--line)); }
-.todoCheck { width:22px; height:22px; border-radius:7px; border:2px solid var(--line2); background:var(--surface); display:grid; place-items:center; flex:0 0 auto; transition:.15s; }
-.todoCheck svg { width:13px; height:13px; color:transparent; transition:.15s; }
-.todoCheck:hover { border-color:var(--accent); }
-.todoItem.done .todoCheck { background:var(--accent); border-color:var(--accent); }
-.todoItem.done .todoCheck svg { color:#16000a; }
-.todoText { flex:1; font-size:14px; color:var(--ink); overflow-wrap:anywhere; }
-.todoItem.done .todoText { color:var(--muted); text-decoration:line-through; }
-.todoMeta { display:flex; align-items:center; gap:6px; }
-.todoActs { display:flex; gap:4px; opacity:0; transition:opacity .15s; }
-.todoItem:hover .todoActs { opacity:1; }
-.todoItem.pinned .todoActs { opacity:1; }
-.todoPin,.todoDel,.todoLink { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; color:var(--muted); transition:.15s; font-size:14px; }
-.todoPin svg,.todoDel svg,.todoLink svg { width:15px; height:15px; }
-.todoPin:hover,.todoDel:hover,.todoLink:hover { background:var(--accent-soft); color:var(--accent-ink); }
-.todoPin.on { color:var(--accent); }
-
-/* priority dot */
-.prio { width:18px; height:18px; border-radius:50%; border:2px solid var(--line2); background:transparent; flex:0 0 auto; transition:.15s; }
-.prio:hover { transform:scale(1.2); }
-.prio.p0 { border-color:var(--line2); background:transparent; }
-.prio.p1 { border-color:#9aa0a6; background:#9aa0a6; }
-.prio.p2 { border-color:#e0a000; background:#e0a000; }
-.prio.p3 { border-color:var(--accent); background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
-
-/* chips */
-.dueChip,.fileChip { display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:99px; border:1px solid var(--line); color:var(--muted); transition:.15s; white-space:nowrap; }
-.dueChip:hover { border-color:var(--accent); color:var(--accent-ink); }
-.fileChip { color:var(--accent-ink); border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); }
-.fileChip svg { width:11px; height:11px; }
-.fileChip:hover { background:var(--accent-soft); }
-
-/* drag */
-.todoItem.dragging { opacity:.4; }
-.todoItem.dragover { outline:2px dashed var(--accent); outline-offset:2px; }
-
-/* empty */
-.todoEmpty { text-align:center; padding:40px 20px; border:1.5px dashed var(--line2); border-radius:14px; }
-.todoEmpty .emptyIco { font-size:30px; margin-bottom:8px; }
-.todoEmpty h3 { font-size:16px; font-weight:800; margin-bottom:4px; }
-.todoEmpty p { font-size:12.5px; color:var(--muted); }
-
-/* past days */
-.pastEmpty { padding:14px; font-size:12.5px; color:var(--muted); border:1px dashed var(--line2); border-radius:12px; text-align:center; }
-.pastDay { border:1px solid var(--line); border-radius:12px; margin-bottom:8px; overflow:hidden; background:var(--surface); }
-.pastDayHead { display:flex; align-items:center; gap:10px; width:100%; padding:12px 14px; font-size:13.5px; font-weight:700; color:var(--ink); transition:.15s; text-align:left; }
-.pastDayHead:hover { background:var(--surface2); }
-.pastDayHead .pdLabel { flex:1; }
-.pastDayHead .pdCount { font-family:var(--mono); font-size:11px; color:var(--muted); }
-.pastDayHead .pdChev { transition:transform .2s; color:var(--muted); }
-.pastDay.open .pdChev { transform:rotate(90deg); }
-.pastDayBody { display:none; padding:8px 12px 12px; border-top:1px solid var(--line); }
-.pastDay.open .pastDayBody { display:block; }
-
-/* quick add */
-.quickAdd { position:fixed; inset:0; z-index:200; display:none; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); }
-.quickAdd.open { display:flex; }
-.quickAddBox { display:flex; align-items:center; gap:10px; width:min(520px,90vw); background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:8px 8px 8px 16px; box-shadow:var(--shadow); }
-.quickAddBox .qaIco { font-size:18px; }
-.quickAddBox input { flex:1; border:none; background:transparent; outline:none; font-size:15px; color:var(--ink); min-width:0; }
-.quickAddBox button { width:34px; height:34px; border-radius:9px; color:var(--muted); display:grid; place-items:center; }
-.quickAddBox button:hover { background:var(--accent-soft); color:var(--accent-ink); }
-.qaHint { font-family:var(--mono); font-size:10px; letter-spacing:.15em; color:var(--muted); }
-
-/* todo popup menus */
-.todoMenu { position:fixed; z-index:220; min-width:190px; background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow); padding:6px; display:flex; flex-direction:column; gap:2px; }
-.menuItem { text-align:left; font-size:13px; font-weight:600; color:var(--ink2); padding:8px 11px; border-radius:8px; transition:.12s; }
-.menuItem:hover { background:var(--accent-soft); color:var(--accent-ink); }
-.menuEmpty { padding:10px; font-size:12px; color:var(--muted); text-align:center; }
-
-
+body[data-view="todos"] #app { display: none; }
+body:not([data-view="todos"]) #todosPage { display: none; }
+#todosPage { position: relative; z-index: 1; height: 100dvh; overflow-y: auto; }
 
 /* ========================================================================
-   FLOATING WIDGET — Notion-style, fixed tidy height
+   TODOS PAGE — NOTION STYLE
+   ======================================================================== */
+.homeScroll { padding-bottom: 80px; }
+
+/* --- Notion buttons --- */
+.notionBtn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; font-size: 13px; font-weight: 600;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; color: var(--ink2); transition: all .15s;
+}
+.notionBtn svg { width: 15px; height: 15px; }
+.notionBtn:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+
+/* --- Stats grid --- */
+.todoStatsGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  margin-bottom: 20px;
+}
+.statCard.notion {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px; transition: all .15s;
+}
+.statCard.notion:hover { border-color: var(--line2); transform: translateY(-1px); }
+.statCard.notion .statLabel {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px;
+}
+.statCard.notion .statValue {
+  font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--ink);
+}
+
+/* --- Progress --- */
+.notionProgress { margin-bottom: 20px; }
+.notionProgressBar {
+  height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden;
+}
+.notionProgressBar i {
+  display: block; height: 100%; width: 0; background: var(--accent);
+  border-radius: 3px; transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* --- Add todo (Notion style) --- */
+.notionAdd {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; margin-bottom: 28px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; transition: all .15s;
+}
+.notionAdd:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.notionAddCheck {
+  width: 20px; height: 20px; display: grid; place-items: center;
+  color: var(--muted); flex: 0 0 auto;
+}
+.notionAddCheck svg { width: 16px; height: 16px; }
+.notionAdd input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 14px; color: var(--ink); min-width: 0;
+}
+.notionAdd input::placeholder { color: var(--muted); }
+.notionDueSelect {
+  background: var(--surface2); border: 1px solid var(--line);
+  border-radius: 7px; padding: 5px 10px; font-size: 12px;
+  color: var(--ink2); cursor: pointer; outline: none;
+  font-family: var(--mono);
+}
+
+/* --- Views / sections --- */
+.notionViews { display: flex; flex-direction: column; gap: 4px; }
+.viewSection { margin-bottom: 8px; }
+.viewSecHead {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 8px;
+}
+.viewSecHead span {
+  font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -.01em;
+}
+.viewSecHead em {
+  font-style: normal; font-family: var(--mono); font-size: 11px;
+  color: var(--muted); background: var(--surface2);
+  border-radius: 10px; padding: 2px 8px;
+}
+
+/* --- Notion-style todo item --- */
+.todoItem {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; margin: 0 0 2px;
+  border-radius: 8px; border: 1px solid transparent;
+  transition: all .12s ease; cursor: default;
+}
+.todoItem:hover { background: var(--surface2); }
+.todoItem.done { opacity: .55; }
+.todoItem.dragging { opacity: .4; }
+.todoItem.dragover { border: 1px dashed var(--accent); background: var(--accent-soft); }
+
+/* Notion checkbox */
+.todoCheck {
+  width: 18px; height: 18px; flex: 0 0 auto;
+  border: 2px solid var(--line2); border-radius: 4px;
+  display: grid; place-items: center; background: transparent;
+  transition: all .15s ease; cursor: pointer;
+}
+.todoCheck svg { width: 11px; height: 11px; stroke: #fff; opacity: 0; transition: opacity .1s; }
+.todoCheck:hover { border-color: var(--muted); }
+.todoItem.done .todoCheck { background: var(--accent); border-color: var(--accent); }
+.todoItem.done .todoCheck svg { opacity: 1; }
+
+/* Priority dot */
+.prio {
+  width: 14px; height: 14px; border-radius: 50%; flex: 0 0 auto;
+  border: 2px solid transparent; cursor: pointer; transition: all .15s;
+}
+.prio.p0 { border-color: var(--line2); background: transparent; }
+.prio.p1 { background: #9aa0a6; border-color: #9aa0a6; }
+.prio.p2 { background: #e0a000; border-color: #e0a000; }
+.prio.p3 { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.prio:hover { transform: scale(1.2); }
+
+/* Todo text */
+.todoText {
+  flex: 1; font-size: 14px; color: var(--ink);
+  overflow-wrap: anywhere; line-height: 1.4; min-width: 0;
+}
+.todoItem.done .todoText { color: var(--muted); text-decoration: line-through; }
+
+/* Meta (due chip + file chip) */
+.todoMeta { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.dueChip, .fileChip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 8px; border-radius: 12px;
+  border: 1px solid var(--line); color: var(--muted);
+  transition: all .15s; white-space: nowrap;
+}
+.dueChip:hover { border-color: var(--accent); color: var(--accent-ink); }
+.fileChip { color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.fileChip svg { width: 11px; height: 11px; }
+.fileChip:hover { background: var(--accent-soft); }
+
+/* Hover actions */
+.todoActs {
+  display: flex; align-items: center; gap: 2px;
+  opacity: 0; transition: opacity .12s; flex: 0 0 auto;
+}
+.todoItem:hover .todoActs { opacity: 1; }
+.todoPin, .todoDel, .todoLink {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: grid; place-items: center; color: var(--muted);
+  transition: all .12s;
+}
+.todoPin svg, .todoDel svg, .todoLink svg { width: 14px; height: 14px; }
+.todoPin:hover, .todoDel:hover, .todoLink:hover { background: var(--accent-soft); color: var(--accent-ink); }
+.todoPin.on { color: var(--accent); opacity: 1; }
+.todoPin.on svg { fill: color-mix(in srgb, var(--accent) 20%, transparent); }
+
+/* --- Previous days (collapsible) --- */
+.pastDay {
+  border: 1px solid var(--line); border-radius: 10px;
+  margin-bottom: 8px; overflow: hidden; background: var(--surface);
+}
+.pdHead {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 12px 14px; cursor: pointer; transition: background .15s; text-align: left;
+}
+.pdHead:hover { background: var(--surface2); }
+.pdLabel { flex: 1; font-size: 13px; font-weight: 600; color: var(--ink); }
+.pdCount { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.pdChev { color: var(--muted); font-size: 10px; transition: transform .2s; }
+.pastDay.open .pdChev { transform: rotate(90deg); }
+.pdItems {
+  display: none; padding: 4px 8px 10px; flex-direction: column; gap: 2px;
+  border-top: 1px solid var(--line);
+}
+.pastDay.open .pdItems { display: flex; }
+
+/* --- Empty states --- */
+.tdEmpty {
+  color: var(--muted); font-family: var(--mono); font-size: 12px;
+  text-align: center; padding: 24px 0;
+}
+
+/* --- Todo popup menus --- */
+.todoMenu {
+  position: fixed; z-index: 220; min-width: 180px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; box-shadow: var(--shadow); padding: 5px;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.menuItem {
+  text-align: left; font-size: 13px; font-weight: 500; color: var(--ink2);
+  padding: 8px 12px; border-radius: 7px; transition: all .12s;
+}
+.menuItem:hover { background: var(--accent-soft); color: var(--accent-ink); }
+.menuEmpty { padding: 12px; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* ========================================================================
+   FLOATING WIDGET — NOTION STYLE (UNCHANGED)
    ======================================================================== */
 .todoWidget {
   position: fixed; z-index: 75;
@@ -118,7 +221,6 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .todoWidget[hidden] { display: none; }
 @keyframes twIn { from { opacity: 0; transform: translateY(10px) scale(.98); } }
 
-/* Header — the whole strip is the drag handle */
 .twHead {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 13px 10px 12px 14px;
@@ -144,20 +246,16 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .twIcon svg { width: 15px; height: 15px; }
 .twIcon:hover { background: var(--surface2); color: var(--ink); }
 
-/* Thin progress strip */
 .twProg { height: 3px; background: var(--surface2); flex: 0 0 auto; }
 .twProg i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
 
-/* Scrollable list fills the fixed height */
 .twBody { flex: 1; overflow-y: auto; min-height: 0; padding: 8px; display: flex; flex-direction: column; gap: 1px; }
 
-/* Section labels — quiet Notion-style headings */
 .twSec {
   font-size: 11px; font-weight: 600; color: var(--muted);
   letter-spacing: 0.02em; padding: 9px 6px 4px;
 }
 
-/* Empty state — calm, centered */
 .twEmpty {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 3px; padding: 40px 14px; text-align: center; height: 100%;
@@ -167,7 +265,6 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .twEmptyText { font-size: 13px; font-weight: 500; color: var(--ink2); }
 .twEmptyHint { font-size: 12px; color: var(--muted); }
 
-/* Quiet add row */
 .todoWidget .twAdd {
   display: flex; align-items: center; gap: 9px;
   padding: 9px 12px; border-top: 1px solid var(--line);
@@ -180,9 +277,7 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 }
 .todoWidget .twAdd input::placeholder { color: var(--muted); }
 
-/* ========================================================================
-   TODO ROW — shared by widget + todos page (Notion-style)
-   ======================================================================== */
+/* Widget todo row (unchanged) */
 .todoRow {
   display: flex; align-items: center; gap: 9px;
   padding: 6px 8px; border-radius: 6px;
@@ -192,7 +287,6 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .todoRow:hover { background: var(--surface2); }
 .todoRow.done { opacity: .72; }
 
-/* Notion-style checkbox */
 .trCheck {
   width: 17px; height: 17px; flex: 0 0 auto;
   border: 1.5px solid var(--line2); border-radius: 4px;
@@ -207,7 +301,6 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .trText { flex: 1; font-size: 13.5px; font-weight: 400; color: var(--ink); overflow-wrap: anywhere; line-height: 1.35; }
 .todoRow.done .trText { color: var(--muted); text-decoration: line-through; }
 
-/* Row actions — hidden until hover (like Notion) */
 .trPin, .trDel {
   width: 24px; height: 24px; border-radius: 5px;
   display: grid; place-items: center; color: var(--muted);
@@ -222,36 +315,10 @@ body:not([data-view="todos"]) #todosPage { display:none; }
 .trDel:hover { background: var(--accent-soft); color: var(--accent-hi); }
 .trPin svg, .trDel svg { width: 14px; height: 14px; }
 
+/* Hide todo UI in focus mode */
+body.focus #todoWidget, body.focus #todoSettings { display: none !important; }
 
-/* =========================================================
-   TODO SETTINGS MODAL  (FIX: hidden now works)
-   ========================================================= */
-.tdModal {
-  position:fixed; inset:0; z-index:210;
-  display:grid; place-items:center;
-  background:rgba(0,0,0,.4); backdrop-filter:blur(3px);
+@media (max-width: 760px) {
+  .todoStatsGrid { grid-template-columns: repeat(2, 1fr); }
+  .statCard.notion .statValue { font-size: 20px; }
 }
-.tdModal[hidden] { display:none; }   /* FIX: reliably hide when hidden */
-.tdPanel {
-  position:relative; width:min(440px,92vw); max-height:84vh; overflow-y:auto;
-  background:var(--surface); border:1px solid var(--line); border-radius:16px;
-  box-shadow:var(--shadow); padding:20px 22px;
-}
-.tdPanel h2 { font-size:18px; font-weight:800; letter-spacing:-0.02em; margin-bottom:16px; }
-.tdPanel .closeX { position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:8px; color:var(--muted); display:grid; place-items:center; }
-.tdPanel .closeX svg { width:15px; height:15px; }
-.tdPanel .closeX:hover { background:var(--accent-soft); color:var(--accent-ink); }
-.tsGroup { border:1px solid var(--line); border-radius:12px; padding:6px; margin-bottom:14px; background:var(--surface2); }
-.tsLabel { font-family:var(--mono); font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--muted); padding:8px 10px 6px; }
-.tsRow { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-radius:8px; }
-.tsRow:hover { background:var(--surface); }
-.tsTxt b { display:block; font-size:13.5px; font-weight:700; }
-.tsTxt span { display:block; font-size:11.5px; color:var(--muted); margin-top:2px; }
-.tsRow input[type="checkbox"] { width:18px; height:18px; accent-color:var(--accent); cursor:pointer; }
-.tsRadios { display:flex; gap:14px; }
-.tsRadios label { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink2); cursor:pointer; }
-.tsRadios input { accent-color:var(--accent); }
-.tsBtn { display:block; width:100%; text-align:left; font-size:13.5px; font-weight:600; color:var(--ink2); padding:10px 12px; border-radius:8px; transition:.12s; }
-.tsBtn:hover { background:var(--accent-soft); color:var(--accent-ink); }
-.tsBtn.danger { color:#c0392b; }
-.tsBtn.danger:hover { background:color-mix(in srgb,#c0392b 12%,var(--surface)); color:#c0392b; }

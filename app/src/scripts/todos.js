@@ -111,7 +111,7 @@ function renderGreeting(){
   const h=new Date().getHours();
   const g=h<5?'Up late':h<12?'Good morning':h<18?'Good afternoon':'Good evening';
   t.textContent=g+' 👋';
-  if(s) s.textContent= total===0? 'No todos for today — add one below.' : done+' of '+total+' done — '+new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  if(s) s.textContent= total===0? 'No tasks for today — add one below.' : done+' of '+total+' done · '+new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
 }
 function renderStats(){
   const day=ensureToday();
@@ -158,9 +158,9 @@ function renderPast(wrap){
     if(!items.length) return;
     const total=day.items.length, done=day.items.filter(i=>i.done).length;
     const pd=document.createElement('div'); pd.className='pastDay';
-    const head=document.createElement('button'); head.className='pastDayHead';
+    const head=document.createElement('button'); head.className='pdHead';
     head.innerHTML='<span class="pdLabel">'+escHtml(fmtDayLabel(k))+'</span><span class="pdCount">'+done+'/'+total+'</span><span class="pdChev">▸</span>';
-    const body=document.createElement('div'); body.className='pastDayBody';
+    const body=document.createElement('div'); body.className='pdItems';
     sortItems(items).forEach(it=>body.appendChild(todoItemEl(it,k,false)));
     head.onclick=()=>pd.classList.toggle('open');
     pd.append(head,body); sec.appendChild(pd);
@@ -199,7 +199,7 @@ function todoItemEl(item, dayKey, draggable){
   const acts=document.createElement('div'); acts.className='todoActs';
   const link=document.createElement('button'); link.className='todoLink'; link.title='Link to a file'; link.innerHTML=FILE_SVG;
   link.onclick=(e)=>{e.stopPropagation(); linkFileMenu(item,dayKey,link);};
-  const pin=document.createElement('button'); pin.className='todoPin'+(item.pinned?' on':''); pin.title=item.pinned?'Unpin':'Pin'; pin.textContent='📌';
+  const pin=document.createElement('button'); pin.className='todoPin'+(item.pinned?' on':''); pin.title=item.pinned?'Unpin':'Pin'; pin.innerHTML=PIN_SVG;
   pin.onclick=(e)=>{e.stopPropagation(); togglePin(dayKey,item.id);};
   const del=document.createElement('button'); del.className='todoDel'; del.title='Delete'; del.innerHTML=TRASH_SVG;
   del.onclick=(e)=>{e.stopPropagation(); deleteTodo(dayKey,item.id);};
@@ -332,7 +332,7 @@ function initSettings(){
 }
 
 /* =========================================================
-   FLOATING TODO WIDGET (Ctrl+Alt+W) — Notion-style
+   FLOATING TODO WIDGET (Ctrl+Alt+W) — UNCHANGED
    ========================================================= */
 function secLabel(txt) {
   const d = document.createElement('div');
@@ -502,7 +502,7 @@ export function initTodos(){
     loadData(); autoCleanup(); ensureToday();
 
     const navAll=$('#todoNavAll'); if(navAll) navAll.onclick=()=>showLibrary();
-    const settingsBtn = $('#todoSettingsBtn'); if (settingsBtn) settingsBtn.onclick = () => document.dispatchEvent(new CustomEvent('settings:open'));
+    const settingsBtn=$('#todoSettingsBtn'); if(settingsBtn) settingsBtn.onclick=()=>document.dispatchEvent(new CustomEvent('settings:open'));
     const widget=$('#thOpenWidget'); if(widget) widget.onclick=toggleTodoWidget;
     
     const homeWidgetBtn = $('#homeWidgetBtn'); if(homeWidgetBtn) homeWidgetBtn.onclick = toggleTodoWidget;
@@ -524,7 +524,7 @@ export function initTodos(){
     });
 
     const twClose=$('#twClose'); if(twClose) twClose.onclick=()=>toggleTodoWidget();
-    const twSettings = $('#twSettings'); if (twSettings) twSettings.onclick = () => document.dispatchEvent(new CustomEvent('settings:open'));
+    const twSettings=$('#twSettings'); if(twSettings) twSettings.onclick=()=>document.dispatchEvent(new CustomEvent('settings:open'));
     const twAddForm=$('#twAddForm'), twInput=$('#twInput');
     if(twAddForm) twAddForm.addEventListener('submit',e=>{
       e.preventDefault();
