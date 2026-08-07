@@ -217,6 +217,7 @@ body:not([data-view="todos"]) #todosPage { display: none; }
   display: flex; flex-direction: column;
   overflow: hidden;
   animation: twIn 0.22s cubic-bezier(.2,.9,.3,1) both;
+  /* z-index: 1000; Above fullSlideOverlay (z-index: 80) */
 }
 .todoWidget[hidden] { display: none; }
 @keyframes twIn { from { opacity: 0; transform: translateY(10px) scale(.98); } }
@@ -321,4 +322,14 @@ body.focus #todoWidget, body.focus #todoSettings { display: none !important; }
 @media (max-width: 760px) {
   .todoStatsGrid { grid-template-columns: repeat(2, 1fr); }
   .statCard.notion .statValue { font-size: 20px; }
+}
+
+
+/* Ensure Todo Widget appears above slides overlay */
+.todoWidget {
+  z-index: 75 !important; /* Above fullSlideOverlay (65), below context menus (300) */
+}
+
+.todoWidget[hidden] {
+  display: none !important;
 }

@@ -4,6 +4,7 @@ import { toast } from './ui.js';
 
 let slides = [];
 let currentIndex = 0;
+let isAnimating = false;
 
 /* ---------- Parse markdown into slides ---------- */
 function parseSlides(md) {
@@ -21,7 +22,7 @@ function parseSlides(md) {
   result = splitByRule(md);
   if (result.length > 1) return result;
 
-  // Strategy 4: Split by paragraphs (every ~5 paragraphs = 1 slide)
+  // Strategy 4: Split by paragraphs
   result = splitByParagraphs(md);
   if (result.length > 1) return result;
 
@@ -46,7 +47,6 @@ function splitByHeading(md, headingRegex) {
         }
         current = { title: line.replace(headingRegex, '').trim(), lines: [], isTitle: false };
       } else {
-        // First heading becomes the title
         current.title = line.replace(headingRegex, '').trim();
         current.isTitle = true;
         foundFirstHeading = true;
@@ -96,47 +96,69 @@ function splitByParagraphs(md) {
   return slidesArr;
 }
 
-/* ---------- Render a single slide ---------- */
+/* ---------- Add stagger index to list items for cascading animation ---------- */
+function addListStagger(html) {
+  let index = 0;
+  return html.replace(/<li/g, () => `<li style="--li-i: ${index++}"`);
+}
+
+/* ---------- Render a single slide with animation ---------- */
 function renderSlide(index) {
   const frame = $('#slideContent');
   if (!frame || !slides[index]) return;
 
-  const slide = slides[index];
-  let html = '';
+  // Prevent overlapping animations
+  if (isAnimating) return;
+  isAnimating = true;
 
-  if (slide.isTitle) {
-    html += '<h1>' + escHtml(slide.title) + '</h1>';
-    html += '<div class="accentBar"></div>';
-    if (slide.content.trim()) {
-      const contentWithoutTitle = slide.content.replace(/^#+\s+.+/m, '').trim();
-      if (contentWithoutTitle) {
-        html += '<div class="subtitle">' + renderMarkdown(contentWithoutTitle) + '</div>';
+  // Exit animation
+  frame.classList.add('exiting');
+
+  setTimeout(() => {
+    frame.classList.remove('exiting');
+
+    const slide = slides[index];
+    let html = '';
+
+    if (slide.isTitle) {
+      html += '<h1>' + escHtml(slide.title) + '</h1>';
+      html += '<div class="accentBar"></div>';
+      if (slide.content.trim()) {
+        const contentWithoutTitle = slide.content.replace(/^#+\s+.+/m, '').trim();
+        if (contentWithoutTitle) {
+          html += '<div class="subtitle">' + renderMarkdown(contentWithoutTitle) + '</div>';
+        }
+      }
+      frame.classList.add('titleSlide');
+    } else {
+      frame.classList.remove('titleSlide');
+      if (slide.title) {
+        html += '<h2>' + escHtml(slide.title) + '</h2>';
+      }
+      if (slide.content.trim()) {
+        const contentWithoutTitle = slide.title
+          ? slide.content.replace(new RegExp('^#+\\s+' + escapeRegex(slide.title) + '.*$', 'm'), '').trim()
+          : slide.content;
+        if (contentWithoutTitle) {
+          html += renderMarkdown(contentWithoutTitle);
+        }
       }
     }
-    frame.classList.add('titleSlide');
-  } else {
-    frame.classList.remove('titleSlide');
-    if (slide.title) {
-      html += '<h2>' + escHtml(slide.title) + '</h2>';
-    }
-    if (slide.content.trim()) {
-      const contentWithoutTitle = slide.title
-        ? slide.content.replace(new RegExp('^#+\\s+' + escapeRegex(slide.title) + '.*$', 'm'), '').trim()
-        : slide.content;
-      if (contentWithoutTitle) {
-        html += renderMarkdown(contentWithoutTitle);
-      }
-    }
-  }
 
-  frame.innerHTML = html;
-  frame.style.animation = 'none';
-  void frame.offsetWidth;
-  frame.style.animation = '';
+    // Add stagger indices to list items
+    html = addListStagger(html);
 
-  updateProgress();
-  checkOverflow();
-  setTimeout(checkOverflow, 350);
+    frame.innerHTML = html;
+    frame.style.animation = 'none';
+    void frame.offsetWidth; // force reflow
+    frame.style.animation = '';
+
+    updateProgress();
+    checkOverflow();
+    setTimeout(checkOverflow, 400);
+
+    isAnimating = false;
+  }, 220); // match exit animation duration
 }
 
 function escapeRegex(s) {
@@ -177,23 +199,50 @@ function openFullSlide() {
   const content = $('#fullSlideContent');
   const slideContent = $('#slideContent');
   if (!overlay || !content || !slideContent) return;
+
   content.className = 'fullSlideContent slideContent';
   content.innerHTML = slideContent.innerHTML;
+  overlay.classList.remove('closing');
   overlay.hidden = false;
   overlay.scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  // Don't block body scroll — let widget remain interactive
+  // document.body.style.overflow = 'hidden'; // removed so widget stays accessible
 }
 
 function closeFullSlide() {
   const overlay = $('#fullSlideOverlay');
-  if (overlay) overlay.hidden = true;
-  document.body.style.overflow = '';
+  if (!overlay || overlay.hidden) return;
+
+  overlay.classList.add('closing');
+
+  setTimeout(() => {
+    overlay.hidden = true;
+    overlay.classList.remove('closing');
+    document.body.style.overflow = '';
+  }, 250); // match exit animation duration
 }
 
 /* ---------- Navigation ---------- */
-function nextSlide() { if (currentIndex < slides.length - 1) { currentIndex++; renderSlide(currentIndex); } }
-function prevSlide() { if (currentIndex > 0) { currentIndex--; renderSlide(currentIndex); } }
-function goToSlide(index) { if (index >= 0 && index < slides.length) { currentIndex = index; renderSlide(currentIndex); } }
+function nextSlide() {
+  if (currentIndex < slides.length - 1 && !isAnimating) {
+    currentIndex++;
+    renderSlide(currentIndex);
+  }
+}
+
+function prevSlide() {
+  if (currentIndex > 0 && !isAnimating) {
+    currentIndex--;
+    renderSlide(currentIndex);
+  }
+}
+
+function goToSlide(index) {
+  if (index >= 0 && index < slides.length && index !== currentIndex && !isAnimating) {
+    currentIndex = index;
+    renderSlide(currentIndex);
+  }
+}
 
 function updateProgress() {
   const cur = $('#slidesCurrent');
@@ -250,6 +299,7 @@ export function exitSlides() {
   document.body.dataset.view = 'reader';
   document.title = state.name || 'Inkdown';
   hideContextMenu();
+  hideSlidesContextMenu();
 }
 
 /* ---------- Context menu ---------- */
@@ -264,6 +314,47 @@ function showContextMenu(x, y) {
 
 function hideContextMenu() {
   const menu = $('#ctxMenu');
+  if (menu) menu.hidden = true;
+}
+
+function showSlidesContextMenu(x, y) {
+  let menu = $('#ctxMenuSlides');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.id = 'ctxMenuSlides';
+    menu.className = 'ctxMenu';
+    menu.innerHTML = `
+      <button class="ctxItem" id="ctxSlidesExit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Exit Slides
+      </button>
+      <button class="ctxItem" id="ctxSlidesFull">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        Toggle Fullscreen
+      </button>
+      <button class="ctxItem" id="ctxSlidesOpenFull">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        Open Full Slide
+      </button>
+    `;
+    document.body.appendChild(menu);
+
+    const exitBtn = $('#ctxSlidesExit');
+    if (exitBtn) exitBtn.onclick = () => { hideSlidesContextMenu(); exitSlides(); };
+    const fullBtn = $('#ctxSlidesFull');
+    if (fullBtn) fullBtn.onclick = () => { hideSlidesContextMenu(); toggleFullscreen(); };
+    const openBtn = $('#ctxSlidesOpenFull');
+    if (openBtn) openBtn.onclick = () => { hideSlidesContextMenu(); openFullSlide(); };
+  }
+
+  menu.hidden = false;
+  const mw = 220, mh = 140;
+  menu.style.left = Math.min(x, innerWidth - mw - 10) + 'px';
+  menu.style.top = Math.min(y, innerHeight - mh - 10) + 'px';
+}
+
+function hideSlidesContextMenu() {
+  const menu = $('#ctxMenuSlides');
   if (menu) menu.hidden = true;
 }
 
@@ -295,7 +386,7 @@ function toggleFullscreen() {
 
 /* ---------- Init ---------- */
 export function initSlides() {
-  // Right-click context menu — works in BOTH reader and slides views
+  // Right-click context menu
   document.addEventListener('contextmenu', e => {
     const view = document.body.dataset.view;
 
@@ -357,43 +448,4 @@ export function initSlides() {
   });
 
   console.log('[Inkdown] Slides initialized');
-}
-
-/* ---------- Slides-page context menu ---------- */
-function showSlidesContextMenu(x, y) {
-  let menu = $('#ctxMenuSlides');
-  if (!menu) {
-    menu = document.createElement('div');
-    menu.id = 'ctxMenuSlides';
-    menu.className = 'ctxMenu';
-    menu.innerHTML = `
-      <button class="ctxItem" id="ctxSlidesExit">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        Exit Slides
-      </button>
-      <button class="ctxItem" id="ctxSlidesFull">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-        Toggle Fullscreen
-      </button>
-      <button class="ctxItem" id="ctxSlidesOpenFull">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-        Open Full Slide
-      </button>
-    `;
-    document.body.appendChild(menu);
-
-    $('#ctxSlidesExit').onclick = () => { hideSlidesContextMenu(); exitSlides(); };
-    $('#ctxSlidesFull').onclick = () => { hideSlidesContextMenu(); toggleFullscreen(); };
-    $('#ctxSlidesOpenFull').onclick = () => { hideSlidesContextMenu(); openFullSlide(); };
-  }
-
-  menu.hidden = false;
-  const mw = 220, mh = 140;
-  menu.style.left = Math.min(x, innerWidth - mw - 10) + 'px';
-  menu.style.top = Math.min(y, innerHeight - mh - 10) + 'px';
-}
-
-function hideSlidesContextMenu() {
-  const menu = $('#ctxMenuSlides');
-  if (menu) menu.hidden = true;
 }
