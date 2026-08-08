@@ -24,7 +24,7 @@ import { initStorageMonitor } from './storage-monitor.js';
 import { initBackupManager } from './backup-manager.js';
 import { updateStorageUI, initBackupHandlers, initHotkeySettings } from './settings.js';
 import * as StorageMonitor from './storage-monitor.js';
-
+import { initClickToSource } from './click-to-source.js';
 
 
 // Global safety net: one bad error should never white-screen the whole app.
@@ -116,6 +116,7 @@ async function openLaunchFiles() {
   initSlides();
   initShortcuts();
   initPalette();
+  initClickToSource();
   setupKeyboard();
 
   const shared = openSharedFromHash();
