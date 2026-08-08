@@ -1,12 +1,24 @@
-// Persistence layer — multi-file library model
+// Persistence layer — hybrid localStorage + IndexedDB for large files
 import { state } from './state.js';
+import {
+  saveFileContent,
+  loadFileContent,
+  deleteFileContent,
+  saveVersions as saveVersionsIDB,
+  loadVersions as loadVersionsIDB,
+  isIDBAvailable,
+  estimateStorage,
+  openDatabase
+} from './idb-storage.js';
+
 // ========== STORAGE LIMITS & VALIDATION ==========
 
-export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-export const WARN_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB (now supports huge files via IDB)
+export const WARN_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const MAX_FILES = 500;
 export const WARN_FILES = 400;
 export const ARCHIVE_FOLDER = '_archive';
+export const IDB_THRESHOLD = 500 * 1024; // 500KB threshold for moving to IDB
 
 /** Validate file size before import */
 export function validateFileSize(file) {
@@ -40,7 +52,7 @@ export function validateFileSize(file) {
 function formatSize(bytes) {
   if (bytes === 0) return '0 B';
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB'];
+  const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
@@ -111,19 +123,16 @@ export function getArchivedFiles() {
 export function sanitizeFilename(name) {
   if (!name) return 'untitled.md';
 
-  // Remove dangerous characters
   let safe = name
-    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '')  // Remove invalid filename chars
-    .replace(/\.\./g, '')                      // Remove path traversal
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '')
+    .replace(/\.\./g, '')
     .trim();
 
-  // Limit length
   if (safe.length > 100) {
     const ext = safe.includes('.') ? '.' + safe.split('.').pop() : '.md';
     safe = safe.slice(0, 100 - ext.length) + ext;
   }
 
-  // Ensure .md extension
   if (!safe.match(/\.(md|markdown|mdown|txt)$/i)) {
     safe += '.md';
   }
@@ -131,19 +140,19 @@ export function sanitizeFilename(name) {
   return safe || 'untitled.md';
 }
 
+// ========== STORAGE KEYS ==========
 
 const LIB_KEY = 'inkdown:library';
 const FOLDERS_KEY = 'inkdown:folders';
 const VER_KEY = 'inkdown:versions';
 
-// Export all storage keys for use in other modules (settings, backup, etc.)
 export const STORAGE_KEYS = {
   LIBRARY: LIB_KEY,
   FOLDERS: FOLDERS_KEY,
   VERSIONS: VER_KEY,
   TODOS: 'inkdown:todos',
   SETTINGS: 'inkdown:settings',
-  DOC: 'inkdown:doc',  // legacy
+  DOC: 'inkdown:doc',
   THEME: 'inkdown:theme',
   READ: 'inkdown:read',
   TODO_POS: 'inkdown:todoPos'
@@ -153,18 +162,49 @@ export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
+// ========== LIBRARY (Metadata in localStorage, Content in IDB for large files) ==========
+
+/**
+ * Get library (metadata only — no content for large files).
+ * For large files, content must be loaded separately via getFileContent().
+ */
 export function getLibrary() {
   try {
-    return JSON.parse(localStorage.getItem(LIB_KEY)) || [];
+    const data = JSON.parse(localStorage.getItem(LIB_KEY)) || [];
+    return data.map(f => ({
+      ...f,
+      _hasExternalContent: f._useIDB === true
+    }));
   } catch (e) {
     return [];
   }
 }
 
+/**
+ * Save library metadata.
+ * Strips large content from metadata — large file content lives in IDB.
+ */
 export function saveLibrary(files) {
   try {
-    const data = JSON.stringify(files);
-    const dataSize = data.length * 2; // UTF-16
+    const metadata = files.map(f => {
+      const meta = { ...f };
+
+      // If content is large, mark for IDB storage
+      if (meta.md && meta.md.length > IDB_THRESHOLD) {
+        meta._useIDB = true;
+        meta._contentSize = meta.md.length;
+        delete meta.md; // Don't store in localStorage
+      } else {
+        // Small file — keep content in localStorage
+        delete meta._useIDB;
+        delete meta._hasExternalContent;
+        delete meta._contentSize;
+      }
+
+      return meta;
+    });
+
+    const data = JSON.stringify(metadata);
 
     // Check quota before saving
     if (typeof window !== 'undefined' && window.StorageMonitor) {
@@ -177,7 +217,6 @@ export function saveLibrary(files) {
 
     localStorage.setItem(LIB_KEY, data);
 
-    // Notify storage monitor
     if (typeof window !== 'undefined' && window.StorageMonitor) {
       window.StorageMonitor.checkAndNotify();
     }
@@ -185,10 +224,148 @@ export function saveLibrary(files) {
     return true;
   } catch (e) {
     console.error('[Storage] Save failed:', e);
-    document.dispatchEvent(new CustomEvent('storage:error', { detail: { error: e.message } }));
-    return false;
+
+    // Fallback: save without content
+    try {
+      const minimal = files.map(f => ({
+        id: f.id,
+        name: f.name,
+        folder: f.folder,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+        scroll: f.scroll || 0,
+        highlights: f.highlights || [],
+        goal: f.goal || 0,
+        _useIDB: true
+      }));
+      localStorage.setItem(LIB_KEY, JSON.stringify(minimal));
+      document.dispatchEvent(new CustomEvent('storage:error', { detail: { error: 'Saved without content — using IndexedDB' } }));
+      return true;
+    } catch (e2) {
+      console.error('[Storage] Even minimal save failed:', e2);
+      document.dispatchEvent(new CustomEvent('storage:error', { detail: { error: e.message } }));
+      return false;
+    }
   }
 }
+
+// ========== FILE CONTENT LOADING ==========
+
+/**
+ * Get file metadata synchronously (no content for large files).
+ * Backward-compatible — existing code using this still works.
+ */
+export function getFile(id) {
+  return getLibrary().find(f => f.id === id) || null;
+}
+
+/**
+ * Get file content (loads from IDB if needed). ASYNC.
+ */
+export async function getFileContent(fileId) {
+  const file = getFile(fileId);
+  if (!file) return null;
+
+  if (file._useIDB || file._hasExternalContent) {
+    try {
+      const content = await loadFileContent(fileId);
+      return content || '';
+    } catch (e) {
+      console.error('[Storage] IDB content load failed:', e);
+      return '';
+    }
+  }
+
+  return file.md || '';
+}
+
+/**
+ * Get file with full content loaded (metadata + content). ASYNC.
+ */
+export async function getFileWithContent(id) {
+  const file = getFile(id);
+  if (!file) return null;
+
+  if (file._useIDB || file._hasExternalContent) {
+    try {
+      const content = await loadFileContent(id);
+      return { ...file, md: content || '' };
+    } catch (e) {
+      console.error('[Storage] getFileWithContent failed:', e);
+      return { ...file, md: '' };
+    }
+  }
+
+  return { ...file };
+}
+
+// ========== UPSERT / CREATE / DELETE ==========
+
+/**
+ * Insert or merge-update a file record.
+ * For large files, content is saved to IDB asynchronously.
+ */
+export function upsertFile(record) {
+  if (!record || !record.id) return false;
+
+  const files = getLibrary();
+  const i = files.findIndex(f => f.id === record.id);
+
+  // If content is large, save it to IDB (async, non-blocking)
+  if (record.md && record.md.length > IDB_THRESHOLD) {
+    saveFileContent(record.id, record.md).catch(e => {
+      console.error('[Storage] IDB content save failed:', e);
+    });
+
+    const meta = { ...record };
+    meta._useIDB = true;
+    meta._contentSize = record.md.length;
+    delete meta.md;
+
+    if (i > -1) {
+      files[i] = { ...files[i], ...meta };
+    } else {
+      files.unshift({ createdAt: Date.now(), highlights: [], goal: 0, scroll: 0, ...meta });
+    }
+  } else {
+    // Small file: everything in localStorage
+    const meta = { ...record };
+    delete meta._useIDB;
+    delete meta._hasExternalContent;
+    delete meta._contentSize;
+
+    if (i > -1) {
+      files[i] = { ...files[i], ...meta };
+    } else {
+      files.unshift({ createdAt: Date.now(), highlights: [], goal: 0, scroll: 0, ...meta });
+    }
+  }
+
+  return saveLibrary(files);
+}
+
+export function createFile(name, md, extra = {}) {
+  const rec = {
+    id: uid(),
+    name,
+    md,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    scroll: 0,
+    highlights: [],
+    goal: 0,
+    ...extra
+  };
+  upsertFile(rec);
+  return rec;
+}
+
+export function deleteFile(id) {
+  deleteFileContent(id).catch(() => {}); // Clean up IDB
+  return saveLibrary(getLibrary().filter(f => f.id !== id));
+}
+
+// ========== FOLDERS ==========
 
 export function getFolders() {
   try { return JSON.parse(localStorage.getItem(FOLDERS_KEY)) || []; }
@@ -224,7 +401,7 @@ export function renameFolder(oldName, newName) {
 export function deleteFolder(name) {
   saveFolders(getFolders().filter(f => f !== name));
   const files = getLibrary();
-  files.forEach(f => { if ((f.folder || '') === name) f.folder = ''; });  // files go to root, not deleted
+  files.forEach(f => { if ((f.folder || '') === name) f.folder = ''; });
   saveLibrary(files);
 }
 
@@ -236,41 +413,8 @@ export function setFileFolder(fileId, folderName) {
   saveLibrary(files);
 }
 
-export function getFile(id) {
-  return getLibrary().find(f => f.id === id) || null;
-}
+// ========== UNIQUE NAME ==========
 
-/** Insert or merge-update a file record (partial records are merged) */
-export function upsertFile(record) {
-  if (!record || !record.id) return false;
-  const files = getLibrary();
-  const i = files.findIndex(f => f.id === record.id);
-  if (i > -1) files[i] = { ...files[i], ...record };
-  else files.unshift({ createdAt: Date.now(), highlights: [], goal: 0, scroll: 0, ...record });
-  return saveLibrary(files);
-}
-
-export function createFile(name, md, extra = {}) {
-  const rec = {
-    id: uid(),
-    name,
-    md,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-    scroll: 0,
-    highlights: [],
-    goal: 0,
-    ...extra
-  };
-  upsertFile(rec);
-  return rec;
-}
-
-export function deleteFile(id) {
-  return saveLibrary(getLibrary().filter(f => f.id !== id));
-}
-
-/** Avoid duplicate names: readme.md → readme (2).md */
 export function uniqueName(base, files) {
   const names = new Set(files.map(f => f.name));
   if (!names.has(base)) return base;
@@ -282,7 +426,8 @@ export function uniqueName(base, files) {
   return `${stem} (${i})${ext}`;
 }
 
-/** Import a document saved by the OLD single-file version */
+// ========== LEGACY MIGRATION ==========
+
 export function migrateLegacy() {
   try {
     const legacy = localStorage.getItem(STORAGE_KEYS.DOC);
@@ -302,7 +447,50 @@ export function migrateLegacy() {
   } catch (e) {}
 }
 
-/* ---- versions (keyed per file id now) ---- */
+/**
+ * Migrate existing large files from localStorage to IndexedDB.
+ * Call once on app startup.
+ */
+export async function migrateToIDB() {
+  if (!isIDBAvailable()) return 0;
+
+  try {
+    await openDatabase();
+
+    const files = getLibrary();
+    let migrated = 0;
+    let needsResave = false;
+
+    for (const file of files) {
+      // If file has content in localStorage and it's large, move to IDB
+      if (file.md && file.md.length > IDB_THRESHOLD && !file._useIDB) {
+        try {
+          await saveFileContent(file.id, file.md);
+          file._useIDB = true;
+          file._contentSize = file.md.length;
+          delete file.md;
+          migrated++;
+          needsResave = true;
+        } catch (e) {
+          console.warn('[Storage] Failed to migrate file:', file.id, e);
+        }
+      }
+    }
+
+    if (needsResave) {
+      saveLibrary(files);
+      console.log(`[Storage] Migrated ${migrated} files to IndexedDB`);
+    }
+
+    return migrated;
+  } catch (e) {
+    console.warn('[Storage] Migration failed:', e);
+    return 0;
+  }
+}
+
+// ========== VERSIONS ==========
+
 export function pushVersion() {
   try {
     const key = state.fileId || state.name;
@@ -313,7 +501,22 @@ export function pushVersion() {
       arr = arr.slice(0, 12);
     }
     V[key] = arr;
-    localStorage.setItem(VER_KEY, JSON.stringify(V));
+
+    // Try localStorage first
+    try {
+      localStorage.setItem(VER_KEY, JSON.stringify(V));
+    } catch (e) {
+      // If localStorage full, save versions to IDB (strip large content)
+      console.warn('[Storage] Versions too large for localStorage, saving to IDB');
+      const minimalArr = arr.map(v => ({ at: v.at, size: v.md.length }));
+      V[key] = minimalArr;
+      localStorage.setItem(VER_KEY, JSON.stringify(V));
+
+      // Save full versions to IDB
+      saveVersionsIDB(key, arr).catch(e2 => {
+        console.error('[Storage] IDB version save failed:', e2);
+      });
+    }
   } catch (e) {}
 }
 
@@ -325,4 +528,52 @@ export function getVersions() {
   } catch (e) {
     return [];
   }
+}
+
+/**
+ * Get full version content (async, loads from IDB if needed).
+ */
+export async function getVersionContent(key, index = 0) {
+  const versions = getVersions();
+  const v = versions[index];
+  if (!v) return null;
+
+  if (v.md) return v.md;
+
+  // Try IDB
+  try {
+    const allVersions = await loadVersionsIDB(key);
+    return allVersions[index]?.md || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ========== STORAGE STATS ==========
+
+export async function getStorageUsage() {
+  const lsUsage = calculateLocalStorageUsage();
+  let idbEstimate = { quota: 0, usage: 0, percent: 0 };
+
+  try {
+    idbEstimate = await estimateStorage();
+  } catch (e) {}
+
+  return {
+    localStorage: lsUsage,
+    indexedDB: idbEstimate,
+    total: lsUsage.bytes + (idbEstimate.usage || 0)
+  };
+}
+
+function calculateLocalStorageUsage() {
+  let bytes = 0;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      if (value) bytes += (key.length + value.length) * 2;
+    }
+  } catch (e) {}
+  return { bytes, formatted: formatSize(bytes) };
 }

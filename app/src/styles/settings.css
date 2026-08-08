@@ -381,3 +381,97 @@ body:not([data-view="settings"]) #settingsPage { display: none; }
 .hotkeyHelp strong {
   color: var(--ink2);
 }
+
+
+/* Storage bar */
+.setStorageBar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: 12px;
+}
+
+.storageFill {
+  height: 100%;
+  transition: width 0.3s ease, background 0.3s ease;
+  border-radius: 4px;
+}
+
+.storageFill.level-safe {
+  background: #22c55e;
+}
+
+.storageFill.level-warning {
+  background: #f59e0b;
+}
+
+.storageFill.level-critical {
+  background: #ef4444;
+}
+
+/* Backup list */
+.backupList {
+  margin-top: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.backupItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.backupInfo b {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.backupInfo span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.backupActions {
+  display: flex;
+  gap: 8px;
+}
+
+.backupBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.backupBtn:hover {
+  background: var(--surface2);
+  border-color: var(--accent);
+}
+
+.backupBtn.danger {
+  color: #ef4444;
+}
+
+.backupBtn.danger:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.backupEmpty {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}

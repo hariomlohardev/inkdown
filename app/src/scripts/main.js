@@ -19,6 +19,7 @@ import { initSettings } from './settings.js';
 import { initSlides } from './slides.js';
 import { initShortcuts } from './shortcuts.js';
 import { initPalette } from './palette.js';
+import { migrateToIDB } from './storage.js';
 
 import { initStorageMonitor } from './storage-monitor.js';
 import { initBackupManager } from './backup-manager.js';
@@ -106,6 +107,12 @@ async function openLaunchFiles() {
   setTimeout(hideSplash, 4000);
 
   initTheme(); initState(); migrateLegacy();
+  // Migrate large files to IndexedDB (async, non-blocking)
+  import('./storage.js').then(({ migrateToIDB }) => {
+  migrateToIDB().then(count => {
+    if (count > 0) console.log(`[Inkdown] Migrated ${count} files to IDB`);
+  });
+});
   initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
   initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
   initSettings();

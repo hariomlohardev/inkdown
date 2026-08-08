@@ -365,6 +365,79 @@ class Api:
             log(f"save_hotkey_config error: {e}")
             return False
 
+    def save_file(self, filename, content, encoding='utf-8'):
+        """
+        Save content to a file. Opens a save dialog in PyWebView.
+        Returns the path where the file was saved, or None if cancelled.
+        """
+        try:
+            import webview
+            w = _MAIN_WINDOW.get('ref')
+            if not w:
+                return None
+
+            # Open save dialog
+            file_types = ('Markdown Files (*.md;*.markdown;*.txt)', 'HTML Files (*.html)', 'All files (*.*)')
+            result = w.create_file_dialog(
+                webview.SAVE_DIALOG,
+                directory='',
+                save_filename=filename,
+                file_types=file_types
+            )
+
+            if result:
+                # result might be a tuple or string depending on platform
+                path = result[0] if isinstance(result, (list, tuple)) else result
+
+                # Write the file
+                with open(path, 'w', encoding=encoding) as f:
+                    f.write(content)
+
+                log(f'File saved: {path}')
+                return path
+            else:
+                log('Save cancelled by user')
+                return None
+
+        except Exception as e:
+            log(f'save_file error: {repr(e)}')
+            return None
+
+    def save_binary_file(self, filename, base64_content):
+        """
+        Save binary content (like images) to a file.
+        """
+        try:
+            import base64
+            w = _MAIN_WINDOW.get('ref')
+            if not w:
+                return None
+
+            file_types = ('PNG Images (*.png)', 'JPEG Images (*.jpg;*.jpeg)', 'All files (*.*)')
+            result = w.create_file_dialog(
+                webview.SAVE_DIALOG,
+                directory='',
+                save_filename=filename,
+                file_types=file_types
+            )
+
+            if result:
+                path = result[0] if isinstance(result, (list, tuple)) else result
+
+                # Decode base64 and write binary
+                binary_data = base64.b64decode(base64_content)
+                with open(path, 'wb') as f:
+                    f.write(binary_data)
+
+                log(f'Binary file saved: {path}')
+                return path
+            else:
+                return None
+
+        except Exception as e:
+            log(f'save_binary_file error: {repr(e)}')
+            return None
+
 
 # ========== HTTP Server ==========
 class QuietHandler(http.server.SimpleHTTPRequestHandler):

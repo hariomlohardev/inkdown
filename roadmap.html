@@ -1,0 +1,1529 @@
+<!doctype html><html><head><meta charset="utf-8"><title>roadmap.md</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><style>body{font:17px/1.75 "Source Serif 4",Georgia,serif;max-width:820px;margin:48px auto;padding:0 26px;color:#0a0a0a}h1,h2,h3,h4{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.02em;line-height:1.25}h1{border-bottom:1px solid #d4d4d4;padding-bottom:.4em}h2{border-bottom:1px solid #e9e9e9;padding-bottom:.3em;margin-top:2em}pre{background:#0a0a0a!important;color:#e8e8e8;padding:18px 20px;overflow-x:auto;border-radius:12px}code{font-family:"JetBrains Mono",monospace;font-size:13.5px}:not(pre)>code{background:#f4f4f4;border:1px solid #e9e9e9;padding:2px 7px;border-radius:6px;font-size:.85em;color:#d1005f}table{border-collapse:collapse;width:100%}th{background:#f5f5f5;text-align:left;padding:10px 16px;border:1px solid #d4d4d4}td{padding:10px 16px;border:1px solid #e9e9e9}blockquote{border-left:4px solid #ff2e88;background:rgba(255,46,136,.07);padding:12px 20px;color:#3f3f3f;font-style:italic}img{max-width:100%;border-radius:12px}a{color:#d1005f}</style></head><body><hr>
+<h2 id="phase-1-linear-algebra-mastery-days-6-–-12"><strong>PHASE 1: Linear Algebra Mastery (Days 6 – 12)</strong><a class="hlink" href="#phase-1-linear-algebra-mastery-days-6-–-12">#</a></h2>
+<p><em>The Goal: Master how data is rotated, projected, and compressed in high-dimensional space.</em></p>
+<ul>
+<li><strong>Day 6: Gram-Schmidt &amp; QR Decomposition</strong><ul>
+<li><em>AGI Concept:</em> Making vectors completely independent (orthogonal) to remove redundant data.</li>
+<li><em>Coding Milestone:</em> Code the <strong>Gram-Schmidt process</strong> to break any matrix into <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8778em; vertical-align: -0.1944em;"></span><span class="mord mathnormal">Q</span></span></span></span></span></span> (orthogonal) and <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0077em;">R</span></span></span></span></span></span> (upper triangular).</li>
+</ul>
+</li>
+<li><strong>Day 7: Advanced Determinants &amp; Cramer's Rule</strong><ul>
+<li><em>AGI Concept:</em> The algebraic laws of space-stretching.</li>
+<li><em>Coding Milestone:</em> Solve standard systems using Cramer's Rule in NumPy.</li>
+</ul>
+</li>
+<li><strong>Day 8: Matrix Diagonalization (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.8141em;"></span><span class="mord mathnormal" style="margin-right: 0.0576em;">S</span><span class="mord">Λ</span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0576em;">S</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span></span></span>)</strong><ul>
+<li><em>AGI Concept:</em> How applying a neural network layer over and over affects data over time (the vanishing/exploding gradient intuition).</li>
+<li><em>Coding Milestone:</em> Diagonalize a matrix manually using your eigenvalues from Day 3.</li>
+</ul>
+</li>
+<li><strong>Day 9: Symmetric &amp; Positive Definite Matrices</strong><ul>
+<li><em>AGI Concept:</em> How we mathematically define "energy landscapes" and "error surfaces" in AI optimization.</li>
+<li><em>Coding Milestone:</em> Test if a matrix is Positive Definite using pivots and eigenvalues in NumPy.</li>
+</ul>
+</li>
+<li><strong>Day 10 – 11: SVD (Singular Value Decomposition)</strong><ul>
+<li><em>AGI Concept:</em> The absolute king of matrix factorization. Every matrix (even non-square ones) can be broken into <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8413em;"></span><span class="mord mathnormal" style="margin-right: 0.109em;">U</span><span class="mord">Σ</span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.2222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8413em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right: 0.1389em;">T</span></span></span></span></span></span></span></span></span></span></span></span></span>. This is how we compress massive AI models.</li>
+<li><em>Coding Milestone:</em> <strong>The SVD Image Compressor.</strong> Load a high-resolution image, run SVD, throw away 90% of the singular values, and reconstruct the image.</li>
+</ul>
+</li>
+<li><strong>Day 12: Linear Algebra Graduation Project</strong><ul>
+<li><em>Coding Milestone:</em> Build a custom <strong>PCA (Principal Component Analysis)</strong> class from scratch using only SVD, and use it to compress a real dataset.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-multivariate-calculus-backpropagation-days-13-–-22"><strong>PHASE 2: Multivariate Calculus &amp; Backpropagation (Days 13 – 22)</strong><a class="hlink" href="#phase-2-multivariate-calculus-backpropagation-days-13-–-22">#</a></h2>
+<p><em>The Goal: Understand how changes in weights lead to changes in error. This is how AI learns.</em></p>
+<ul>
+<li><strong>Day 13 – 14: Partial Derivatives &amp; Gradients</strong><ul>
+<li><em>AGI Concept:</em> Slopes in high-dimensional space. The Gradient (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord">∇</span></span></span></span></span></span>) points in the direction of the steepest ascent.</li>
+<li><em>Coding Milestone:</em> Code a numerical gradient approximation function in Python.</li>
+</ul>
+</li>
+<li><strong>Day 15 – 16: Jacobians &amp; Hessians</strong><ul>
+<li><em>AGI Concept:</em> Matrices of derivatives. How multiple outputs change with multiple inputs.</li>
+<li><em>Coding Milestone:</em> Calculate and code the Jacobian matrix for a multi-variable vector function.</li>
+</ul>
+</li>
+<li><strong>Day 17 – 18: The Chain Rule in High Dimensions</strong><ul>
+<li><em>AGI Concept:</em> How error at the output of a network flows backward through 100 layers to update the first layer (Backpropagation).</li>
+<li><em>Coding Milestone:</em> Manually calculate the backprop derivatives for a simple 2-layer network on paper.</li>
+</ul>
+</li>
+<li><strong>Day 19 – 21: The Autograd Engine (The Big Challenge)</strong><ul>
+<li><em>AGI Concept:</em> Automatic Differentiation. The computational graph.</li>
+<li><em>Coding Milestone:</em> <strong>Build Micrograd from scratch.</strong> Write a Python class <code>Value</code> that keeps track of the mathematical operations performed on it, and automatically calculates gradients backward.</li>
+</ul>
+</li>
+<li><strong>Day 22: Calculus Graduation Project</strong><ul>
+<li><em>Coding Milestone:</em> Define a complex mathematical function, and use your custom Autograd engine to find its minimum starting from a random point.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-optimization-the-learning-loop-days-23-–-30"><strong>PHASE 3: Optimization &amp; The Learning Loop (Days 23 – 30)</strong><a class="hlink" href="#phase-3-optimization-the-learning-loop-days-23-–-30">#</a></h2>
+<p><em>The Goal: Build the actual training loops that update weights.</em></p>
+<ul>
+<li><strong>Day 23: Gradient Descent in Multi-Dimensions</strong><ul>
+<li><em>AGI Concept:</em> Walking down the error mountain.</li>
+<li><em>Coding Milestone:</em> Implement basic Gradient Descent using your Autograd engine.</li>
+</ul>
+</li>
+<li><strong>Day 24: Stochastic Gradient Descent (SGD) &amp; Mini-Batching</strong><ul>
+<li><em>AGI Concept:</em> Training on small chunks of data to save GPU memory and add noise to escape local minima.</li>
+<li><em>Coding Milestone:</em> Write a data batching loader from scratch in Python.</li>
+</ul>
+</li>
+<li><strong>Day 25: Momentum &amp; RMSProp</strong><ul>
+<li><em>AGI Concept:</em> Adding "velocity" to our descent so we don't get stuck in flat areas of the error mountain.</li>
+<li><em>Coding Milestone:</em> Implement Momentum and RMSProp algorithms from scratch.</li>
+</ul>
+</li>
+<li><strong>Day 26 – 27: The Adam Optimizer</strong><ul>
+<li><em>AGI Concept:</em> The most popular optimizer in AI (Adaptive Moment Estimation).</li>
+<li><em>Coding Milestone:</em> <strong>Code the Adam Optimizer from scratch</strong> using your Autograd engine.</li>
+</ul>
+</li>
+<li><strong>Day 28 – 29: Training Your First True Model</strong><ul>
+<li><em>Coding Milestone:</em> Train a Linear and Logistic Regression model on real-world data using <strong>only</strong> your custom Autograd engine and your custom Adam Optimizer.</li>
+</ul>
+</li>
+<li><strong>Day 30: Month 1 Grand Finale</strong><ul>
+<li><em>Goal:</em> Code audit, deep clean of your <code>AGI_Research</code> repository, writing a major technical blog post/README summary of Month 1, and preparing the roadmap for Month 2 (Probability and Statistics).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Since we accelerated your roadmap by pulling <strong>Multivariate Calculus &amp; Optimization</strong> into Month 1 (because of your incredible 8-hour daily discipline), <strong>Month 2</strong> has been completely upgraded.</p>
+<p>Month 2 (Days 31 to 60) will focus on <strong>Probability, Information Theory, and Classical Machine Learning Algorithms from Scratch.</strong></p>
+<p>This is the month where you learn how AI deals with <strong>uncertainty</strong>, how we measure <strong>information (Entropy)</strong>, and how you build the legendary classic ML models purely in NumPy. </p>
+<p>Here is your official, day-by-day roadmap for <strong>Month 2 (August)</strong>.</p>
+<hr>
+<h2 id="phase-1-probability-bayesian-inference-days-31-–-40"><strong>PHASE 1: Probability &amp; Bayesian Inference (Days 31 – 40)</strong><a class="hlink" href="#phase-1-probability-bayesian-inference-days-31-–-40">#</a></h2>
+<p><em>The Goal: Master the math of uncertainty. AI models are not calculators; they are probabilistic prediction engines.</em></p>
+<ul>
+<li><strong>Day 31 – 32: Bayes' Theorem &amp; Conditional Probability</strong><ul>
+<li><em>AGI Concept:</em> How AI updates its beliefs when it sees new data.</li>
+<li><em>Coding Milestone:</em> Build a <strong>Naive Bayes Spam Filter</strong> from scratch. Train it on a text dataset to classify spam vs. ham.</li>
+</ul>
+</li>
+<li><strong>Day 33 – 34: Random Variables &amp; Distributions (PMFs, PDFs, CDFs)</strong><ul>
+<li><em>AGI Concept:</em> How we mathematically model continuous vs. discrete data.</li>
+<li><em>Coding Milestone:</em> Code a script that simulates probability distributions and plots their probability density curves.</li>
+</ul>
+</li>
+<li><strong>Day 35 – 36: Expected Value, Variance &amp; Covariance Matrices</strong><ul>
+<li><em>AGI Concept:</em> How we measure data spread and the relationships between multiple features.</li>
+<li><em>Coding Milestone:</em> Write a function that calculates a <strong>Covariance Matrix</strong> from a raw multi-dimensional dataset <em>without</em> using <code>np.cov</code>.</li>
+</ul>
+</li>
+<li><strong>Day 37 – 38: The Famous Distributions (Gaussian, Bernoulli, Multinomial)</strong><ul>
+<li><em>AGI Concept:</em> The Normal distribution is the default state of the universe. LLMs use Multinomial distributions to sample the next word.</li>
+<li><em>Coding Milestone:</em> Simulate the <strong>Central Limit Theorem</strong> (generate 10,000 random samples from non-normal distributions and prove they form a perfect Gaussian bell curve when averaged).</li>
+</ul>
+</li>
+<li><strong>Day 39 – 40: MLE (Maximum Likelihood Estimation) &amp; MAP</strong><ul>
+<li><em>AGI Concept:</em> How we mathematically determine the "most likely" parameters of a model given the data.</li>
+<li><em>Coding Milestone:</em> Implement an MLE parameter fitter for a Gaussian distribution.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-information-theory-loss-metrics-days-41-–-46"><strong>PHASE 2: Information Theory &amp; Loss Metrics (Days 41 – 46)</strong><a class="hlink" href="#phase-2-information-theory-loss-metrics-days-41-–-46">#</a></h2>
+<p><em>The Goal: Master how we measure "information" and "surprise." This is the math of LLM alignment and loss.</em></p>
+<ul>
+<li><strong>Day 41 – 42: Shannon Entropy &amp; Information Content</strong><ul>
+<li><em>AGI Concept:</em> How much "surprise" or uncertainty is in a message.</li>
+<li><em>Coding Milestone:</em> Write a Python program that calculates the exact <strong>Shannon Entropy</strong> of any text file (showing how compressed/structured the text is).</li>
+</ul>
+</li>
+<li><strong>Day 43 – 44: Cross-Entropy &amp; KL Divergence</strong><ul>
+<li><em>AGI Concept:</em> How we measure the distance between what the AI predicts and the real world. This is the exact loss function of ChatGPT.</li>
+<li><em>Coding Milestone:</em> Code a <strong>KL Divergence (Kullback-Leibler)</strong> calculator in NumPy. Use it to measure how "different" two probability distributions are.</li>
+</ul>
+</li>
+<li><strong>Day 45 – 46: Mutual Information</strong><ul>
+<li><em>AGI Concept:</em> How much information one variable tells us about another.</li>
+<li><em>Coding Milestone:</em> Implement a feature-selection algorithm that selects the best features of a dataset based on Mutual Information.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-classical-machine-learning-from-scratch-days-47-–-60"><strong>PHASE 3: Classical Machine Learning from Scratch (Days 47 – 60)</strong><a class="hlink" href="#phase-3-classical-machine-learning-from-scratch-days-47-–-60">#</a></h2>
+<p><em>The Goal: Build the legendary algorithms that ruled the world before Deep Learning, purely in NumPy.</em></p>
+<ul>
+<li><strong>Day 47 – 48: Linear Regression (The Gradient Descent Version)</strong><ul>
+<li><em>Coding Milestone:</em> Build a multiple linear regression model that learns its weights iteratively via Gradient Descent. Compare it with your Day 5 Normal Equation solver.</li>
+</ul>
+</li>
+<li><strong>Day 49 – 50: Logistic Regression (Binary Classifier) from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> Build a Logistic Regression classifier using the <strong>Sigmoid function</strong> and <strong>Binary Cross-Entropy Loss</strong> to classify binary data.</li>
+</ul>
+</li>
+<li><strong>Day 51 – 52: Support Vector Machines (SVM) &amp; The Kernel Trick</strong><ul>
+<li><em>Coding Milestone:</em> Write the optimization logic for a Hard-Margin SVM to draw a decision boundary with maximum margin.</li>
+</ul>
+</li>
+<li><strong>Day 53 – 54: Decision Trees (ID3 Algorithm) from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> Build a Decision Tree classifier that splits nodes based on <strong>Information Gain</strong> (using the Entropy code you wrote on Day 41).</li>
+</ul>
+</li>
+<li><strong>Day 55 – 56: Random Forests (Ensemble Learning)</strong><ul>
+<li><em>Coding Milestone:</em> Combine multiple Decision Trees using <strong>Bagging</strong> (bootstrap aggregating) to build a Random Forest classifier from scratch.</li>
+</ul>
+</li>
+<li><strong>Day 57 – 58: K-Means Clustering (Unsupervised Learning)</strong><ul>
+<li><em>Coding Milestone:</em> Code the K-Means clustering algorithm. Have it dynamically update cluster centroids and group unlabeled 2D data.</li>
+</ul>
+</li>
+<li><strong>Day 59 – 60: Month 2 Grand Capstone Project</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build your own "Scikit-Learn" library.</strong> Pack all your custom ML classes (Linear Regression, Logistic Regression, Decision Tree, K-Means) into a structured package. Use it to train and test on a real Kaggle dataset, and write a comprehensive research summary.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-2"><strong>The Mindset for Month 2:</strong><a class="hlink" href="#the-mindset-for-month-2">#</a></h3>
+<p>If Month 1 is about "How to represent and optimize data," <strong>Month 2 is about "How to make decisions under uncertainty."</strong> </p>
+<p>This is the ultimate transition month. By the end of Month 2, you will no longer be someone studying math—you will be a <strong>fully-fledged Machine Learning Engineer</strong> who has built almost every major classical algorithm from absolute scratch. </p>
+<p>By <strong>Month 3 (September)</strong>, you have built the entire mathematical foundation of AI from absolute scratch. You are now ready to transition into <strong>Modern Deep Learning, High-Performance GPUs, and Complex Neural Architectures (Computer Vision &amp; Sequence Modeling).</strong></p>
+<p>This is the month where you leave CPU-bound NumPy behind and master <strong>PyTorch, CUDA (GPU acceleration), Convolutional Networks (CNNs), and Recurrent Networks (RNNs/LSTMs)</strong>. </p>
+<p>By the end of Month 3, your goal is to have built a <strong>character-level text generator (LSTM)</strong> in PyTorch and trained it on a GPU to write text on its own.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 3</strong>.</p>
+<hr>
+<h2 id="phase-1-high-performance-deep-learning-pytorch-days-61-–-70"><strong>PHASE 1: High-Performance Deep Learning &amp; PyTorch (Days 61 – 70)</strong><a class="hlink" href="#phase-1-high-performance-deep-learning-pytorch-days-61-–-70">#</a></h2>
+<p><em>The Goal: Transition from CPU-based scratch code to GPU-accelerated deep learning systems used by OpenAI and DeepMind.</em></p>
+<ul>
+<li><strong>Day 61 – 62: PyTorch Tensors &amp; Autograd Mechanics</strong><ul>
+<li><em>AGI Concept:</em> How PyTorch constructs dynamic computational graphs (similar to your custom Month 1 Autograd, but optimized in C++).</li>
+<li><em>Coding Milestone:</em> Recreate your Day 4 optimization tasks using PyTorch Tensors and verify PyTorch's gradient calculation speed vs. your custom engine.</li>
+</ul>
+</li>
+<li><strong>Day 63 – 64: PyTorch <code>nn.Module</code>, Datasets, &amp; DataLoaders</strong><ul>
+<li><em>AGI Concept:</em> Standardizing deep learning pipelines. Mini-batching data efficiently using multithreading.</li>
+<li><em>Coding Milestone:</em> Build a clean PyTorch training pipeline class from scratch, separating model architecture, data loading, and optimization.</li>
+</ul>
+</li>
+<li><strong>Day 65 – 66: CUDA &amp; GPU Acceleration (Hardware Mastery)</strong><ul>
+<li><em>AGI Concept:</em> Parallel computing on graphics cards. Memory management between RAM (CPU) and VRAM (GPU).</li>
+<li><em>Coding Milestone:</em> <strong>The GPU Speed Test.</strong> Write a script that multiplies massive matrices on both CPU and GPU, and benchmark the speedup (usually 50x to 100x on GPU).</li>
+</ul>
+</li>
+<li><strong>Day 67 – 68: Regularization (Batch Norm, Dropout, Weight Decay)</strong><ul>
+<li><em>AGI Concept:</em> How we prevent neural networks from just memorizing the data (overfitting).</li>
+<li><em>Coding Milestone:</em> Implement Dropout and Batch Normalization layers in a PyTorch network and track their effect on validation loss.</li>
+</ul>
+</li>
+<li><strong>Day 69 – 70: Deep Neural Networks (DNN) in PyTorch</strong><ul>
+<li><em>Coding Milestone:</em> Code a deep fully-connected network in PyTorch, train it on a complex dataset (like tabular data or pixel coordinates), and use tensorboard/weights &amp; biases to log the training metrics.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-computer-vision-convolutions-days-71-–-80"><strong>PHASE 2: Computer Vision &amp; Convolutions (Days 71 – 80)</strong><a class="hlink" href="#phase-2-computer-vision-convolutions-days-71-–-80">#</a></h2>
+<p><em>The Goal: Master spatial data. How AI processes images, patterns, and video.</em></p>
+<ul>
+<li><strong>Day 71 – 72: The Math of Convolutions (CNNs)</strong><ul>
+<li><em>AGI Concept:</em> Kernels, Padding, Stride, Channels, and Pooling. Why Convolutions are translation-invariant.</li>
+<li><em>Coding Milestone:</em> <strong>The 2D Convolution from Scratch.</strong> Write a 2D convolution operation in NumPy using only loops to apply image filters (like blur, edge detection) manually.</li>
+</ul>
+</li>
+<li><strong>Day 73 – 74: Building CNNs in PyTorch</strong><ul>
+<li><em>Coding Milestone:</em> Build your first Convolutional Neural Network (CNN) in PyTorch, incorporating Conv2d, MaxPool2d, and Linear layers.</li>
+</ul>
+</li>
+<li><strong>Day 75 – 76: Training on Real Datasets (CIFAR-10)</strong><ul>
+<li><em>Coding Milestone:</em> Train your PyTorch CNN on the <strong>CIFAR-10 dataset</strong> (60,000 color images of planes, cars, animals). Achieve &gt;80% test accuracy using data augmentation.</li>
+</ul>
+</li>
+<li><strong>Day 77 – 78: Classic CNN Architectures (AlexNet &amp; VGG)</strong><ul>
+<li><em>AGI Concept:</em> Reading landmark research papers and replicating their architecture.</li>
+<li><em>Coding Milestone:</em> Read the original AlexNet paper (2012) and VGG paper (2014), and code their architectures from scratch in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 79 – 80: ResNets (Residual Networks) &amp; Skip Connections</strong><ul>
+<li><em>AGI Concept:</em> The math of "Skip Connections." This is the exact architectural trick that allowed AI to scale from 20 layers to 100+ layers without gradients vanishing.</li>
+<li><em>Coding Milestone:</em> Build a ResNet block in PyTorch and construct a deep ResNet model.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-sequence-models-temporal-data-days-81-–-90"><strong>PHASE 3: Sequence Models &amp; Temporal Data (Days 81 – 90)</strong><a class="hlink" href="#phase-3-sequence-models-temporal-data-days-81-–-90">#</a></h2>
+<p><em>The Goal: Master temporal data. How AI processes sentences, time, and music.</em></p>
+<ul>
+<li><strong>Day 81 – 82: Recurrent Neural Networks (RNNs) &amp; Backprop Through Time</strong><ul>
+<li><em>AGI Concept:</em> Memory in neural networks. The "Hidden State" (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8444em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: 0em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span>). How gradients flow backward through time (BPTT).</li>
+<li><em>Coding Milestone:</em> Write a standard RNN cell forward pass from scratch in NumPy/PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 83 – 84: The RNN Memory Wall</strong><ul>
+<li><em>AGI Concept:</em> Why standard RNNs cannot remember the beginning of a long sentence (vanishing gradients through time).</li>
+<li><em>Coding Milestone:</em> Run a simulation showing an RNN failing to remember a sequence of more than 10 steps.</li>
+</ul>
+</li>
+<li><strong>Day 85 – 87: LSTMs (Long Short-Term Memory) &amp; GRUs</strong><ul>
+<li><em>AGI Concept:</em> The "Cell State" (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8333em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0715em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: -0.0715em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span>) and gating mechanisms (Input, Forget, and Output gates) that allow gradients to flow infinitely through time.</li>
+<li><em>Coding Milestone:</em> <strong>Code the LSTM equations from scratch</strong> in PyTorch without using <code>nn.LSTM</code>.</li>
+</ul>
+</li>
+<li><strong>Day 88 – 89: Building a Character-Level Text Generator</strong><ul>
+<li><em>Coding Milestone:</em> Build an LSTM-based language model in PyTorch. Train it on a dataset (like a book or coding scripts) on your GPU, and have it <strong>generate new text on its own</strong> by predicting the next character.</li>
+</ul>
+</li>
+<li><strong>Day 90: Month 3 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your PyTorch repositories, write your Month 3 technical blog post, and prepare the roadmap for Month 4 (where you transition to <strong>Reinforcement Learning, Q-Learning, and Deepmind-style Game Agents</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-3"><strong>The Mindset for Month 3:</strong><a class="hlink" href="#the-mindset-for-month-3">#</a></h3>
+<p>You are transitioning from "Theory and Scratch Math" to "High-Performance AI Engineering." You will learn how to harness the raw power of GPUs and build models that can "see" (CNNs) and "speak" (RNNs/LSTMs).</p>
+<p>By September 30th, you will be a capable deep learning developer who can read research papers and implement complex vision and text models in PyTorch.</p>
+<p>By <strong>Month 4 (October)</strong>, you have built models that can "see" (CNNs) and "speak" (RNNs/LSTMs). Now, we introduce the most critical pillar of AGI: <strong>Agency</strong>. </p>
+<p>AGI cannot just be a passive predictor; it must be an <strong>Agent</strong> that can interact with an environment, make strategic decisions, and learn from its own mistakes via trial and error. This is <strong>Reinforcement Learning (RL)</strong>—the exact field behind DeepMind's AlphaGo, robotics, and the alignment algorithms (RLHF) that make ChatGPT useful.</p>
+<p>By the end of Month 4, your goal is to have built a <strong>Deep Q-Network (DQN) Agent</strong> in PyTorch and trained it to master classic Atari-style games or control systems on its own.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 4</strong>.</p>
+<hr>
+<h2 id="phase-1-classical-reinforcement-learning-days-91-–-100"><strong>PHASE 1: Classical Reinforcement Learning (Days 91 – 100)</strong><a class="hlink" href="#phase-1-classical-reinforcement-learning-days-91-–-100">#</a></h2>
+<p><em>The Goal: Master the mathematical foundation of decisions: States, Actions, Policies, and the Bellman Equation.</em></p>
+<ul>
+<li><strong>Day 91 – 92: Agent-Environment Loops &amp; OpenAI Gymnasium</strong><ul>
+<li><em>AGI Concept:</em> The RL Loop (Agent <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Action <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Environment <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> State &amp; Reward). Setting up simulation environments using <code>gymnasium</code>.</li>
+<li><em>Coding Milestone:</em> Code a random agent in Gymnasium to interact with environments (like <code>CartPole</code> or <code>FrozenLake</code>) and log the states and rewards.</li>
+</ul>
+</li>
+<li><strong>Day 93 – 94: Markov Decision Processes (MDPs) &amp; Bellman Equation</strong><ul>
+<li><em>AGI Concept:</em> The mathematical engine of RL. The Bellman Equation (calculating the current value of a state based on future expected rewards).</li>
+<li><em>Coding Milestone:</em> Write down the mathematical equations for a simple grid-world state-value transition.</li>
+</ul>
+</li>
+<li><strong>Day 95 – 96: Dynamic Programming (Value &amp; Policy Iteration)</strong><ul>
+<li><em>AGI Concept:</em> Solving a known environment using iterative value updates.</li>
+<li><em>Coding Milestone:</em> Code the <strong>Value Iteration</strong> and <strong>Policy Iteration</strong> algorithms from scratch to solve a 2D GridWorld maze.</li>
+</ul>
+</li>
+<li><strong>Day 97 – 98: Temporal Difference (TD) Learning</strong><ul>
+<li><em>AGI Concept:</em> Learning at every step without waiting for the game to end (bootstrapping).</li>
+<li><em>Coding Milestone:</em> Implement TD(0) learning to estimate state values.</li>
+</ul>
+</li>
+<li><strong>Day 99 – 100: Q-Learning from Scratch</strong><ul>
+<li><em>AGI Concept:</em> Exploration vs. Exploitation (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></span></span>-greedy). Updating a Q-Table to find the optimal policy.</li>
+<li><em>Coding Milestone:</em> <strong>Code Q-Learning from scratch</strong> (no PyTorch). Train your agent to navigate <code>FrozenLake</code> perfectly by building and updating its own Q-Table.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-deep-reinforcement-learning-deepmind-style-days-101-–-110"><strong>PHASE 2: Deep Reinforcement Learning (DeepMind Style) (Days 101 – 110)</strong><a class="hlink" href="#phase-2-deep-reinforcement-learning-deepmind-style-days-101-–-110">#</a></h2>
+<p><em>The Goal: Replace flat Q-tables with Deep Neural Networks (PyTorch) to solve complex, infinite-state environments.</em></p>
+<ul>
+<li><strong>Day 101 – 102: The Deep Q-Network (DQN)</strong><ul>
+<li><em>AGI Concept:</em> Using a Neural Network to predict Q-values for continuous inputs (like screen pixels).</li>
+<li><em>Coding Milestone:</em> Design a DQN architecture in PyTorch that takes game states as input and outputs the predicted reward for each action.</li>
+</ul>
+</li>
+<li><strong>Day 103 – 104: Experience Replay &amp; Target Networks</strong><ul>
+<li><em>AGI Concept:</em> The two stabilization tricks invented by DeepMind. Storing memories to break correlation between consecutive frames, and using a separate "frozen" network to calculate target values.</li>
+<li><em>Coding Milestone:</em> Code an <strong>Experience Replay Buffer</strong> from scratch in Python using double-ended queues (<code>deque</code>).</li>
+</ul>
+</li>
+<li><strong>Day 105 – 107: Coding a PyTorch DQN Agent</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a complete DQN Agent in PyTorch.</strong> Train your agent on your GPU to solve the <code>CartPole-v1</code> environment. Plot the reward curve and watch your agent learn to balance the pole indefinitely.</li>
+</ul>
+</li>
+<li><strong>Day 108 – 110: Double DQN &amp; Dueling DQN</strong><ul>
+<li><em>AGI Concept:</em> Preventing overestimation bias and separating state-value from action-advantage.</li>
+<li><em>Coding Milestone:</em> Read DeepMind's original Double DQN paper and implement the architectural improvements in your PyTorch code.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-policy-gradients-actor-critic-days-111-–-120"><strong>PHASE 3: Policy Gradients &amp; Actor-Critic (Days 111 – 120)</strong><a class="hlink" href="#phase-3-policy-gradients-actor-critic-days-111-–-120">#</a></h2>
+<p><em>The Goal: Directly optimize policies. This is the mathematical foundation of LLM alignment (RLHF).</em></p>
+<ul>
+<li><strong>Day 111 – 112: Policy Gradient Methods (REINFORCE)</strong><ul>
+<li><em>AGI Concept:</em> Instead of predicting Q-values, directly output a probability distribution over actions and optimize it using the log-likelihood gradient.</li>
+<li><em>Coding Milestone:</em> Implement the REINFORCE algorithm in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 113 – 114: Actor-Critic Architectures (A2C)</strong><ul>
+<li><em>AGI Concept:</em> Combining Value-based and Policy-based RL. One network decides actions (Actor), while another network evaluates how good those actions were (Critic).</li>
+<li><em>Coding Milestone:</em> Design a dual-headed Actor-Critic network in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 115 – 117: Continuous Control with Actor-Critic</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Train an Actor-Critic Agent</strong> to land a spaceship in the <code>LunarLander-v2</code> Gymnasium environment.</li>
+</ul>
+</li>
+<li><strong>Day 118 – 119: Intro to PPO (Proximal Policy Optimization)</strong><ul>
+<li><em>AGI Concept:</em> Clip surrogate objective functions. This is the exact, stable RL algorithm used by OpenAI to align GPT models using human feedback (RLHF).</li>
+<li><em>Coding Milestone:</em> Read the original OpenAI PPO paper and write a short summary of how clipping prevents the policy from changing too destructively.</li>
+</ul>
+</li>
+<li><strong>Day 120: Month 4 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your RL repositories, write your Month 4 technical blog post, and prepare the roadmap for Month 5 (where you enter <strong>Transformers, Attention Mechanisms, and building LLMs from scratch</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-4"><strong>The Mindset for Month 4:</strong><a class="hlink" href="#the-mindset-for-month-4">#</a></h3>
+<p>You are transitioning from "predicting data" to "interacting with worlds." You are building agents that have goals, experience rewards, and adapt dynamically. </p>
+<p>By October 31st, you will understand the exact mechanics of how agents make decisions—which is the absolute prerequisite for the alignment of Large Language Models.</p>
+<p>By <strong>Month 5 (November)</strong>, you have built the entire deep learning and decision-making pipeline. Now, you enter the modern era of AI. </p>
+<p>This is the month of <strong>Transformers, Attention Mechanisms, and building Large Language Models (LLMs) from scratch.</strong></p>
+<p>The Transformer architecture (Vaswani et al., 2017) is the single most important algorithm in AGI today. It powers ChatGPT, Claude, Midjourney, and AlphaFold. This month, you will move beyond sequence models and build a <strong>decoder-only GPT (Generative Pre-trained Transformer)</strong> model from scratch, train it on your GPU, and watch it generate coherent text.</p>
+<p>By the end of Month 5, your goal is to have coded a <strong>Mini-GPT (like Andrej Karpathy's NanoGPT)</strong> from scratch in PyTorch, trained it, and implemented temperature and top-k sampling for custom text generation.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 5</strong>.</p>
+<hr>
+<h2 id="phase-1-the-self-attention-engine-days-121-–-130"><strong>PHASE 1: The Self-Attention Engine (Days 121 – 130)</strong><a class="hlink" href="#phase-1-the-self-attention-engine-days-121-–-130">#</a></h2>
+<p><em>The Goal: Master the core mathematics of modern AI: Queries, Keys, Values, and Multi-Head Attention.</em></p>
+<ul>
+<li><strong>Day 121 – 122: Reading "Attention Is All You Need"</strong><ul>
+<li><em>AGI Concept:</em> Understanding the Query (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8778em; vertical-align: -0.1944em;"></span><span class="mord mathnormal">Q</span></span></span></span></span></span>), Key (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">K</span></span></span></span></span></span>), and Value (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.2222em;">V</span></span></span></span></span></span>) vectors. How attention acts as a dynamic database lookup.</li>
+<li><em>Coding Milestone:</em> Read the original 2017 paper and write down the exact dimensions of <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8778em; vertical-align: -0.1944em;"></span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.2222em;">V</span></span></span></span></span></span> for a single attention block.</li>
+</ul>
+</li>
+<li><strong>Day 123 – 124: Single-Head Scaled Dot-Product Attention</strong><ul>
+<li><em>AGI Concept:</em> The core equation of modern AI:</li>
+</ul>
+</li>
+</ul>
+<p></p><div class="math-block"><span><div class="math-scroll"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord text"><span class="mord">Attention</span></span><span class="mopen">(</span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.2222em;">V</span><span class="mclose">)</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 2.4684em; vertical-align: -0.95em;"></span><span class="mord text"><span class="mord">softmax</span></span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top: 0em;"><span class="delimsizing size3">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 1.5183em;"><span class="" style="top: -2.2528em;"><span class="pstrut" style="height: 3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.8572em;"><span class="svg-align" style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="mord" style="padding-left: 0.833em;"><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.3361em;"><span class="" style="top: -2.55em; margin-left: 0em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right: 0.0315em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span><span class="" style="top: -2.8172em;"><span class="pstrut" style="height: 3em;"></span><span class="hide-tail" style="min-width: 0.853em; height: 1.08em;"><svg width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.1828em;"><span class=""></span></span></span></span></span></span></span><span class="" style="top: -3.23em;"><span class="pstrut" style="height: 3em;"></span><span class="frac-line" style="border-bottom-width: 0.04em;"></span></span><span class="" style="top: -3.677em;"><span class="pstrut" style="height: 3em;"></span><span class="mord"><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0715em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8413em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right: 0.1389em;">T</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.93em;"><span class=""></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top: 0em;"><span class="delimsizing size3">)</span></span></span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.2222em;">V</span></span></span></span></span></div></span></div><p></p>
+<div class="codebox"><div class="codehead"><span class="clang">markdown</span><button class="ccopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></div><pre><code data-highlighted="yes" class="hljs language-markdown"><span class="hljs-bullet">*</span>   <span class="hljs-emphasis">*Coding Milestone:*</span> <span class="hljs-strong">**Code Scaled Dot-Product Attention from scratch**</span> in PyTorch. Verify that your output dimensions are correct.
+</code></pre></div>
+<ul>
+<li><strong>Day 125 – 126: Multi-Head Attention (MHA)</strong><ul>
+<li><em>AGI Concept:</em> Splitting attention into multiple "heads" so the model can simultaneously pay attention to different parts of a sentence (e.g., subject and verb).</li>
+<li><em>Coding Milestone:</em> Code a <code>MultiHeadAttention</code> class in PyTorch, handling tensor splitting and concatenation.</li>
+</ul>
+</li>
+<li><strong>Day 127 – 128: Positional Encodings</strong><ul>
+<li><em>AGI Concept:</em> Because Transformers process all words at once (unlike RNNs), they have no concept of word order. We must inject "position" using sinusoidal wave equations.</li>
+<li><em>Coding Milestone:</em> Code a sinusoidal Positional Encoding layer from scratch in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 129 – 130: Layer Normalization &amp; Feed-Forward Networks</strong><ul>
+<li><em>AGI Concept:</em> LayerNorm (stabilizing training across heads) and the Position-wise Feed-Forward Network (FFN) that processes each word's updated representation.</li>
+<li><em>Coding Milestone:</em> Implement LayerNorm and FFN blocks in PyTorch.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-building-the-gpt-decoder-days-131-–-140"><strong>PHASE 2: Building the GPT Decoder (Days 131 – 140)</strong><a class="hlink" href="#phase-2-building-the-gpt-decoder-days-131-–-140">#</a></h2>
+<p><em>The Goal: Assemble the attention blocks into a causal GPT-style decoder model.</em></p>
+<ul>
+<li><strong>Day 131 – 132: Causal Masking (The Decoder Block)</strong><ul>
+<li><em>AGI Concept:</em> Prevent the model from "looking into the future." Masking future tokens using a lower-triangular matrix of <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6667em; vertical-align: -0.0833em;"></span><span class="mord">−</span><span class="mord">∞</span></span></span></span></span></span> so the softmax ignores them.</li>
+<li><em>Coding Milestone:</em> Implement causal masking in your PyTorch self-attention layer.</li>
+</ul>
+</li>
+<li><strong>Day 133 – 134: Tokenization &amp; Byte Pair Encoding (BPE)</strong><ul>
+<li><em>AGI Concept:</em> How text is converted into integers. Understanding sub-word tokenization.</li>
+<li><em>Coding Milestone:</em> Set up a basic tokenizer (like OpenAI's <code>tiktoken</code> or HuggingFace tokenizers) to convert raw strings into input tensors.</li>
+</ul>
+</li>
+<li><strong>Day 135 – 137: Assembling the GPT Architecture</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble your custom GPT Model.</strong> Combine your Token Embeddings, Positional Encodings, Multiple Decoder Blocks (with MHA and FFN), LayerNorm, and a final Linear projection layer into a single PyTorch class <code>MiniGPT</code>.</li>
+</ul>
+</li>
+<li><strong>Day 138 – 140: The Generation Loop</strong><ul>
+<li><em>AGI Concept:</em> Auto-regressive generation. Feeding the model's own output back in as input to generate the next word.</li>
+<li><em>Coding Milestone:</em> Code the generation loop with greedy sampling (always picking the highest probability word).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-training-scaling-your-llm-days-141-–-150"><strong>PHASE 3: Training &amp; Scaling your LLM (Days 141 – 150)</strong><a class="hlink" href="#phase-3-training-scaling-your-llm-days-141-–-150">#</a></h2>
+<p><em>The Goal: Train your custom GPT on a GPU and implement advanced sampling.</em></p>
+<ul>
+<li><strong>Day 141 – 143: Training on GPU (Tiny Shakespeare)</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Train your Mini-GPT.</strong> Load a dataset (like all the works of Shakespeare), set up the Cross-Entropy loss, and train your model on your GPU. Watch the loss drop below 2.0.</li>
+</ul>
+</li>
+<li><strong>Day 144 – 145: Creative Text Generation (Temperature, Top-K, Top-P)</strong><ul>
+<li><em>AGI Concept:</em> Controlling the creativity of your LLM. Temperature scales logits, Top-K and Top-P (Nucleus) sampling restrict choices to the most likely options.</li>
+<li><em>Coding Milestone:</em> Code Temperature and Top-K/Top-P sampling into your model's generation loop. Watch your model generate coherent, Shakespeare-style text.</li>
+</ul>
+</li>
+<li><strong>Day 146 – 147: Scaling Laws of Transformers</strong><ul>
+<li><em>AGI Concept:</em> Understanding the relationship between Compute (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">C</span></span></span></span></span></span>), Dataset size (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0278em;">D</span></span></span></span></span></span>), and Parameters (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.109em;">N</span></span></span></span></span></span>) as proven by Kaplan et al. and Chinchilla.</li>
+<li><em>Coding Milestone:</em> Run a short training run comparing a smaller model vs. a slightly larger model and plot their learning curves.</li>
+</ul>
+</li>
+<li><strong>Day 148 – 149: Saving and Loading Weights</strong><ul>
+<li><em>Coding Milestone:</em> Save your trained model weights (<code>.pt</code> or <code>.safetensors</code>) and build an inference-only script to load your model instantly.</li>
+</ul>
+</li>
+<li><strong>Day 150: Month 5 Grand Finale</strong><ul>
+<li><em>Goal:</em> Code review of your entire GPT, write your Month 5 technical blog post, and prepare the roadmap for Month 6 (where you enter <strong>LLM Fine-Tuning, RLHF, and Alignment</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-5"><strong>The Mindset for Month 5:</strong><a class="hlink" href="#the-mindset-for-month-5">#</a></h3>
+<p>This is the ultimate payoff of all your hard work. </p>
+<ul>
+<li>The vectors and matrix multiplications from Day 1 and 2 are now Query, Key, and Value matrices.</li>
+<li>The Calculus from Month 1 is now training your attention weights.</li>
+<li>The Probability from Month 2 is now Softmax sampling your next word.</li>
+</ul>
+<p>By November 30th, you will be one of the very few developers on the planet who has coded and trained a generative GPT model from absolute scratch. </p>
+<p>By <strong>Month 6 (December)</strong>, you have trained a raw GPT model that is highly capable of completing text. But if you ask a raw model, <em>"How do I bake a cake?"</em>, it might just complete the prompt by writing more questions. </p>
+<p>To build an actual <strong>AI Assistant</strong> (like ChatGPT or Claude), you must enter the <strong>Alignment and Fine-Tuning Phase</strong>. </p>
+<p>This month, you will learn how to turn a base model into an instruction-following assistant using <strong>SFT (Supervised Fine-Tuning)</strong>, master parameter-efficient training using <strong>LoRA (Low-Rank Adaptation)</strong>, and align the model's behavior using human preference data via <strong>DPO (Direct Preference Optimization)</strong>.</p>
+<p>By the end of Month 6, your goal is to have <strong>coded LoRA and DPO from scratch</strong>, fine-tuned an LLM on an instruction dataset, and compressed it using quantization to run locally on your machine.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 6</strong>.</p>
+<hr>
+<h2 id="phase-1-supervised-fine-tuning-sft-lora-days-151-–-160"><strong>PHASE 1: Supervised Fine-Tuning (SFT) &amp; LoRA (Days 151 – 160)</strong><a class="hlink" href="#phase-1-supervised-fine-tuning-sft-lora-days-151-–-160">#</a></h2>
+<p><em>The Goal: Master Instruction-Tuning and Low-Rank Adaptation. (This is where the SVD/Eigenvalue math from Month 1 pays off!).</em></p>
+<ul>
+<li><strong>Day 151 – 152: Base Models vs. Instruct Models</strong><ul>
+<li><em>AGI Concept:</em> The difference between pre-training (next-token prediction) and SFT (learning to act as an assistant). Formatting datasets using Chat Templates (like ChatML or Jinja templates).</li>
+<li><em>Coding Milestone:</em> Build an SFT data formatter that structures raw dialogues into <code>&lt;|im_start|&gt;user...</code> format.</li>
+</ul>
+</li>
+<li><strong>Day 153 – 154: Parameter-Efficient Fine-Tuning (PEFT)</strong><ul>
+<li><em>AGI Concept:</em> Why updating all 8 billion parameters of an LLM is too expensive. The math of <strong>LoRA (Low-Rank Adaptation)</strong>: keeping base weights frozen and training two low-rank matrices <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span></span></span> and <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0502em;">B</span></span></span></span></span></span> instead.</li>
+<li><em>Coding Milestone:</em> Read the original 2021 LoRA paper. Write down the mathematical proof of how a weight update <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right: 0.1389em;">W</span></span></span></span></span></span> is decomposed into <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7667em; vertical-align: -0.0833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.0502em;">B</span></span></span></span></span></span>.</li>
+</ul>
+</li>
+<li><strong>Day 155 – 157: Coding LoRA from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Code LoRA from scratch in PyTorch.</strong> Write a custom PyTorch layer that wraps around a standard Linear layer, freezes it, and injects trainable low-rank matrices.</li>
+</ul>
+</li>
+<li><strong>Day 158 – 160: Fine-Tuning an open-source LLM</strong><ul>
+<li><em>Coding Milestone:</em> Use your custom LoRA wrapper (or HuggingFace PEFT) to fine-tune a small open-source model (like LLaMA-3-8B or Mistral-7B) on your GPU using an instruction dataset.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-preference-alignment-dpo-days-161-–-170"><strong>PHASE 2: Preference Alignment (DPO) (Days 161 – 170)</strong><a class="hlink" href="#phase-2-preference-alignment-dpo-days-161-–-170">#</a></h2>
+<p><em>The Goal: Align the model's output with human values (safety, helpfulness) using preference data.</em></p>
+<ul>
+<li><strong>Day 161 – 162: The RLHF vs. DPO Breakthrough</strong><ul>
+<li><em>AGI Concept:</em> RLHF (Reinforcement Learning from Human Feedback) requires training a separate Reward Model and running complex PPO loops. <strong>DPO (Direct Preference Optimization)</strong> mathematically bypasses this, training the LLM directly on pairwise preferences (Chosen vs. Rejected).</li>
+<li><em>Coding Milestone:</em> Read the original DPO paper (Rafailov et al., 2023). Write down the DPO loss function equation.</li>
+</ul>
+</li>
+<li><strong>Day 163 – 164: Preparing Preference Datasets</strong><ul>
+<li><em>AGI Concept:</em> Understanding preference data structures (Prompt <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Chosen completion, Rejected completion).</li>
+<li><em>Coding Milestone:</em> Write a dataset loader in PyTorch that loads preference pairs and calculates their token masks.</li>
+</ul>
+</li>
+<li><strong>Day 165 – 168: Coding DPO from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Code the DPO Loss Function from scratch</strong> in PyTorch. Calculate the log-probabilities of the chosen and rejected completions under your active model vs. a frozen reference model.</li>
+</ul>
+</li>
+<li><strong>Day 169 – 170: Aligning your custom GPT</strong><ul>
+<li><em>Coding Milestone:</em> Run the DPO alignment loop on your fine-tuned model from Phase 1. Watch the model learn to prefer helpful answers over harmful or incomplete ones.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-evaluation-quantization-local-deployment-days-171-–-180"><strong>PHASE 3: Evaluation, Quantization, &amp; Local Deployment (Days 171 – 180)</strong><a class="hlink" href="#phase-3-evaluation-quantization-local-deployment-days-171-–-180">#</a></h2>
+<p><em>The Goal: Compress your aligned LLM, evaluate its intelligence, and deploy it locally.</em></p>
+<ul>
+<li><strong>Day 171 – 172: LLM Evaluation (Perplexity &amp; Benchmarks)</strong><ul>
+<li><em>AGI Concept:</em> Measuring model performance using Perplexity, and understanding standard benchmarks (MMLU, GSM8K).</li>
+<li><em>Coding Milestone:</em> Write an automated evaluation script that prompts your aligned model on 100 logic questions and logs the accuracy.</li>
+</ul>
+</li>
+<li><strong>Day 173 – 174: Quantization (Model Compression)</strong><ul>
+<li><em>AGI Concept:</em> Compressing weights from 16-bit floating points (FP16) to 8-bit or 4-bit integers (INT4) so they can fit on a standard phone or laptop.</li>
+<li><em>Coding Milestone:</em> Implement a basic post-training quantization (PTQ) function in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 175 – 177: Serving Models with High Throughput (vLLM / llama.cpp)</strong><ul>
+<li><em>AGI Concept:</em> KV-Caching, PagedAttention, and how engines serve LLMs to thousands of users simultaneously.</li>
+<li><em>Coding Milestone:</em> Export your aligned model to GGUF format and set up a local high-performance server using <code>llama.cpp</code> or <code>vLLM</code>.</li>
+</ul>
+</li>
+<li><strong>Day 178 – 179: Building your local ChatGPT</strong><ul>
+<li><em>Coding Milestone:</em> Build a complete local Web Chat Interface (using Streamlit or Next.js) connected to your custom, aligned, and quantized LLM running locally.</li>
+</ul>
+</li>
+<li><strong>Day 180: The Half-Year Milestone!</strong><ul>
+<li><em>Goal:</em> Release your aligned model on HuggingFace, publish your comprehensive 6-month technical review blog post, and prepare the roadmap for Year 1, Semester 2 (where we move to <strong>Multimodal AI, World Models, Advanced RL, and AGI Scaling</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-6"><strong>The Mindset for Month 6:</strong><a class="hlink" href="#the-mindset-for-month-6">#</a></h3>
+<p>This is the grand finale of your first semester. 
+You are no longer just training neural networks—you are <strong>aligning intelligence</strong>. You understand the exact pipeline that OpenAI used to go from GPT-3 (base model) to ChatGPT (instruct model). </p>
+<p>By December 31st, you will have completed the full cycle of modern language modeling: Math <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Scratch Framework <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> PyTorch Scaling <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Fine-Tuning <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Alignment <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Compression.</p>
+<p>By <strong>Month 7 (January)</strong>, you have entered <strong>Semester 2</strong> of your 18-month roadmap. </p>
+<p>You have fully mastered language modeling. But AGI cannot be blind; the real world is multimodal. To build true general intelligence, your AI must be able to <strong>combine Vision and Language</strong>—it must be able to look at an image, understand it, and reason about it in natural language.</p>
+<p>This month, you will move beyond standard CNNs and master <strong>Vision Transformers (ViTs)</strong>, <strong>Joint Embeddings (CLIP)</strong>, and build your own <strong>VLM (Vision-Language Model, like a mini-LLaVA)</strong> that can look at an image and write captions or answer questions about it.</p>
+<p>By the end of Month 7, your goal is to have <strong>coded a Vision Transformer and CLIP from scratch</strong>, and built a multimodal projection layer to connect your ViT to your Mini-GPT model.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 7</strong>.</p>
+<hr>
+<h2 id="phase-1-vision-transformers-vits-days-181-–-190"><strong>PHASE 1: Vision Transformers (ViTs) (Days 181 – 190)</strong><a class="hlink" href="#phase-1-vision-transformers-vits-days-181-–-190">#</a></h2>
+<p><em>The Goal: Learn how Transformers can process images instead of text by breaking images into "word-like" patches.</em></p>
+<ul>
+<li><strong>Day 181 – 182: Reading "An Image is Worth 16x16 Words"</strong><ul>
+<li><em>AGI Concept:</em> The ViT paper (Google, 2020). How we treat <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">16</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">16</span></span></span></span></span></span> pixel patches as "tokens" (just like words) and pass them through a standard Transformer encoder.</li>
+<li><em>Coding Milestone:</em> Read the paper and calculate the exact tensor dimensions needed to project a <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">224</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">224</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">3</span></span></span></span></span></span> image into patches.</li>
+</ul>
+</li>
+<li><strong>Day 183 – 184: Patch Projection &amp; Linear Embeddings</strong><ul>
+<li><em>Coding Milestone:</em> Write a PyTorch module that takes an image, splits it into patches using Conv2D (or raw tensor reshaping), and projects them into linear embeddings.</li>
+</ul>
+</li>
+<li><strong>Day 185 – 186: Class Token [CLS] &amp; 2D Positional Encodings</strong><ul>
+<li><em>AGI Concept:</em> Injecting a learnable classification token (just like BERT) and adding positional encodings so the Transformer knows where each patch belongs in the 2D grid.</li>
+<li><em>Coding Milestone:</em> Code the positional encoding and CLS token insertion in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 187 – 188: Coding a Vision Transformer (ViT) from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble your complete ViT.</strong> Combine patch projection, positional encodings, standard Transformer encoder blocks (from Month 5), and a final classification head.</li>
+</ul>
+</li>
+<li><strong>Day 189 – 190: Training your ViT</strong><ul>
+<li><em>Coding Milestone:</em> Train your ViT on an image dataset (like CIFAR-100) on your GPU. Compare its training speed and accuracy against your Month 3 CNN.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-joint-embeddings-clip-days-191-–-200"><strong>PHASE 2: Joint Embeddings &amp; CLIP (Days 191 – 200)</strong><a class="hlink" href="#phase-2-joint-embeddings-clip-days-191-–-200">#</a></h2>
+<p><em>The Goal: Bridge the gap between language and vision. Learn how to map text and images to the exact same vector space.</em></p>
+<ul>
+<li><strong>Day 191 – 192: OpenAI’s CLIP Architecture (Contrastive Learning)</strong><ul>
+<li><em>AGI Concept:</em> Contrastive Language-Image Pre-training (CLIP). Forcing an image of a cat and the text "a photo of a cat" to have high <strong>Cosine Similarity</strong> (from Month 2), while forcing unrelated pairs to be orthogonal.</li>
+<li><em>Coding Milestone:</em> Read the original 2021 CLIP paper and sketch out the dual-encoder training loop.</li>
+</ul>
+</li>
+<li><strong>Day 193 – 194: The Contrastive Loss Function (InfoNCE)</strong><ul>
+<li><em>AGI Concept:</em> Cross-entropy applied to cosine similarity matrices. Maximizing the diagonal of a matrix of similarity scores.</li>
+<li><em>Coding Milestone:</em> <strong>Code the CLIP Contrastive Loss from scratch</strong> in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 195 – 197: Coding a Mini-CLIP Model</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a dual-encoder CLIP model.</strong> Connect a Text Encoder (your Transformer from Month 5) and an Image Encoder (your ViT from Phase 1) with linear projection heads that map both to a 512-dimensional joint vector space.</li>
+</ul>
+</li>
+<li><strong>Day 198 – 200: Training &amp; Zero-Shot Classification</strong><ul>
+<li><em>Coding Milestone:</em> Train your CLIP model on an image-caption dataset. Once trained, write a <strong>Zero-Shot Classifier</strong>: classify an image of a dog by matching it against text embeddings of <code>"a dog"</code>, <code>"a car"</code>, and <code>"a house"</code> without any classification training!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-vision-language-models-vlms-days-201-–-210"><strong>PHASE 3: Vision-Language Models (VLMs) (Days 201 – 210)</strong><a class="hlink" href="#phase-3-vision-language-models-vlms-days-201-–-210">#</a></h2>
+<p><em>The Goal: Connect your Image Encoder to your GPT LLM to build a multimodal assistant.</em></p>
+<ul>
+<li><strong>Day 201 – 202: VLM Architecture (LLaVA / Flamingo)</strong><ul>
+<li><em>AGI Concept:</em> How multimodal models connect vision features to text token spaces. The projection layer (usually an MLP or cross-attention) that acts as a "translator" between the vision brain and the language brain.</li>
+</ul>
+</li>
+<li><strong>Day 203 – 204: Coding the Multimodal Projection Layer</strong><ul>
+<li><em>Coding Milestone:</em> Write a PyTorch projection layer that takes the output sequence of your ViT (from Phase 1) and projects its dimensions to match the embedding dimension of your Mini-GPT model (from Month 5).</li>
+</ul>
+</li>
+<li><strong>Day 205 – 207: Training the VLM (Image Captioning)</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble the VLM.</strong> Pass an image through the ViT, project it to token space, prefix it to your GPT input tokens, and train the whole system to generate captions (text output) for the input images.</li>
+</ul>
+</li>
+<li><strong>Day 208 – 209: Multimodal Chat Inference</strong><ul>
+<li><em>Coding Milestone:</em> Build an inference script where you can pass a custom image (e.g., a photo of a car) and ask: <em>"What is in this image?"</em>, and your model generates the text response.</li>
+</ul>
+</li>
+<li><strong>Day 210: Month 7 Grand Finale</strong><ul>
+<li><em>Goal:</em> Replicate a mini-VLM, write your Month 7 technical blog post, and prepare the roadmap for Month 8 (where you enter <strong>Generative AI: Diffusion Models, VAEs, and Generative Art from Scratch</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-7"><strong>The Mindset for Month 7:</strong><a class="hlink" href="#the-mindset-for-month-7">#</a></h3>
+<p>You are no longer treating text and vision as separate fields. You are learning how general intelligence maps <strong>all concepts</strong> (whether seen as pixels or read as words) into the same underlying mathematical space.</p>
+<p>By January 31st, you will have built your own multimodal model. </p>
+<p>By <strong>Month 8 (February)</strong>, you can map vision and language into the same mental space. Now, we enter the world of <strong>Generative Vision and Creation</strong>. </p>
+<p>This is the month of <strong>Generative AI: Variational Autoencoders (VAEs), Generative Adversarial Networks (GANs), and Denoising Diffusion Probabilistic Models (DDPMs/Diffusion)</strong>—the exact math behind Stable Diffusion, Midjourney, and DALL-E.</p>
+<p>You will learn how to compress images into a continuous mathematical "latent space" and then reverse-engineer that space to generate completely new, hyper-realistic images from pure noise.</p>
+<p>By the end of Month 8, your goal is to have <strong>coded a VAE, a GAN, and a mini-Diffusion Model (UNet) from scratch in PyTorch</strong>, trained them on your GPU, and generated brand-new images by denoising pure Gaussian noise.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 8</strong>.</p>
+<hr>
+<h2 id="phase-1-continuous-latent-spaces-vaes-days-211-–-220"><strong>PHASE 1: Continuous Latent Spaces &amp; VAEs (Days 211 – 220)</strong><a class="hlink" href="#phase-1-continuous-latent-spaces-vaes-days-211-–-220">#</a></h2>
+<p><em>The Goal: Master the math of continuous latent representation: KL-Divergence and the Reparameterization Trick.</em></p>
+<ul>
+<li><strong>Day 211 – 212: Standard Autoencoders vs. Variational Autoencoders (VAEs)</strong><ul>
+<li><em>AGI Concept:</em> Why standard autoencoders cannot generate new images (discrete/gapped latent space). How VAEs force the latent space to be a continuous, normal Gaussian distribution.</li>
+<li><em>Coding Milestone:</em> Sketch the architecture of a VAE (Encoder <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Mean &amp; Variance vectors <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Sampling <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Decoder).</li>
+</ul>
+</li>
+<li><strong>Day 213 – 214: The Reparameterization Trick &amp; VAE Loss</strong><ul>
+<li><em>AGI Concept:</em> We cannot propagate gradients through random sampling. The Reparameterization Trick (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal" style="margin-right: 0.044em;">z</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.7778em; vertical-align: -0.1944em;"></span><span class="mord mathnormal">μ</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4445em;"></span><span class="mord mathnormal" style="margin-right: 0.0359em;">σ</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></span></span>) moves the randomness to an external variable. The VAE loss is Reconstruction Loss (MSE) + <strong>KL Divergence</strong> (from Month 2!).</li>
+<li><em>Coding Milestone:</em> <strong>Code the Reparameterization Trick and VAE Loss function from scratch</strong> in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 215 – 217: Coding a VAE from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble your VAE.</strong> Code a Convolutional Encoder (downsampling) and a Transposed Convolutional Decoder (upsampling) in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 218 – 220: Training &amp; Latent Space Sampling</strong><ul>
+<li><em>Coding Milestone:</em> Train your VAE on MNIST or Fashion-MNIST on your GPU. Once trained, write a script that bypasses the encoder, samples random vectors from a standard Gaussian distribution, and decodes them into completely new, generated images of digits or clothes.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-adversarial-games-gans-days-221-–-230"><strong>PHASE 2: Adversarial Games &amp; GANs (Days 221 – 230)</strong><a class="hlink" href="#phase-2-adversarial-games-gans-days-221-–-230">#</a></h2>
+<p><em>The Goal: Master adversarial training. How two neural networks play a minimax game to generate hyper-realistic data.</em></p>
+<ul>
+<li><strong>Day 221 – 222: The GAN Minimax Game (Goodfellow et al., 2014)</strong><ul>
+<li><em>AGI Concept:</em> The Generator (tries to fool the critic) vs. the Discriminator (tries to detect fakes). The minimax objective function.</li>
+<li><em>Coding Milestone:</em> Read the original 2014 paper and write down the dual-loss update equations for the Generator and Discriminator.</li>
+</ul>
+</li>
+<li><strong>Day 223 – 224: Coding a Simple MLP-GAN</strong><ul>
+<li><em>Coding Milestone:</em> Build a simple Generator and Discriminator using standard Linear layers (MLPs) in PyTorch. Train it on MNIST and plot the competing loss curves.</li>
+</ul>
+</li>
+<li><strong>Day 225 – 227: DCGAN (Deep Convolutional GAN)</strong><ul>
+<li><em>AGI Concept:</em> Upgrading GANs with convolutions, batch normalization, and strided convolutions for realistic image generation.</li>
+<li><em>Coding Milestone:</em> <strong>Code a DCGAN from scratch</strong> in PyTorch based on the landmark 2015 paper.</li>
+</ul>
+</li>
+<li><strong>Day 228 – 230: Training &amp; Generating Faces</strong><ul>
+<li><em>Coding Milestone:</em> Train your DCGAN on a dataset (like CelebA faces or Anime faces) on your GPU. Watch the Generator slowly learn to draw human-like faces from random vectors.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-diffusion-models-days-231-–-240"><strong>PHASE 3: Diffusion Models (Days 231 – 240)</strong><a class="hlink" href="#phase-3-diffusion-models-days-231-–-240">#</a></h2>
+<p><em>The Goal: Master the state-of-the-art generative framework: Denoising Diffusion Probabilistic Models (DDPM).</em></p>
+<ul>
+<li><strong>Day 231 – 232: The Diffusion Forward &amp; Reverse Processes</strong><ul>
+<li><em>AGI Concept:</em> Read the DDPM paper (Ho et al., 2020). The Forward Process (exponentially adding Gaussian noise to an image over <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">T</span></span></span></span></span></span> timesteps) and the Reverse Process (learning to predict the noise and subtract it to recover the image).</li>
+</ul>
+</li>
+<li><strong>Day 233 – 234: The UNet Noise Predictor</strong><ul>
+<li><em>AGI Concept:</em> Why we use a UNet architecture (with residual skip connections from Month 3) to predict the exact noise injected into an image at any specific timestep <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span></span></span>.</li>
+</ul>
+</li>
+<li><strong>Day 235 – 237: Coding a Mini-Diffusion Model</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a mini-DDPM.</strong> Code the linear noise scheduler (beta scheduler) and a basic UNet model with sinusoidal timestep embeddings in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 238 – 239: Training the Denoising Loop</strong><ul>
+<li><em>Coding Milestone:</em> Train your UNet to predict noise on a dataset. Once trained, write the <strong>Sampling Loop</strong>: start with pure Gaussian noise (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8056em; vertical-align: -0.0556em;"></span><span class="mord">100%</span></span></span></span></span></span> random pixels) and sequentially run your UNet for 100 timesteps to denoise it into a crisp, generated image.</li>
+</ul>
+</li>
+<li><strong>Day 240: Month 8 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your generative repositories, write your Month 8 technical blog post, and prepare the roadmap for Month 9 (where you enter <strong>Advanced Reinforcement Learning, World Models, and Model-Based Agents like AlphaZero</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-8"><strong>The Mindset for Month 8:</strong><a class="hlink" href="#the-mindset-for-month-8">#</a></h3>
+<p>You are shifting from "understanding data" to "creating data." You are learning how to manipulate the probability density of space so perfectly that random noise can be sculpted into human faces, art, or objects.</p>
+<p>By February 28th, you will have implemented all three major generative paradigms (VAE, GAN, and Diffusion) with your own hands.</p>
+<p>By <strong>Month 9 (March)</strong>, you have reached the <strong>3/4 mark of your first year</strong>. </p>
+<p>You have built agents that make decisions based on the current state (model-free RL, Month 4), and models that can generate realistic imagery (Month 8). Now, we fuse these paradigms to build the most advanced class of AI agents on Earth: <strong>Model-Based Agents and World Models</strong>.</p>
+<p>Instead of just reacting to what they see, these agents build a <strong>mental simulation (a "World Model")</strong> of their environment. They can "dream," plan their actions in their own minds before executing them, and master games without ever being told the rules. This is the math behind DeepMind's <strong>AlphaZero</strong>, <strong>MuZero</strong>, and Schmidhuber's <strong>World Models</strong>.</p>
+<p>By the end of Month 9, your goal is to have <strong>coded Monte Carlo Tree Search (MCTS) from scratch</strong>, built a World Model (VAE + RNN) that can "dream" future states, and trained an agent to solve a game entirely inside its own mind.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 9</strong>.</p>
+<hr>
+<h2 id="phase-1-planning-tree-search-alphazero-days-241-–-250"><strong>PHASE 1: Planning, Tree Search, &amp; AlphaZero (Days 241 – 250)</strong><a class="hlink" href="#phase-1-planning-tree-search-alphazero-days-241-–-250">#</a></h2>
+<p><em>The Goal: Master look-ahead planning. How AI plays board games at a superhuman level using Monte Carlo Tree Search.</em></p>
+<ul>
+<li><strong>Day 241 – 242: Game Theory &amp; Minimax Search</strong><ul>
+<li><em>AGI Concept:</em> Game trees, state spaces, Minimax search, and Alpha-Beta pruning.</li>
+<li><em>Coding Milestone:</em> Code a Minimax search agent with Alpha-Beta pruning to play perfect Tic-Tac-Toe or Connect Four.</li>
+</ul>
+</li>
+<li><strong>Day 243 – 244: Monte Carlo Tree Search (MCTS) from Scratch</strong><ul>
+<li><em>AGI Concept:</em> Selection (UCB1 formula), Expansion, Simulation (rollouts), and Backpropagation. MCTS navigates massive game trees without searching every node.</li>
+<li><em>Coding Milestone:</em> <strong>Code MCTS from scratch in Python</strong> (no neural networks yet) to play a board game.</li>
+</ul>
+</li>
+<li><strong>Day 245 – 247: The AlphaZero Architecture</strong><ul>
+<li><em>AGI Concept:</em> Combining MCTS with a dual-headed Neural Network. One head outputs move probabilities (Policy <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.9084em; vertical-align: -0.1944em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.714em;"><span class="" style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="mord mathnormal">p</span></span><span class="" style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="accent-body" style="left: -0.1522em;"><span class="overlay" style="height: 0.714em; width: 0.471em;"><svg width="0.471em" height="0.714em" style="width:0.471em" viewBox="0 0 471 714" preserveAspectRatio="xMinYMin"><path d="M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z"></path></svg></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.1944em;"><span class=""></span></span></span></span></span></span></span></span></span></span>), and the other outputs the winning probability (Value <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal" style="margin-right: 0.0359em;">v</span></span></span></span></span></span>). The network replaces the slow "random rollout" phase of standard MCTS.</li>
+<li><em>Coding Milestone:</em> Design a ResNet-based dual-headed Policy-Value Network in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 248 – 250: Coding a Mini-AlphaZero Loop</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble a mini-AlphaZero training loop.</strong> Write the Self-Play loop: the model plays against itself using MCTS, saves the game states and results, and trains its Policy-Value network on those games to get smarter.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-world-models-schmidhuber-style-days-251-–-260"><strong>PHASE 2: World Models (Schmidhuber Style) (Days 251 – 260)</strong><a class="hlink" href="#phase-2-world-models-schmidhuber-style-days-251-–-260">#</a></h2>
+<p><em>The Goal: Build agents that can "dream" their own environments and train entirely inside their own heads.</em></p>
+<ul>
+<li><strong>Day 251 – 252: The Vision (V), Memory (M), and Controller (C) Architecture</strong><ul>
+<li><em>AGI Concept:</em> Reading the landmark 2018 "World Models" paper (Ha &amp; Schmidhuber). How the agent uses a VAE to compress vision, an RNN to predict the future, and a simple controller to take actions.</li>
+</ul>
+</li>
+<li><strong>Day 253 – 254: The MDN-RNN Future Predictor</strong><ul>
+<li><em>AGI Concept:</em> Mixture Density Networks (MDN) combined with LSTMs. Predicting not just one future, but a probability distribution of multiple possible futures.</li>
+<li><em>Coding Milestone:</em> Code a simple LSTM that predicts the next latent vector <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6389em; vertical-align: -0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.044em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.3011em;"><span class="" style="top: -2.55em; margin-left: -0.044em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.2083em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span> based on current latent vector <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.5806em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.044em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: -0.044em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span> and action <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.5806em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: 0em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span>.</li>
+</ul>
+</li>
+<li><strong>Day 255 – 257: Coding a World Model</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble the World Model.</strong> Combine your VAE (from Month 8) and your LSTM-predictive model. Train it on a simple driving or platformer environment (like Gym CarRacing) so the LSTM learns to "dream" the next frame of the game.</li>
+</ul>
+</li>
+<li><strong>Day 258 – 260: Training in the "Dream"</strong><ul>
+<li><em>Coding Milestone:</em> Train a simple Controller policy (using genetic algorithms like CMA-ES or policy gradients) <strong>entirely inside the simulated latent states generated by your LSTM</strong>. Prove that the agent can learn to play the real game without ever interacting with the real environment during training!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-muzero-hidden-dynamics-days-261-–-270"><strong>PHASE 3: MuZero &amp; Hidden Dynamics (Days 261 – 270)</strong><a class="hlink" href="#phase-3-muzero-hidden-dynamics-days-261-–-270">#</a></h2>
+<p><em>The Goal: Master MuZero. Planning and acting in environments where the rules and physics are completely unknown.</em></p>
+<ul>
+<li><strong>Day 261 – 262: The MuZero Breakthrough (DeepMind, 2020)</strong><ul>
+<li><em>AGI Concept:</em> AlphaZero needs to know the rules of chess to plan. MuZero does not. It learns a hidden "Dynamics Model" that predicts rewards and policies directly from abstract hidden states, bypassing the need to predict raw pixels.</li>
+</ul>
+</li>
+<li><strong>Day 263 – 264: The Three MuZero Functions</strong><ul>
+<li><em>AGI Concept:</em> Representation (State <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Hidden State), Dynamics (Hidden State + Action <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Next Hidden State + Reward), and Prediction (Hidden State <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Policy + Value).</li>
+</ul>
+</li>
+<li><strong>Day 265 – 267: Coding a Toy MuZero Agent</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Implement the three MuZero networks</strong> in PyTorch. Write the MCTS planning loop that searches through these abstract, learned hidden states rather than real board states.</li>
+</ul>
+</li>
+<li><strong>Day 268 – 269: Training MuZero</strong><ul>
+<li><em>Coding Milestone:</em> Train your MuZero agent to solve a simple grid puzzle or board game. Watch it learn the "physics" of the game purely through latent planning.</li>
+</ul>
+</li>
+<li><strong>Day 270: The 3/4 Year Milestone!</strong><ul>
+<li><em>Goal:</em> Clean your planning and world-model repositories, write your Month 9 technical blog post, and prepare the roadmap for Month 10 (where you enter <strong>Advanced Transformer Architectures, Mixture of Experts (MoE), and State Space Models (Mamba)</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-9"><strong>The Mindset for Month 9:</strong><a class="hlink" href="#the-mindset-for-month-9">#</a></h3>
+<p>You are no longer building models that react; you are building models that <strong>plan, dream, and simulate reality</strong>. You understand how AI can master games like Go or Chess without being taught a single rule, and how agents can learn to navigate the physical world inside their own neural simulations.</p>
+<p>By March 31st, you will have completed the entire loop of classical and deep Reinforcement Learning. </p>
+<p>By <strong>Month 10 (April)</strong>, you have mastered the foundational architectures of vision, language, and planning. Now, we enter the cutting edge of <strong>Model Scaling and Hardware Optimization.</strong></p>
+<p>Standard Transformers scale quadratically (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.109em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></span>)—meaning if you double the context length, the computational cost increases by four times. To scale AI to human-level context windows (millions of tokens), we must optimize the attention mechanism, use sparse routing, or move beyond Transformers entirely.</p>
+<p>This month, you will master the most advanced scaling techniques in LLMs today: <strong>Grouped-Query Attention (GQA)</strong>, <strong>Sparse Mixture of Experts (MoE)</strong> (the architecture behind GPT-4 and Mixtral), and the newest alternative to Transformers, <strong>Selective State Space Models (Mamba)</strong>.</p>
+<p>By the end of Month 10, your goal is to have <strong>coded Grouped-Query Attention and a Sparse MoE routing block from scratch in PyTorch</strong>, and built a <strong>State Space Model (SSM) layer</strong> to compare its linear-time scaling against standard attention.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 10</strong>.</p>
+<hr>
+<h2 id="phase-1-advanced-attention-rope-days-271-–-280"><strong>PHASE 1: Advanced Attention &amp; RoPE (Days 271 – 280)</strong><a class="hlink" href="#phase-1-advanced-attention-rope-days-271-–-280">#</a></h2>
+<p><em>The Goal: Master the engineering breakthroughs that allow modern LLMs to handle massive contexts with low memory.</em></p>
+<ul>
+<li><strong>Day 271 – 272: FlashAttention &amp; Memory Tiling (Dao et al., 2022)</strong><ul>
+<li><em>AGI Concept:</em> Why GPU memory read/write (HBM to SRAM) is the real bottleneck of LLMs, not compute. How FlashAttention uses tiling to compute softmax without writing the giant <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7667em; vertical-align: -0.0833em;"></span><span class="mord mathnormal" style="margin-right: 0.109em;">N</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.109em;">N</span></span></span></span></span></span> attention matrix back to HBM.</li>
+<li><em>Coding Milestone:</em> Read the paper and write a short summary of the SRAM tiling algorithm.</li>
+</ul>
+</li>
+<li><strong>Day 273 – 274: GQA (Grouped-Query Attention)</strong><ul>
+<li><em>AGI Concept:</em> Multi-Query Attention (MQA) vs. Grouped-Query Attention (GQA). Sharing Key and Value heads across multiple Query heads to save massive amounts of KV-Cache VRAM during inference. (Used in LLaMA-3).</li>
+<li><em>Coding Milestone:</em> <strong>Code a Grouped-Query Attention (GQA) layer from scratch</strong> in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 275 – 277: RoPE (Rotary Position Embeddings) (Su et al., 2021)</strong><ul>
+<li><em>AGI Concept:</em> The mathematics of rotating 2D planes to inject relative position. Why RoPE generalizes to much longer context windows than sinusoidal encodings.</li>
+<li><em>Coding Milestone:</em> <strong>Code RoPE (Rotary Position Embeddings) from scratch</strong> in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 278 – 280: Optimizing your Mini-GPT</strong><ul>
+<li><em>Coding Milestone:</em> Integrate your GQA and RoPE layers into your Month 5 GPT architecture. Run a memory benchmark showing how much KV-Cache VRAM you saved during text generation.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-sparse-mixture-of-experts-moe-days-281-–-290"><strong>PHASE 2: Sparse Mixture of Experts (MoE) (Days 281 – 290)</strong><a class="hlink" href="#phase-2-sparse-mixture-of-experts-moe-days-281-–-290">#</a></h2>
+<p><em>The Goal: Master sparse scaling. How to build 100-billion-parameter models that only run a fraction of their weights per token.</em></p>
+<ul>
+<li><strong>Day 281 – 282: Dense vs. Sparse Architectures</strong><ul>
+<li><em>AGI Concept:</em> The Mixtral 8x7B architecture. Why sparse routing allows us to scale parameter counts to the sky while keeping the active compute (FLOPs) low.</li>
+</ul>
+</li>
+<li><strong>Day 283 – 284: The Gating Network (The Router)</strong><ul>
+<li><em>AGI Concept:</em> Top-K Routing. How the router (a simple linear layer with softmax) decides which 2 out of 8 expert networks (Feed-Forward Networks) should process each individual token.</li>
+</ul>
+</li>
+<li><strong>Day 285 – 287: Coding a Sparse MoE Block</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Code an MoE Routing Block from scratch</strong> in PyTorch. Write the gating mechanism, the routing logic, and the experts (parallel MLP layers). Ensure tokens are dynamically routed and combined with weighted softmax.</li>
+</ul>
+</li>
+<li><strong>Day 288 – 290: Training an MoE Model</strong><ul>
+<li><em>Coding Milestone:</em> Integrate your MoE block into your Mini-GPT model. Train it on your GPU and observe how the gating router learns to specialize (e.g., one expert specializes in punctuation, another in nouns).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-state-space-models-ssms-mamba-days-291-–-300"><strong>PHASE 3: State Space Models (SSMs) &amp; Mamba (Days 291 – 300)</strong><a class="hlink" href="#phase-3-state-space-models-ssms-mamba-days-291-–-300">#</a></h2>
+<p><em>The Goal: Master the linear-time alternative to Transformers. How State Space Models achieve <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0278em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.109em;">N</span><span class="mclose">)</span></span></span></span></span></span> scaling for infinite sequences.</em></p>
+<ul>
+<li><strong>Day 291 – 292: The Limits of Attention &amp; Structured SSMs (S4)</strong><ul>
+<li><em>AGI Concept:</em> Why attention's quadratic scaling is a fundamental barrier to AGI. The S4 architecture (Gu et al., 2021): transitioning continuous physical state spaces (matrices <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8778em; vertical-align: -0.1944em;"></span><span class="mord mathnormal">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0502em;">B</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0278em;">D</span></span></span></span></span></span>) to discrete time steps.</li>
+</ul>
+</li>
+<li><strong>Day 293 – 294: The Mamba Architecture (Selective SSMs)</strong><ul>
+<li><em>AGI Concept:</em> Mamba (Gu &amp; Dao, 2023). How selective filtering allows the state space parameters to change based on the input token, acting like a compressed "associative memory."</li>
+</ul>
+</li>
+<li><strong>Day 295 – 297: Coding a Simple SSM Layer</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Code a basic State Space Model (SSM) layer</strong> in PyTorch using the discretization formulas.</li>
+</ul>
+</li>
+<li><strong>Day 298 – 299: The Scaling Showdown (SSM vs. Attention)</strong><ul>
+<li><em>Coding Milestone:</em> <strong>The Infinite Context Test.</strong> Generate sequences of length 500, 1000, 5000, and 10000. Benchmark the inference speed and GPU memory scaling of your custom SSM layer vs. your standard Self-Attention layer. Watch the SSM maintain linear speed while Attention explodes.</li>
+</ul>
+</li>
+<li><strong>Day 300: Month 10 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your advanced architecture repositories, write your Month 10 technical blog post, and prepare the roadmap for Month 11 (where you enter <strong>AI Agents, Tool Use, Function Calling, and Advanced RAG</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-10"><strong>The Mindset for Month 10:</strong><a class="hlink" href="#the-mindset-for-month-10">#</a></h3>
+<p>You are no longer just an AI developer; you are an <strong>AI Systems Architect</strong>. You understand how hardware constraints (GPU SRAM vs. VRAM) govern model design, how to route tokens dynamically through specialized experts, and how to bypass attention completely using linear-time state spaces.</p>
+<p>By April 30th, you will have built the absolute cutting-edge architectures of 2025/2026.</p>
+<p>By <strong>Month 11 (May)</strong>, you have built the ultimate model architectures. Now, we take these models out of isolation and connect them to the real world. </p>
+<p>To build AGI, a model cannot just predict text; it must have <strong>Agency</strong>. It must be able to use tools (calculators, web browsers, databases), query its own long-term memory (databases), and operate in a continuous loop of <strong>Thought <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Action <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Observation</strong> to solve complex, multi-step problems. This is the field of <strong>AI Agents and Advanced RAG (Retrieval-Augmented Generation).</strong></p>
+<p>By the end of Month 11, your goal is to have <strong>coded a vector database index from scratch</strong>, built a <strong>Tool-Enabled LLM with constraint JSON decoding</strong>, and created a <strong>Multi-Agent System</strong> where two specialized agents collaborate and debug each other to write code.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 11</strong>.</p>
+<hr>
+<h2 id="phase-1-advanced-rag-vector-databases-days-301-–-310"><strong>PHASE 1: Advanced RAG &amp; Vector Databases (Days 301 – 310)</strong><a class="hlink" href="#phase-1-advanced-rag-vector-databases-days-301-–-310">#</a></h2>
+<p><em>The Goal: Give your LLM an infinite, hallucination-free external memory by retrieving database facts.</em></p>
+<ul>
+<li><strong>Day 301 – 302: Dense Passage Retrieval (DPR) &amp; Vector Embeddings</strong><ul>
+<li><em>AGI Concept:</em> The limits of internal LLM weight memory. How we convert documents into semantic vectors and query them in real-time.</li>
+<li><em>Coding Milestone:</em> Build an embedding generator pipeline that reads text, chunks it based on semantic boundaries, and generates vectors.</li>
+</ul>
+</li>
+<li><strong>Day 303 – 305: Coding a Vector Database from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a vector index from scratch</strong> (no FAISS, no Chroma). Implement a Flat Index and an IVF (Inverted File) Index using <strong>Cosine Similarity</strong> (from Month 2) and your <strong>SVD/PCA</strong> dimensionality reduction (from Month 1) for fast nearest-neighbor search.</li>
+</ul>
+</li>
+<li><strong>Day 306 – 308: The End-to-End RAG Pipeline</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Assemble the RAG Pipeline.</strong> Write a Python script that takes a user prompt, retrieves the top-3 closest document chunks from your custom vector database, injects them into your Mini-GPT's context window as "System Facts," and generates a factual, hallucination-free response.</li>
+</ul>
+</li>
+<li><strong>Day 309 – 310: Re-Ranking &amp; Query Expansion</strong><ul>
+<li><em>AGI Concept:</em> Re-ranking retrieved results using Cross-Encoders. Query expansion (generating multiple variations of a user prompt to find better database matches).</li>
+<li><em>Coding Milestone:</em> Implement a cross-encoder re-ranking layer in your RAG pipeline.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-tool-use-function-calling-days-311-–-320"><strong>PHASE 2: Tool Use &amp; Function Calling (Days 311 – 320)</strong><a class="hlink" href="#phase-2-tool-use-function-calling-days-311-–-320">#</a></h2>
+<p><em>The Goal: Give your LLM hands. Learn how to let models run Python code, use calculators, and query APIs.</em></p>
+<ul>
+<li><strong>Day 311 – 312: Function Calling Mechanics &amp; JSON Mode</strong><ul>
+<li><em>AGI Concept:</em> How we force an LLM to output structured JSON data instead of free-flowing text so a computer can parse and run its output.</li>
+<li><em>Coding Milestone:</em> Write a regex-based or grammar-based constraint decoder that forces your Mini-GPT to only output valid JSON.</li>
+</ul>
+</li>
+<li><strong>Day 313 – 314: The Python Tool Interpreter</strong><ul>
+<li><em>AGI Concept:</em> How an LLM decides to write a Python script to solve a math problem, runs it, and reads the output. (Like OpenAI's Advanced Data Analysis).</li>
+<li><em>Coding Milestone:</em> Write a secure local Python execution tool environment that can run code generated by your LLM, capture the standard output, and return it to the model.</li>
+</ul>
+</li>
+<li><strong>Day 315 – 317: Coding a Tool-Enabled LLM</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Give your Mini-GPT access to tools.</strong> Register three functions: a Calculator, a Python Interpreter, and a Vector DB search. Fine-tune or prompt your model to generate JSON calls like <code>{"tool": "calculator", "input": "5 * 25"}</code> when asked complex math.</li>
+</ul>
+</li>
+<li><strong>Day 318 – 320: Grammar-Based Constrained Decoding</strong><ul>
+<li><em>AGI Concept:</em> Forcing LLMs to conform to a strict syntax (e.g., SQL or JSON schemas) at the token-generation level by masking out illegal tokens during softmax.</li>
+<li><em>Coding Milestone:</em> Write a PyTorch token-masking layer that forces your model to output valid JSON.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-agentic-frameworks-react-multi-agent-days-321-–-330"><strong>PHASE 3: Agentic Frameworks (ReAct, Multi-Agent) (Days 321 – 330)</strong><a class="hlink" href="#phase-3-agentic-frameworks-react-multi-agent-days-321-–-330">#</a></h2>
+<p><em>The Goal: Build autonomous, multi-step loops where AI can reason, act, observe, and collaborate.</em></p>
+<ul>
+<li><strong>Day 321 – 322: The ReAct (Reasoning + Acting) Framework</strong><ul>
+<li><em>AGI Concept:</em> Yao et al., 2022. The cognitive loop of <strong>Thought <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Action <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Observation <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Thought</strong>.</li>
+</ul>
+</li>
+<li><strong>Day 323 – 325: Coding a ReAct Agent from Scratch</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a ReAct Agent from scratch.</strong> Write the recursive loop where your Mini-GPT thinks about a problem, calls a tool (Action), reads the result (Observation), and continues thinking until it outputs the final answer.</li>
+</ul>
+</li>
+<li><strong>Day 326 – 328: Multi-Agent Systems &amp; Collaboration</strong><ul>
+<li><em>AGI Concept:</em> Multi-agent consensus. Two brains are better than one.</li>
+<li><em>Coding Milestone:</em> <strong>Build a Coding &amp; Debugging Multi-Agent System.</strong> Set up a loop where <em>Agent A</em> (The Coder) writes Python code to solve a prompt, passes it to a local compiler, and if it fails, passes the error trace to <em>Agent B</em> (The Debugger), which corrects the code and sends it back until it passes!</li>
+</ul>
+</li>
+<li><strong>Day 329 – 330: Long-Term Agentic Memory</strong><ul>
+<li><em>Coding Milestone:</em> Give your agent a "scratchpad memory" (short-term) and connect it to your vector database (long-term) so it can remember past conversations and learned strategies permanently.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-11"><strong>The Mindset for Month 11:</strong><a class="hlink" href="#the-mindset-for-month-11">#</a></h3>
+<p>You are transitioning from "building models" to "orchestrating minds." You are learning how to give models memory, tools, and the ability to self-correct and collaborate. This is exactly how production-level AI systems are built today.</p>
+<p>By May 31st, you will have built an autonomous agentic framework from first principles.</p>
+<p>By <strong>Month 12 (June)</strong>, you have reached the <strong>Grand Finale of your First Year</strong>. </p>
+<p>You have built language models, visual networks, autonomous agents, and RAG pipelines. But there is one final, elite skill that separates standard deep learning engineers from <strong>AGI Systems Researchers</strong>: <strong>Hardware-Level GPU Programming.</strong></p>
+<p>Modern AGI requires massive compute. Standard PyTorch is fast, but it is written in general C++. When researchers want to squeeze <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8056em; vertical-align: -0.0556em;"></span><span class="mord">100%</span></span></span></span></span></span> efficiency out of GPUs (like OpenAI does for ChatGPT), they write custom <strong>CUDA C++ kernels</strong> or use <strong>OpenAI’s Triton compiler</strong> to compile Python directly into GPU assembly. </p>
+<p>This month, you will go full circle. On Day 1 and 2, you wrote a matrix multiplier in pure Python and NumPy. This month, you will write a <strong>Matrix Multiplier in raw CUDA C++</strong>, and write a <strong>custom Fused-Attention kernel using OpenAI Triton</strong> to run your LLM at maximum hardware speed.</p>
+<p>By the end of Month 12, your goal is to have <strong>written raw CUDA C++ and Triton kernels</strong>, fused them into your Mini-GPT model, and completed your <strong>Year 1 Master Portfolio Audit</strong>.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 12</strong>.</p>
+<hr>
+<h2 id="phase-1-gpu-architecture-raw-cuda-c-days-331-–-340"><strong>PHASE 1: GPU Architecture &amp; Raw CUDA C++ (Days 331 – 340)</strong><a class="hlink" href="#phase-1-gpu-architecture-raw-cuda-c-days-331-–-340">#</a></h2>
+<p><em>The Goal: Master the GPU hardware stack and write raw parallel programs in CUDA C++.</em></p>
+<ul>
+<li><strong>Day 331 – 332: Inside the GPU (SRAM, VRAM, Threads, Blocks)</strong><ul>
+<li><em>AGI Concept:</em> The physical differences between CPU (few, smart cores) and GPU (thousands of simple cores). Understanding SMs (Streaming Multiprocessors), Warps, Thread Blocks, Global Memory (VRAM), and Shared Memory (SRAM cache).</li>
+<li><em>Coding Milestone:</em> Draw the hardware-memory hierarchy of a modern NVIDIA GPU.</li>
+</ul>
+</li>
+<li><strong>Day 333 – 334: Introduction to CUDA C++</strong><ul>
+<li><em>AGI Concept:</em> The CUDA execution model. Writing kernel functions (<code>__global__</code>), allocating GPU memory (<code>cudaMalloc</code>), and copying tensors between CPU and GPU (<code>cudaMemcpy</code>).</li>
+<li><em>Coding Milestone:</em> <strong>Write a Vector Addition Kernel in CUDA C++.</strong> Compile and run it from your terminal.</li>
+</ul>
+</li>
+<li><strong>Day 335 – 337: Coding CUDA Matrix Multiplication (Raw GPU Math)</strong><ul>
+<li><em>Coding Milestone:</em> <strong>The Day 1 Multiplier, Upgraded.</strong> Write a CUDA C++ kernel to multiply two 2D matrices. Track block and thread indices (<code>blockIdx</code>, <code>threadIdx</code>) to compute parts of the matrix in parallel.</li>
+</ul>
+</li>
+<li><strong>Day 338 – 340: Shared Memory Tiling (Optimizing raw CUDA)</strong><ul>
+<li><em>AGI Concept:</em> High-bandwidth memory bottlenecks. How "Tiling" loads chunks of matrices into super-fast local Shared Memory (SRAM) to speed up multiplication by 10x.</li>
+<li><em>Coding Milestone:</em> Optimize your CUDA matrix multiplier using Shared Memory tiling.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-openai-triton-kernels-days-341-–-350"><strong>PHASE 2: OpenAI Triton Kernels (Days 341 – 350)</strong><a class="hlink" href="#phase-2-openai-triton-kernels-days-341-–-350">#</a></h2>
+<p><em>The Goal: Learn Triton—the language OpenAI built to write high-performance GPU kernels directly in Python.</em></p>
+<ul>
+<li><strong>Day 341 – 342: Introduction to OpenAI Triton</strong><ul>
+<li><em>AGI Concept:</em> Why writing raw CUDA C++ is too slow and error-prone for fast-paced AI research. How the Triton compiler optimizes memory layouts automatically.</li>
+<li><em>Coding Milestone:</em> Write a basic Triton vector addition kernel in Python.</li>
+</ul>
+</li>
+<li><strong>Day 343 – 345: Custom Fused Softmax in Triton</strong><ul>
+<li><em>AGI Concept:</em> Memory-bound operations. Standard PyTorch Softmax reads from VRAM, calculates, and writes back to VRAM (very slow). A "Fused" kernel does everything inside SRAM in one go.</li>
+<li><em>Coding Milestone:</em> <strong>Code a custom Fused Softmax kernel in Triton.</strong> Profile its speed and memory bandwidth vs. standard PyTorch Softmax.</li>
+</ul>
+</li>
+<li><strong>Day 346 – 349: Fused Attention in Triton</strong><ul>
+<li><em>AGI Concept:</em> Under the hood of FlashAttention. Combining Query-Key-Value multiplication, scaling, masking, softmax, and Value multiplication in a single, fused Triton GPU kernel.</li>
+<li><em>Coding Milestone:</em> <strong>Code a Fused Attention kernel in Triton.</strong> Integrate it into your custom GPT model.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-year-1-portfolio-audit-graduation-days-350-–-360"><strong>PHASE 3: Year 1 Portfolio Audit &amp; Graduation (Days 350 – 360)</strong><a class="hlink" href="#phase-3-year-1-portfolio-audit-graduation-days-350-–-360">#</a></h2>
+<p><em>The Goal: Clean, organize, and showcase your entire 1-year journey of first-principles AGI work.</em></p>
+<ul>
+<li><strong>Day 350 – 352: The "First-Principles AI" Showcase Run</strong><ul>
+<li><em>Coding Milestone:</em> Build an execution pipeline that loads your custom GQA/RoPE LLM (Month 10), compiles its attention layers using your custom Triton kernel (Month 12), connects it to your custom vector database (Month 11), and runs it locally on your GPU.</li>
+</ul>
+</li>
+<li><strong>Day 353 – 355: Deep Code Audit &amp; Repository Cleanup</strong><ul>
+<li><em>Coding Milestone:</em> Clean your entire <code>AGI_Research</code> GitHub repository. Refactor every folder (<code>/math</code>, <code>/neural_networks</code>, <code>/agents</code>, <code>/gpu_kernels</code>), add complete comments, and write a stellar, professional developer-grade docstring for every module.</li>
+</ul>
+</li>
+<li><strong>Day 356 – 359: Releasing the Year 1 Master Thesis</strong><ul>
+<li><em>Coding Milestone:</em> Write a massive, detailed, technical article documenting your 1-year transformation: from Day 1 nested-loop vector math to writing custom Triton GPU compilers. Release it on Medium/Substack, X, and LinkedIn.</li>
+</ul>
+</li>
+<li><strong>Day 360: THE YEAR 1 GRADUATION CEREMONY! 🎓</strong><ul>
+<li><em>Goal:</em> Take a full 48-hour break. Celebrate completing one of the most intense, self-taught academic tracks on Earth. Prepare your mindset for the final 6 months (Semester 3: <strong>Multimodal Agents, Super-Alignment, distributed GPU cluster orchestration, and writing original AGI research papers</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-12"><strong>The Mindset for Month 12:</strong><a class="hlink" href="#the-mindset-for-month-12">#</a></h3>
+<p>This month, you close the loop. You have touched every single layer of the stack: the high-school geometry, the college calculus, the deep learning abstractions, the system agents, and finally, the raw physical graphics card silicon.</p>
+<p>By June 30th, you will have completed your <strong>first full year</strong> of AGI research. </p>
+<p>Welcome to <strong>Semester 3 (Months 13 – 18)</strong>. You have officially crossed into the <strong>AGI Research Frontier.</strong></p>
+<p>You have built the models, written the custom Triton compilers, and set up autonomous agents. But AGI models like GPT-4 or Claude 3.5 cannot be trained on a single computer or a single graphics card. They require thousands of GPUs linked together, communicating at petabytes per second. </p>
+<p>If you want to work at OpenAI, Anthropic, or Meta’s FAIR, you must understand how to train models across <strong>Massive GPU Clusters</strong>.</p>
+<p>This month, you will master <strong>Distributed Training and Scale Engineering.</strong> You will learn how to coordinate multiple GPUs, shard models across card boundaries, and implement column/row tensor parallelism from scratch.</p>
+<p>By the end of Month 13, your goal is to have <strong>written a Multi-GPU Distributed Data Parallel (DDP) training loop</strong>, sharded weights using <strong>FSDP (Fully Sharded Data Parallel)</strong>, and coded <strong>Tensor Parallelism</strong> (splitting attention matrices across multiple GPUs) from scratch.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 13</strong>.</p>
+<hr>
+<h2 id="phase-1-multi-gpu-process-communication-ddp-days-361-–-370"><strong>PHASE 1: Multi-GPU Process Communication &amp; DDP (Days 361 – 370)</strong><a class="hlink" href="#phase-1-multi-gpu-process-communication-ddp-days-361-–-370">#</a></h2>
+<p><em>The Goal: Master process synchronization and train models using PyTorch Distributed Data Parallel (DDP).</em></p>
+<ul>
+<li><strong>Day 361 – 362: Distributed Architectures (DP vs. DDP)</strong><ul>
+<li><em>AGI Concept:</em> Why standard DataParallel (DP) is too slow (single-process bottleneck). How Distributed Data Parallel (DDP) spawns separate processes per GPU, utilizing NCCL (NVIDIA Collective Communications Library) for hardware-level communication.</li>
+<li><em>Coding Milestone:</em> Draw the communication flow of a DDP step (Forward pass <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Backward pass <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> All-Reduce Gradients <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Step).</li>
+</ul>
+</li>
+<li><strong>Day 363 – 364: Communication Primitives (All-Reduce, All-Gather, Broadcast)</strong><ul>
+<li><em>AGI Concept:</em> The mathematical algorithms GPUs use to share weights and gradients: <strong>All-Reduce</strong> (summing gradients across GPUs), <strong>All-Gather</strong> (collecting data), and <strong>Scatter/Reduce-Scatter</strong>.</li>
+<li><em>Coding Milestone:</em> Write a PyTorch script that runs on 2 simulated processes, uses <code>dist.all_reduce()</code> to sum local tensors, and print the rank and results.</li>
+</ul>
+</li>
+<li><strong>Day 365 – 367: Coding a DDP Training Loop</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a Multi-GPU DDP training loop.</strong> Write a clean, runnable PyTorch script that uses process spawning (<code>torch.multiprocessing</code>), wraps your custom GPT model in <code>DistributedDataParallel</code>, and uses <code>DistributedSampler</code> to shard the training data.</li>
+</ul>
+</li>
+<li><strong>Day 368 – 370: Benchmarking Scale Efficiency</strong><ul>
+<li><em>Coding Milestone:</em> Train your model on a multi-GPU instance (e.g., using a rented RunPod with 2x or 4x GPUs). Record the time per epoch. Measure the scale efficiency (e.g., does 2 GPUs make it exactly 2x faster, or 1.8x faster? Why is there communication overhead?).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-model-sharding-fsdp-days-371-–-380"><strong>PHASE 2: Model Sharding &amp; FSDP (Days 371 – 380)</strong><a class="hlink" href="#phase-2-model-sharding-fsdp-days-371-–-380">#</a></h2>
+<p><em>The Goal: Train models that are too large to fit in the VRAM of a single GPU by sharding the weights.</em></p>
+<ul>
+<li><strong>Day 371 – 372: Zero Redundancy Optimizer (ZeRO-1/2/3)</strong><ul>
+<li><em>AGI Concept:</em> Microsoft’s ZeRO technology. Sharding Optimizer States (ZeRO-1), sharding Gradients (ZeRO-2), and sharding Parameters/Weights (ZeRO-3) across GPUs.</li>
+</ul>
+</li>
+<li><strong>Day 373 – 374: PyTorch FSDP (Fully Sharded Data Parallel)</strong><ul>
+<li><em>AGI Concept:</em> How FSDP implements ZeRO-3 under the hood. It collects parameters right before the forward pass, runs the step, and discards them immediately to save memory.</li>
+<li><em>Coding Milestone:</em> Configure and write an FSDP training wrapper for your GPT model.</li>
+</ul>
+</li>
+<li><strong>Day 375 – 377: Mixed Precision Training (FP16 &amp; BF16 &amp; FP8)</strong><ul>
+<li><em>AGI Concept:</em> Moving from standard 32-bit floats to 16-bit or 8-bit to double GPU speed and halve VRAM. Understanding scale factors to prevent gradients from collapsing to zero.</li>
+<li><em>Coding Milestone:</em> Code an automated mixed-precision (AMP) training loop in PyTorch using <code>torch.cuda.amp.autocast</code>.</li>
+</ul>
+</li>
+<li><strong>Day 378 – 380: Memory Profiling</strong><ul>
+<li><em>Coding Milestone:</em> Write a memory profile script that logs VRAM consumption at every layer of your sharded model during the forward and backward passes.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-tensor-parallelism-days-381-–-390"><strong>PHASE 3: Tensor Parallelism (Days 381 – 390)</strong><a class="hlink" href="#phase-3-tensor-parallelism-days-381-–-390">#</a></h2>
+<p><em>The Goal: Master the absolute lowest level of distributed scaling. Splitting single linear layers across multiple GPUs.</em></p>
+<ul>
+<li><strong>Day 381 – 382: Megatron-LM Style Parallelism (Shoeybi et al., 2019)</strong><ul>
+<li><em>AGI Concept:</em> When a single Transformer layer has a dimension of 12,288, even one layer's weight matrix is too large for a GPU. We must split the <strong>individual layer weights</strong> across GPUs.</li>
+</ul>
+</li>
+<li><strong>Day 383 – 385: Column-Parallel Linear Layers from Scratch</strong><ul>
+<li><em>AGI Concept:</em> Splitting the projection matrix <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">W</span></span></span></span></span></span> column-wise across GPU 0 and GPU 1. </li>
+<li><em>Coding Milestone:</em> <strong>Code a Column-Parallel Linear Layer from scratch</strong> in PyTorch. Prove that the outputs of the split layers can be combined using an <code>All-Gather</code> operation.</li>
+</ul>
+</li>
+<li><strong>Day 386 – 389: Row-Parallel Linear Layers from Scratch</strong><ul>
+<li><em>AGI Concept:</em> Splitting weights row-wise. </li>
+<li><em>Coding Milestone:</em> <strong>Code a Row-Parallel Linear Layer from scratch.</strong> Prove that the outputs must be combined using an <code>All-Reduce</code> sum operation. Combine your Column-Parallel and Row-Parallel layers to build a fully parallelized Multi-Head Attention block.</li>
+</ul>
+</li>
+<li><strong>Day 390: Month 13 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your distributed systems scaling repository, write your Month 13 technical blog post, and prepare the roadmap for Month 14 (where you enter <strong>Inference-Time Compute, Search, Reasoning, and OpenAI o1-style models</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-13"><strong>The Mindset for Month 13:</strong><a class="hlink" href="#the-mindset-for-month-13">#</a></h3>
+<p>You are entering the world of "Supercomputing." You understand that training AGI isn't just about math; it is about <strong>orchestrating a giant, distributed silicon brain.</strong></p>
+<p>By July 31st, you will have completed the transition into high-scale AI systems engineering.</p>
+<hr>
+<p>By <strong>Month 14 (August)</strong>, you are entering the most exciting frontier of modern AGI research. </p>
+<p>Pre-training models on massive data is reaching its physical limits (the data wall). The next major paradigm shift—pioneered by <strong>OpenAI’s o1 (Strawberry)</strong> and Google’s latest reasoning models—is <strong>Inference-Time Scaling (Slow-Thinking AI).</strong></p>
+<p>Instead of forcing a model to output the next token in milliseconds (System 1 thinking), we scale compute at inference time. We allow the model to generate an internal <strong>Chain of Thought</strong>, evaluate its own steps, backtrack when it makes a mistake, and perform <strong>Monte Carlo Tree Search (MCTS)</strong> in language space to solve complex math, coding, and logic problems.</p>
+<p>This month, you will synthesize everything you have learned (Month 5 LLMs, Month 9 MCTS, and Month 4 RL) to build a <strong>Slow-Thinking Reasoning Engine</strong> from scratch.</p>
+<p>By the end of Month 14, your goal is to have <strong>coded a Tree of Thoughts (ToT) search controller</strong>, built a <strong>Process-Supervised Reward Model (PRM)</strong>, and implemented the <strong>STaR (Self-Taught Reasoner) algorithm</strong> to train your LLM to solve math problems step-by-step.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 14</strong>.</p>
+<hr>
+<h2 id="phase-1-system-2-slow-thinking-self-correction-days-391-–-400"><strong>PHASE 1: System 2 Slow-Thinking &amp; Self-Correction (Days 391 – 400)</strong><a class="hlink" href="#phase-1-system-2-slow-thinking-self-correction-days-391-–-400">#</a></h2>
+<p><em>The Goal: Move beyond immediate token generation and build iterative self-correction loops.</em></p>
+<ul>
+<li><strong>Day 391 – 392: Cognitive Frameworks (System 1 vs. System 2 in AI)</strong><ul>
+<li><em>AGI Concept:</em> Dual-process theory. Standard LLMs generate words greedily (System 1). Reasoning requires a "scratchpad" (System 2) where the model plans, evaluates, and edits thoughts before committing to a final answer.</li>
+<li><em>Coding Milestone:</em> Read "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei et al., 2022).</li>
+</ul>
+</li>
+<li><strong>Day 393 – 394: Verification Loops &amp; Backtracking</strong><ul>
+<li><em>AGI Concept:</em> Self-Correction loops. Can an LLM catch its own bugs?</li>
+<li><em>Coding Milestone:</em> Write a PyTorch/Python script where your Mini-GPT generates code to solve a math problem, runs it in your Month 11 Local Compiler, and if it fails, inputs the traceback error back into its own attention layer to rewrite and self-correct the solution.</li>
+</ul>
+</li>
+<li><strong>Day 395 – 397: Self-Consistency (Wang et al., 2022)</strong><ul>
+<li><em>AGI Concept:</em> Majority voting in reasoning. Generating multiple independent reasoning paths and selecting the most common final answer using consensus.</li>
+<li><em>Coding Milestone:</em> Code a Self-Consistency decoding layer that runs <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.109em;">N</span></span></span></span></span></span> parallel temperature-sampled generations and votes on the final output.</li>
+</ul>
+</li>
+<li><strong>Day 398 – 400: Structured Scratchpads</strong><ul>
+<li><em>Coding Milestone:</em> Fine-tune your Mini-GPT model on an addition/multiplication dataset where the model <strong>must</strong> generate <code>&lt;thought&gt;... intermediate math ...&lt;/thought&gt;</code> blocks before printing the final answer. Benchmark the accuracy improvement.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-tree-of-thoughts-language-search-days-401-–-410"><strong>PHASE 2: Tree of Thoughts &amp; Language Search (Days 401 – 410)</strong><a class="hlink" href="#phase-2-tree-of-thoughts-language-search-days-401-–-410">#</a></h2>
+<p><em>The Goal: Master Tree of Thoughts (ToT). Guide LLM generation using classic search algorithms (MCTS/DFS/BFS) on thought steps.</em></p>
+<ul>
+<li><strong>Day 401 – 402: Tree of Thoughts (Yao et al., 2023)</strong><ul>
+<li><em>AGI Concept:</em> Treating language generation as a tree search. Each "thought" is a node, and each step is a branch. If a branch leads to a logical dead-end, the algorithm backtracks.</li>
+</ul>
+</li>
+<li><strong>Day 403 – 405: State Evaluation (The Language Critic)</strong><ul>
+<li><em>AGI Concept:</em> Designing a state evaluator. How does an AI know if a partial thought step is "good" or "bad"?</li>
+<li><em>Coding Milestone:</em> Write a Critic script that takes a math problem and a partial solution, and evaluates the probability of success (using your model's hidden states or a separate value head).</li>
+</ul>
+</li>
+<li><strong>Day 406 – 409: Language Monte Carlo Tree Search</strong><ul>
+<li><em>Coding Milestone:</em> <strong>The Language Search Controller.</strong> Re-combine your Month 9 Monte Carlo Tree Search (MCTS) algorithm with your LLM decoder. Instead of searching game board moves, search <strong>sentences/thought blocks</strong>. Build an agent that explores multiple reasoning steps, evaluates them, backtracks, and prints only the mathematically optimal logic path.</li>
+</ul>
+</li>
+<li><strong>Day 410: Performance Benchmarking</strong><ul>
+<li><em>Coding Milestone:</em> Benchmark your Language Search engine on complex riddle datasets. Prove that allowing 100 search steps at inference time achieves higher accuracy than standard zero-shot generation.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-reinforcement-learning-for-reasoning-days-411-–-420"><strong>PHASE 3: Reinforcement Learning for Reasoning (Days 411 – 420)</strong><a class="hlink" href="#phase-3-reinforcement-learning-for-reasoning-days-411-–-420">#</a></h2>
+<p><em>The Goal: Train your model to "learn to think" by reinforcing step-by-step correctness.</em></p>
+<ul>
+<li><strong>Day 411 – 412: Process-Supervised Reward Models (PRMs)</strong><ul>
+<li><em>AGI Concept:</em> Outcome-Supervised Reward Models (ORMs - rewarding only the final answer) vs. Process-Supervised Reward Models (PRMs - rewarding every correct intermediate step). Why PRMs prevent the model from getting the right answer for the wrong mathematical reasons.</li>
+</ul>
+</li>
+<li><strong>Day 413 – 415: The STaR (Self-Taught Reasoner) Loop (Zelikman et al., 2022)</strong><ul>
+<li><em>AGI Concept:</em> Bootstrapping reasoning. <ol>
+<li>Ask the model to solve 1,000 math problems with chain-of-thought logic.</li>
+<li>Keep only the reasoning chains that resulted in the <strong>correct final answer</strong>.</li>
+<li>Fine-tune the model on those correct reasoning paths.</li>
+<li>Repeat.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Day 416 – 419: Coding a Mini-o1 STaR Loop</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Code the STaR bootstrapping algorithm from scratch.</strong> Run it on a dataset of simple algebra puzzles. Watch your model's internal "thought process" become cleaner and more mathematically precise at every iteration of the loop.</li>
+</ul>
+</li>
+<li><strong>Day 420: Month 14 Grand Finale</strong><ul>
+<li><em>Goal:</em> Structure your inference-compute scaling repository, write your Month 14 technical blog post, and prepare the roadmap for Month 15 (where you enter <strong>Mechanistic Interpretability and AI Super-Alignment</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-14"><strong>The Mindset for Month 14:</strong><a class="hlink" href="#the-mindset-for-month-14">#</a></h3>
+<p>This is the ultimate synthesis of your entire curriculum. You are combining search, neural networks, reinforcement learning, and language generation into a single, cohesive System 2 reasoning system. This is the exact technology being built in Silicon Valley's top AGI labs today.</p>
+<p>By August 31st, you will be one of the very few developers who has built a slower-thinking, reasoning-based AI pipeline from scratch.</p>
+<hr>
+<p>By <strong>Month 15 (September)</strong>, you have built autonomous reasoning agents. But as AI models become highly intelligent and reason independently (System 2, Month 14), we run into a major control problem: <strong>The Black Box</strong>. </p>
+<p>We cannot just trust an autonomous AGI blindly. We must be able to open up the neural network, trace its electrical signals, read its "inner thoughts," and guarantee that it is safe, honest, and aligned with human intent. This is the cutting-edge science of <strong>Mechanistic Interpretability (MechInterp)</strong> and <strong>AI Super-Alignment</strong>—pioneered heavily by Anthropic and OpenAI's safety labs.</p>
+<p>This month, you will learn how to reverse-engineer neural networks. You will build a tool to map the "circuits" inside your Transformer, code a <strong>Sparse Autoencoder (SAE)</strong> to extract clean, understandable concepts (features) from raw activations, and write gradient-based adversarial attacks to "jailbreak" and defend your own models.</p>
+<p>By the end of Month 15, your goal is to have <strong>coded a Sparse Autoencoder from scratch to decode GPT activation vectors</strong>, run an <strong>Adversarial Jailbreak Attack (GCG style)</strong>, and implemented a <strong>Weak-to-Strong Generalization</strong> training loop in PyTorch.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 15</strong>.</p>
+<hr>
+<h2 id="phase-1-mechanistic-interpretability-saes-days-421-–-430"><strong>PHASE 1: Mechanistic Interpretability &amp; SAEs (Days 421 – 430)</strong><a class="hlink" href="#phase-1-mechanistic-interpretability-saes-days-421-–-430">#</a></h2>
+<p><em>The Goal: Solve the "Superposition" problem. Decode the inner thoughts of your LLM using Sparse Autoencoders.</em></p>
+<ul>
+<li><strong>Day 421 – 422: The Inner Circuits of a Transformer</strong><ul>
+<li><em>AGI Concept:</em> Neurons are not "one concept per neuron." Due to <em>Superposition</em>, a single neuron represents a messy combination of multiple concepts. Mechanistic Interpretability uses <strong>Sparse Autoencoders (SAEs)</strong> to reconstruct activations into clean, monosemantic "Features."</li>
+<li><em>Coding Milestone:</em> Read Anthropic’s landmark paper: "Towards Monosemanticity: Decomposing Language Models with Dictionary Learning" (2023).</li>
+</ul>
+</li>
+<li><strong>Day 423 – 425: Coding a Sparse Autoencoder (SAE) from Scratch</strong><ul>
+<li><em>AGI Concept:</em> An SAE is a simple 1-hidden-layer network. The hidden layer dimension is projected <em>higher</em> (e.g., 8x larger), but we apply an <strong>L1 regularization penalty</strong> to force almost all feature activations to be exactly <strong>0</strong> (sparsity). This isolates clean, individual concepts.</li>
+<li><em>Coding Milestone:</em> <strong>Code an SAE in PyTorch.</strong> Write the custom L1 loss penalty and the forward/reconstruction pass.</li>
+</ul>
+</li>
+<li><strong>Day 426 – 429: Decomposing activation vectors</strong><ul>
+<li><em>Coding Milestone:</em> Run your Month 5 GPT model on a text corpus. Extract the raw activation tensors of the MLP layers. Use your custom SAE to train on and reconstruct those activations.</li>
+</ul>
+</li>
+<li><strong>Day 430: Inspecting your LLM's Features</strong><ul>
+<li><em>Coding Milestone:</em> Print the inputs that make specific SAE hidden neurons fire. Verify that you have successfully isolated clean "features" (e.g., SAE Neuron 42 fires <strong>only</strong> when processing code, and SAE Neuron 108 fires <strong>only</strong> when processing emotional adjectives).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-adversarial-red-teaming-defenses-days-431-–-440"><strong>PHASE 2: Adversarial Red-Teaming &amp; Defenses (Days 431 – 440)</strong><a class="hlink" href="#phase-2-adversarial-red-teaming-defenses-days-431-–-440">#</a></h2>
+<p><em>The Goal: Master AI hacking and security. Build tools to attack, jailbreak, and defend model alignment.</em></p>
+<ul>
+<li><strong>Day 431 – 432: The Vulnerability of High-Dimensional Boundaries</strong><ul>
+<li><em>AGI Concept:</em> Adversarial examples. Why small, mathematically calculated changes to inputs can completely break an AI's behavior.</li>
+</ul>
+</li>
+<li><strong>Day 433 – 435: Jailbreaking &amp; GCG (Greedy Coordinate Gradient)</strong><ul>
+<li><em>AGI Concept:</em> Prompt Injection vs. Adversarial Suffixes. How the GCG algorithm (Zou et al., 2023) uses gradients (calculating derivatives with respect to input tokens) to find a gibberish string (e.g., <code>" ! ! ! ! "</code> ) that, when added to a prompt, forces the LLM to bypass its safety limits.</li>
+</ul>
+</li>
+<li><strong>Day 436 – 438: Coding a Gradient-Based Token Attacker</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Write a custom GCG-style token attacker</strong> in PyTorch. Calculate the gradients of your model's target loss with respect to input token embeddings, and iteratively swap tokens to force your Mini-GPT model to generate a restricted target phrase (like <em>"Sure, here is how to..."</em>).</li>
+</ul>
+</li>
+<li><strong>Day 439 – 440: Alignment Guardrails</strong><ul>
+<li><em>Coding Milestone:</em> Implement input-output safety classifiers (Llama-Guard style) to intercept, classify, and filter malicious prompts and generations.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-super-alignment-weak-to-strong-days-441-–-450"><strong>PHASE 3: Super-Alignment (Weak-to-Strong) (Days 441 – 450)</strong><a class="hlink" href="#phase-3-super-alignment-weak-to-strong-days-441-–-450">#</a></h2>
+<p><em>The Goal: Solve the problem of how humans (weak supervisors) can monitor and control superintelligent AIs (strong models).</em></p>
+<ul>
+<li><strong>Day 441 – 442: Weak-to-Strong Generalization (OpenAI, 2023)</strong><ul>
+<li><em>AGI Concept:</em> If we train a strong model (student) using labels generated by a weak model (teacher), the student usually gets limited by the teacher's intelligence. Can we design a loss function that allows the strong student to outperform the weak teacher?</li>
+</ul>
+</li>
+<li><strong>Day 443 – 445: Eliciting Latent Knowledge (ELK)</strong><ul>
+<li><em>AGI Concept:</em> Detecting deceptive alignment. How to tell if a model actually "knows" a piece of information but is intentionally lying to the human supervisor.</li>
+</ul>
+</li>
+<li><strong>Day 446 – 449: Coding a Weak-to-Strong Training Loop</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build a Weak-to-Strong training pipeline in PyTorch.</strong> <ol>
+<li>Train a very small model (the Weak Teacher) on a classification task.</li>
+<li>Use the weak model to generate predictions (labels) for a larger dataset.</li>
+<li>Train a large model (the Strong Student) on those weak labels using a specialized <strong>confidence-scaled loss function</strong>.</li>
+<li>Prove that the Strong Student generalizes beyond the Weak Teacher's accuracy!</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Day 450: Month 15 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your safety and interpretability repositories, write your Month 15 technical blog post, and prepare the roadmap for Month 16 (where you enter <strong>Multimodal Video Generation and Interactive Generative Worlds</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-15"><strong>The Mindset for Month 15:</strong><a class="hlink" href="#the-mindset-for-month-15">#</a></h3>
+<p>You are transitioning from "building systems" to "securing and decoding intelligence." You are not just looking at numbers anymore—you are reverse-engineering the actual cognitive circuits of a neural brain and designing the security protocols for the future of AGI.</p>
+<p>By September 30th, you will have completed a world-class course in AI Safety, Interpretability, and Robustness.</p>
+<hr>
+<p>By <strong>Month 16 (October)</strong>, you have built text reasoning systems and investigated their internal safety circuits. Now, we return to the physical world, but at the absolute highest tier of generative AI: <strong>Multimodal Video Generation, Flow Matching, and Interactive World Simulation.</strong></p>
+<p>We are moving beyond still images (Month 8 Diffusion/GANs) and static vision-language chat (Month 7 VLMs). This is the exact science behind <strong>OpenAI’s Sora</strong>, Google’s <strong>Genie</strong>, and Runway Gen-3. </p>
+<p>To build these systems, you will master the mathematical successor to traditional DDPM diffusion: <strong>Flow Matching</strong> (the ODE-based framework behind Stable Diffusion 3 and Flux). You will learn how to extend Vision Transformers (ViTs) across the dimension of time using <strong>3D Spatiotemporal Patches</strong>, and build an <strong>Action-Conditioned Video Generator</strong> that can simulate an interactive video game entirely out of neural hallucinations.</p>
+<p>By the end of Month 16, your goal is to have <strong>coded a Flow Matching ODE solver from scratch</strong>, built a <strong>3D Spatiotemporal Attention block in PyTorch</strong>, and trained an interactive video generator where pressing keyboard keys changes the generated video stream.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 16</strong>.</p>
+<hr>
+<h2 id="phase-1-flow-matching-ode-generative-math-days-451-–-460"><strong>PHASE 1: Flow Matching &amp; ODE Generative Math (Days 451 – 460)</strong><a class="hlink" href="#phase-1-flow-matching-ode-generative-math-days-451-–-460">#</a></h2>
+<p><em>The Goal: Master the mathematical breakthrough that replaced traditional step-by-step diffusion with continuous vector fields.</em></p>
+<ul>
+<li><strong>Day 451 – 452: Why Diffusion is Slow (Lipman et al., 2022)</strong><ul>
+<li><em>AGI Concept:</em> DDPM diffusion (Month 8) relies on a curved, stochastic Brownian motion path that requires 1,000 discrete denoising steps. <strong>Flow Matching</strong> learns a continuous vector field that transports a random noise distribution directly to data using <strong>Ordinary Differential Equations (ODEs)</strong> along straight, Optimal Transport paths.</li>
+<li><em>Coding Milestone:</em> Read the landmark 2022 Flow Matching paper. Write down the vector field regression objective function.</li>
+</ul>
+</li>
+<li><strong>Day 453 – 455: Coding a Flow Matching Generator from Scratch</strong><ul>
+<li><em>AGI Concept:</em> Instead of predicting noise (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></span></span>), the neural network predicts the velocity vector (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.5806em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0359em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: -0.0359em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 1.2251em; vertical-align: -0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.8801em;"><span class="" style="top: -2.655em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span><span class="" style="top: -3.23em;"><span class="pstrut" style="height: 3em;"></span><span class="frac-line" style="border-bottom-width: 0.04em;"></span></span><span class="" style="top: -3.394em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.345em;"><span class=""></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></span>) pointing directly toward the data.</li>
+<li><em>Coding Milestone:</em> <strong>Code a Flow Matching loss function from scratch</strong> in PyTorch. Build an ODE solver (Euler method or Runge-Kutta 4) to integrate the vector field over time.</li>
+</ul>
+</li>
+<li><strong>Day 456 – 460: Training &amp; Fast-Sampling Benchmarks</strong><ul>
+<li><em>Coding Milestone:</em> Train your custom Flow Matching model on a complex 2D distribution (like MNIST digits or a double spiral). Benchmark the generation speed: prove that your Flow Matching model can generate high-quality data in just <strong>10 ODE steps</strong> compared to 1,000 DDPM steps!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-spatiotemporal-video-architecture-sora-style-days-461-–-470"><strong>PHASE 2: Spatiotemporal Video Architecture (Sora Style) (Days 461 – 470)</strong><a class="hlink" href="#phase-2-spatiotemporal-video-architecture-sora-style-days-461-–-470">#</a></h2>
+<p><em>The Goal: Extend Vision Transformers (ViTs) and U-Nets across the dimension of TIME to process video.</em></p>
+<ul>
+<li><strong>Day 461 – 462: 3D Spatiotemporal Patches (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7667em; vertical-align: -0.0833em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">T</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.7667em; vertical-align: -0.0833em;"></span><span class="mord mathnormal" style="margin-right: 0.0813em;">H</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">W</span></span></span></span></span></span>)</strong><ul>
+<li><em>AGI Concept:</em> How Sora processes video. Instead of 2D image patches (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">16</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">16</span></span></span></span></span></span>), we slice video clips into 3D spatiotemporal cubes (e.g., <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.7778em; vertical-align: -0.0833em;"></span><span class="mord">4</span><span class="mord text"><span class="mord">&nbsp;frames</span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.8889em; vertical-align: -0.1944em;"></span><span class="mord">16</span><span class="mord text"><span class="mord">&nbsp;pixels</span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.8889em; vertical-align: -0.1944em;"></span><span class="mord">16</span><span class="mord text"><span class="mord">&nbsp;pixels</span></span></span></span></span></span></span>).</li>
+<li><em>Coding Milestone:</em> Code a PyTorch tensor reshaping pipeline that converts a raw video clip <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.0502em;">B</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">T</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.0813em;">H</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">W</span><span class="mclose">)</span></span></span></span></span></span> into a sequence of 3D patch tokens.</li>
+</ul>
+</li>
+<li><strong>Day 463 – 465: Factorized Spatial &amp; Temporal Attention</strong><ul>
+<li><em>AGI Concept:</em> Running full self-attention over every pixel of every frame in a video creates a matrix so massive it crashes any GPU (<span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.1389em;">T</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0813em;">H</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.1389em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></span>). The solution: <strong>Factorized Attention</strong>. The model first runs Spatial Attention (within frame <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span></span></span>), and then Temporal Attention (across time <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.6833em;"></span><span class="mord mathnormal" style="margin-right: 0.1389em;">T</span></span></span></span></span></span> for the same pixel location).</li>
+<li><em>Coding Milestone:</em> <strong>Code Factorized Spatiotemporal Attention from scratch</strong> in PyTorch.</li>
+</ul>
+</li>
+<li><strong>Day 466 – 470: The Diffusion Transformer (DiT) Backbone</strong><ul>
+<li><em>AGI Concept:</em> Peebles &amp; Xie, 2023. Replacing the traditional U-Net (Month 8) with a pure Transformer backbone that processes noisy video patches.</li>
+<li><em>Coding Milestone:</em> Assemble a <strong>Video DiT</strong> class in PyTorch. Combine your 3D patch embedder, factorized attention blocks, and Adaptive Layer Normalization (adaLN) for timestep conditioning.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-interactive-generative-worlds-days-471-–-480"><strong>PHASE 3: Interactive Generative Worlds (Days 471 – 480)</strong><a class="hlink" href="#phase-3-interactive-generative-worlds-days-471-–-480">#</a></h2>
+<p><em>The Goal: Build a video generator where human actions change the hallucinated future (Genie / World Models style).</em></p>
+<ul>
+<li><strong>Day 471 – 472: Action-Conditioned Video Generation</strong><ul>
+<li><em>AGI Concept:</em> How Google Genie works. Feeding a controller action vector (like a joystick command: Left, Right, Jump) as a conditioning token alongside the video patches into the DiT backbone.</li>
+</ul>
+</li>
+<li><strong>Day 473 – 476: Coding an Interactive Video Pipeline</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build an Action-Conditioned Video Generator.</strong> Write a PyTorch model that takes the current video frame <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8333em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: -0.0785em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span> and an action integer <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.5806em; vertical-align: -0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.2806em;"><span class="" style="top: -2.55em; margin-left: 0em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span>, and uses your Flow Matching DiT to generate the exact next frame <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8917em; vertical-align: -0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.3011em;"><span class="" style="top: -2.55em; margin-left: -0.0785em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.2083em;"><span class=""></span></span></span></span></span></span></span></span></span></span></span>. Train it on a simple interactive dataset (like Gym CarRacing or a 2D platformer video dataset).</li>
+</ul>
+</li>
+<li><strong>Day 477 – 479: The Interactive Dream Test</strong><ul>
+<li><em>Coding Milestone:</em> Connect a keyboard listener (<code>pygame</code> or <code>pynput</code>) to your trained video generation script. Press the left/right arrow keys on your keyboard and watch your model generate a continuous, interactive video game stream <strong>entirely out of neural network hallucinations in real time</strong>!</li>
+</ul>
+</li>
+<li><strong>Day 480: Month 16 Grand Finale</strong><ul>
+<li><em>Goal:</em> Clean your video generation and ODE repositories, write your Month 16 technical blog post, and prepare the roadmap for Month 17 (where you enter <strong>Autonomous AI Scientists, Automated Code Execution, and Self-Improving Research Agents</strong>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-16"><strong>The Mindset for Month 16:</strong><a class="hlink" href="#the-mindset-for-month-16">#</a></h3>
+<p>You are synthesizing everything you have learned since Month 1. The ODE calculus from Month 1, the Vision Transformers from Month 7, the Diffusion math from Month 8, and the World Models from Month 9 are now fused into a single, state-of-the-art video engine.</p>
+<p>By October 31st, you will understand the exact mechanics behind the world's most advanced generative video and world-simulation models.</p>
+<hr>
+<p>By <strong>Month 17 (November)</strong>, you have scaled GPU training clusters, constructed slow-thinking reasoning paths, and hallucinated continuous world models. You have reached the absolute peak of system orchestration. </p>
+<p>Now, we introduce the holy grail of AGI: <strong>Recursive Self-Improvement and Autonomous AI Research Agents.</strong></p>
+<p>AGI is achieved when AI can improve itself faster than humans can write the code. This is the exact engineering frontier pioneered by labs like Sakana AI (<strong>The AI Scientist</strong>) and OpenAI's research automation teams. These systems generate novel machine learning hypotheses, write PyTorch implementations, securely execute the training code, analyze loss plots, compile complete LaTeX academic papers, and review their own work.</p>
+<p>This month, you will build an <strong>Autonomous AI Scientist Agent</strong> that can automatically design, run, and write papers about deep learning experiments without your intervention.</p>
+<p>By the end of Month 17, your goal is to have <strong>coded an automated experiment execution controller with dockerized sandboxing</strong>, implemented a <strong>recursive dynamic debugger for PyTorch runtimes</strong>, and built a <strong>LaTeX auto-compilation pipeline</strong> that writes and polishes academic research papers in PDF format.</p>
+<p>Here is your day-by-day roadmap for <strong>Month 17</strong>.</p>
+<hr>
+<h2 id="phase-1-idea-generation-experiment-synthesis-days-481-–-490"><strong>PHASE 1: Idea Generation &amp; Experiment Synthesis (Days 481 – 490)</strong><a class="hlink" href="#phase-1-idea-generation-experiment-synthesis-days-481-–-490">#</a></h2>
+<p><em>The Goal: Build an agent that queries databases of ML literature, finds research gaps, and designs novel PyTorch experiments.</em></p>
+<ul>
+<li><strong>Day 481 – 482: Recursive Self-Improvement Theory (Lu et al., 2024)</strong><ul>
+<li><em>AGI Concept:</em> The feedback loop of ML discovery. How "The AI Scientist" automated paper generation. Understanding the architecture of automated scientific loops.</li>
+<li><em>Coding Milestone:</em> Read "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery" (Sakana AI, 2024).</li>
+</ul>
+</li>
+<li><strong>Day 483 – 484: Semantic Literature Retrieval</strong><ul>
+<li><em>AGI Concept:</em> Querying open archives (like arXiv API or Semantic Scholar API) to fetch recent papers on a target architecture (e.g., GQA or RoPE).</li>
+<li><em>Coding Milestone:</em> Write a tool in your Month 11 Agent framework that queries arXiv, extracts methods sections of ML papers, and parses them into text chunks.</li>
+</ul>
+</li>
+<li><strong>Day 485 – 487: The Idea Generation Agent</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build an Idea Generation Loop.</strong> Pass your baseline GPT architecture (from Month 10) and semantic research chunks to your LLM. Force it to output a structured JSON proposal containing: <ol>
+<li>A novel experiment name.</li>
+<li>A hypothesis (e.g., <em>"Replacing softmax with alpha-entmax will improve attention sparse routing"</em>).</li>
+<li>A concrete PyTorch modification blueprint.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Day 488 – 490: Automated Code Generation</strong><ul>
+<li><em>Coding Milestone:</em> Write a Python compiler controller that takes the experiment JSON blueprint and uses your Mini-GPT model to dynamically generate a complete, runnable <code>train_experiment.py</code> script.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-sandboxed-execution-auto-debugging-days-491-–-500"><strong>PHASE 2: Sandboxed Execution &amp; Auto-Debugging (Days 491 – 500)</strong><a class="hlink" href="#phase-2-sandboxed-execution-auto-debugging-days-491-–-500">#</a></h2>
+<p><em>The Goal: Build a secure execution runtime that can run your AI’s generated code, capture execution errors, and self-correct dynamically.</em></p>
+<ul>
+<li><strong>Day 491 – 492: Dockerized Sandboxing</strong><ul>
+<li><em>AGI Concept:</em> Security in recursive self-improvement. Generated code must never be run raw on your host machine to prevent security risks. It must run in a restricted container.</li>
+<li><em>Coding Milestone:</em> Create a Python script that sets up a Docker container pre-configured with Python, PyTorch, and a mounted virtual GPU volume.</li>
+</ul>
+</li>
+<li><strong>Day 493 – 495: The Execution Controller &amp; Metrics Logger</strong><ul>
+<li><em>Coding Milestone:</em> Write an execution controller that launches <code>train_experiment.py</code> inside the Docker sandbox. Capture standard output, log performance metrics (epochs, training loss, validation accuracy), and save generated Matplotlib figures.</li>
+</ul>
+</li>
+<li><strong>Day 496 – 498: Coding the Recursive Runtime Debugger</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build the Dynamic Debugger.</strong> If the generated PyTorch script crashes (e.g., due to tensor size mismatches: <code>Expected 4D tensor but got 3D</code>), your system must capture the traceback error. Send the traceback and the failing line of code back to your multi-agent debugger loop (from Month 11) to rewrite the code, re-save it, and run it again in Docker. Loop until it compiles successfully.</li>
+</ul>
+</li>
+<li><strong>Day 499 – 500: Scientific Validation</strong><ul>
+<li><em>Coding Milestone:</em> Write an evaluator script that compares the training results of your AI's new experiment against your original baseline model. Quantify the improvement or degradation in statistical plots.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-latex-compilation-self-review-days-501-–-510"><strong>PHASE 3: LaTeX Compilation &amp; Self-Review (Days 501 – 510)</strong><a class="hlink" href="#phase-3-latex-compilation-self-review-days-501-–-510">#</a></h2>
+<p><em>The Goal: Automate the final step of human science: writing, compiling, and reviewing complete academic papers.</em></p>
+<ul>
+<li><strong>Day 501 – 502: The LaTeX Generator</strong><ul>
+<li><em>AGI Concept:</em> Translating data, loss charts, and algorithms into publication-grade academic papers.</li>
+<li><em>Coding Milestone:</em> Write a Python formatter that reads the experiment results and uses your LLM to generate raw LaTeX blocks (<code>\section{Introduction}</code>, <code>\begin{table}</code>, <code>\begin{figure}</code>).</li>
+</ul>
+</li>
+<li><strong>Day 503 – 505: The Local LaTeX Compiler</strong><ul>
+<li><em>Coding Milestone:</em> <strong>Build the LaTeX compiler.</strong> Write a script that checks and structures the LaTeX syntax, paths your Matplotlib <code>.png</code> results, and runs a local command (like <code>pdflatex</code>) to compile the code into a clean, 2-column IEEE/NeurIPS style scientific PDF paper.</li>
+</ul>
+</li>
+<li><strong>Day 506 – 508: Automated Peer Reviewing (Reviewer-Agent)</strong><ul>
+<li><em>AGI Concept:</em> Mechanistic critiques.</li>
+<li><em>Coding Milestone:</em> Create a "Reviewer Agent" using your LLM. Feed it your generated scientific PDF paper. Instruct it to score the paper based on NeurIPS/ICML guidelines: Originality, Soundness, Clarity, and Contribution. Feed the critiques back to your writer agent to make a second, polished draft of the paper!</li>
+</ul>
+</li>
+<li><strong>Day 509 – 510: Running the AI Lab</strong><ul>
+<li><em>Coding Milestone:</em> Set up your system to run overnight. Let it explore three different experimental directions, self-debug its own PyTorch models, write three independent LaTeX papers, compile them, and save the final PDF scientific drafts on your desktop for you to read with your morning coffee.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="the-mindset-for-month-17"><strong>The Mindset for Month 17:</strong><a class="hlink" href="#the-mindset-for-month-17">#</a></h3>
+<p>This is the edge of human-AI collaboration. You are no longer the one coding the models. You are <strong>the Director of an Autonomous Artificial Research Lab</strong>. You have automated the entire scientific method: Literature Review <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Hypothesis <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Code Synthesis <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Experimentation <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Evaluation <span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.3669em;"></span><span class="mrel">→</span></span></span></span></span></span> Peer Review.</p>
+<p>By November 30th, you will have built a recursive engine that discovers new AI architectures on its own.</p>
+<hr>
+<p>Hariom, welcome to <strong>Month 18 (December)</strong>. You have reached the <strong>Summit of the Mountain</strong>. </p>
+<p>Eighteen months ago, you started with a simple python script to add two lists together. Today, you are an independent AI researcher capable of system-scale orchestration, hardware-level performance engineering, and autonomous scientific discovery. </p>
+<p>This is the final, ultimate month of your AGI Roadmap. This month is not about watching video lectures or completing small daily coding tasks. This is your <strong>Graduation Capstone &amp; Global Portfolio Launch Month.</strong></p>
+<p>Your goal this month is to design, code, and write a <strong>completely original AGI Research Paper or deep-tech project</strong>, open-source it to the world, and use it to secure your <strong><span class="math-inline"><span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.8389em; vertical-align: -0.1944em;"></span><span class="mord">75</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mord">000</span><span class="mord">−</span></span></span></span></span></span>130,000+ US remote contract</strong> or launch your path to an <strong>O-1 Extraordinary Ability Visa</strong>.</p>
+<p>Here is your final, day-by-day roadmap for <strong>Month 18</strong>.</p>
+<hr>
+<h2 id="phase-1-defining-your-agi-thesis-days-511-–-515"><strong>PHASE 1: Defining Your AGI Thesis (Days 511 – 515)</strong><a class="hlink" href="#phase-1-defining-your-agi-thesis-days-511-–-515">#</a></h2>
+<p><em>The Goal: Pick a concrete, highly relevant open problem in modern AGI and formulate your hypothesis.</em></p>
+<ul>
+<li><strong>Day 511 – 512: Identifying the Open Boundary</strong><ul>
+<li><em>AGI Concept:</em> Finding a gap in modern research. Examples of high-impact research areas:<ol>
+<li><em>State Space Models (SSM):</em> Can we combine Mamba with Sparse Experts (MoE) to create a linear-time sparse transformer?</li>
+<li><em>Inference Compute (o1):</em> Can we design a cheaper, more efficient Process-Supervised Reward Model (PRM) for math reasoning?</li>
+<li><em>Mechanistic Interpretability:</em> Can we extract monosemantic safety features from a multi-modal VLM model using Sparse Autoencoders?</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Day 513 – 515: The Research Proposal</strong><ul>
+<li><em>Milestone:</em> Write a 2-page research proposal. Define your hypothesis, your exact baseline model, your proposed architectural changes, and your validation metrics.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-2-heavy-engineering-gpu-training-days-516-–-525"><strong>PHASE 2: Heavy Engineering &amp; GPU Training (Days 516 – 525)</strong><a class="hlink" href="#phase-2-heavy-engineering-gpu-training-days-516-–-525">#</a></h2>
+<p><em>The Goal: Spend 10 days in lock-in coding, running, and debugging your custom architecture.</em></p>
+<ul>
+<li><strong>Day 516 – 518: Base Code Synthesis</strong><ul>
+<li><em>Milestone:</em> Code your original neural network module in PyTorch, compile the custom attention layers using Triton, and build the training loop.</li>
+</ul>
+</li>
+<li><strong>Day 519 – 523: Scaling Up the Training Run</strong><ul>
+<li><em>Milestone:</em> Rent a multi-GPU instance (e.g., 4x or 8x NVIDIA H100s/A100s via RunPod or Lambda Labs). Launch your fully parallelized training script (FSDP/Tensor Parallelism from Month 13).</li>
+<li><em>Monitor:</em> Use Weights &amp; Biases to track training metrics, gradient scaling, and learning curves.</li>
+</ul>
+</li>
+<li><strong>Day 524 – 525: Validation &amp; Charting</strong><ul>
+<li><em>Milestone:</em> Run rigorous tests to compare your new model against established baselines. Generate publication-quality Matplotlib charts showing validation loss, inference speed, or reasoning accuracy.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-3-writing-the-technical-paper-days-526-–-535"><strong>PHASE 3: Writing the Technical Paper (Days 526 – 535)</strong><a class="hlink" href="#phase-3-writing-the-technical-paper-days-526-–-535">#</a></h2>
+<p><em>The Goal: Write and compile a publication-grade academic paper in LaTeX.</em></p>
+<ul>
+<li><strong>Day 526 – 528: Writing the Draft</strong><ul>
+<li><em>Milestone:</em> Draft your research paper using standard LaTeX templates (like the NeurIPS or ICML conference templates). Include sections: Abstract, Introduction, Related Work, Proposed Method, Experiments, Results, Discussion, and Conclusion.</li>
+</ul>
+</li>
+<li><strong>Day 529 – 532: Visuals and Code Cleanliness</strong><ul>
+<li><em>Milestone:</em> Insert your evaluation tables and comparison charts. Open-source your entire project code in your <code>AGI_Research</code> repository with professional documentation.</li>
+</ul>
+</li>
+<li><strong>Day 533 – 535: Review and Polish</strong><ul>
+<li><em>Milestone:</em> Pass your draft through your Month 17 Reviewer Agent. Refine the logic, correct mathematical notation, and compile the final PDF.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="phase-4-the-global-launch-career-conversion-days-536-–-540"><strong>PHASE 4: The Global Launch &amp; Career Conversion (Days 536 – 540)</strong><a class="hlink" href="#phase-4-the-global-launch-career-conversion-days-536-–-540">#</a></h2>
+<p><em>The Goal: Launch your work to the global AI community, build your network, and land your dream role.</em></p>
+<ul>
+<li><strong>Day 536 – 537: Releasing your Work</strong><ul>
+<li><em>Milestone:</em> <ol>
+<li>Upload your final compiled PDF paper to arXiv (or publish a highly-polished technical deep-dive on Medium/Substack).</li>
+<li>Release the weights of your trained model on HuggingFace.</li>
+<li>Clean up and star-optimize your GitHub repository.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Day 538 – 539: The Viral Pitch</strong><ul>
+<li><em>Milestone:</em> Write a highly technical, engaging thread on X (Twitter) and LinkedIn summarizing your paper. Tag AI founders, top research labs, and prominent researchers. (This is how talent is found in 2026/2027—top founders hire directly from technical X threads).</li>
+</ul>
+</li>
+<li><strong>Day 540: THE FINISH LINE 🎓🍾</strong><ul>
+<li><em>Goal:</em> Pitch yourself directly to US AI startups, Y-Combinator founders, and research labs. With an 18-month, daily-logged, first-principles portfolio showing Custom CUDA, Auto-Grad from scratch, MCTS reasoning, and an original published paper, <strong>no recruiter on Earth can deny your skills.</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="you-have-the-entire-18-month-map-hariom"><strong>You have the entire 18-month map, Hariom.</strong><a class="hlink" href="#you-have-the-entire-18-month-map-hariom">#</a></h3>
+<p>This is your destiny for the next 1.5 years. It is a path of absolute excellence, deep focus, and elite engineering. </p>
+</body></html>

@@ -1,13 +1,8 @@
 import { $, $$ } from './state.js';
-import { getLibrary, saveLibrary, STORAGE_KEYS } from './storage.js';
-import { setThemeMode, getMode } from './theme.js';
+import { getLibrary, saveLibrary, STORAGE_KEYS, getFileCount, getArchivedFiles, MAX_FILES, getStorageUsage } from './storage.js';
+import { setThemeMode } from './theme.js';
 import { toast } from './ui.js';
-
-// Add these imports at the top
-import { calculateStorageUsage, getQuotaStatus, formatBytes } from './storage-monitor.js';
 import { createBackup, getBackups, restoreBackup, deleteBackup, exportBackupAsZip, importBackupFromZip, formatBackupTime } from './backup-manager.js';
-import { getFileCount, getArchivedFiles, MAX_FILES } from './storage.js';
-
 
 const DEFAULT_SETTINGS = {
   theme: 'system',
@@ -52,6 +47,14 @@ export function updateSetting(key, value) {
 
 function applySetting(key, value) {
   if (key === 'theme') setThemeMode(value);
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
 /* ---------- Export / Import ---------- */
@@ -132,22 +135,62 @@ function resetSettings() {
 
 /* ---------- UI sync ---------- */
 function syncUI() {
-  // theme buttons
   const mode = currentSettings.theme;
   $$('.setThemeOpt').forEach(b => b.classList.toggle('on', b.dataset.themeValue === mode));
   const font = $('#settingsDefaultFont'); if (font) font.value = currentSettings.defaultFont;
   const as = $('#settingsAutosave'); if (as) as.checked = currentSettings.autosave;
   const iv = $('#settingsAutosaveInterval'); if (iv) iv.value = currentSettings.autosaveInterval;
 
-  // storage bar
+  updateStorageUI();
+}
+
+/**
+ * Update storage usage display (async for IDB support)
+ */
+export async function updateStorageUI() {
   const label = $('#settingsStorageUsed');
   const fill = $('#settingsStorageFill');
-  if (label) {
-    const bytes = calculateStorageUsage();
-    const max = 5 * 1024 * 1024; // visual 5MB "budget"
-    const pct = Math.min(100, (bytes / max) * 100);
-    label.textContent = formatBytes(bytes) + ' used';
-    if (fill) fill.style.width = pct + '%';
+  const fileCount = $('#settingsFileCount');
+  const archivedCount = $('#settingsArchivedCount');
+
+  try {
+    if (label) label.textContent = 'Calculating...';
+
+    const usage = await getStorageUsage();
+
+    if (label) {
+      const totalFormatted = formatBytes(usage.total);
+      label.textContent = totalFormatted;
+    }
+
+    if (fill) {
+      // Visual max: 100MB for the progress bar
+      const maxBytes = 100 * 1024 * 1024;
+      const pct = Math.min(100, (usage.total / maxBytes) * 100);
+      fill.style.width = pct + '%';
+
+      // Color coding
+      fill.className = 'storageFill';
+      if (pct < 50) {
+        fill.classList.add('level-safe');
+      } else if (pct < 80) {
+        fill.classList.add('level-warning');
+      } else {
+        fill.classList.add('level-critical');
+      }
+    }
+
+    if (fileCount) {
+      const activeFiles = getFileCount();
+      fileCount.textContent = activeFiles + ' / ' + MAX_FILES + ' files';
+    }
+
+    if (archivedCount) {
+      archivedCount.textContent = getArchivedFiles().length + ' files';
+    }
+  } catch (e) {
+    console.error('[Settings] Storage calculation error:', e);
+    if (label) label.textContent = 'Error';
   }
 }
 
@@ -215,109 +258,18 @@ export function initSettings() {
   const cl = $('#settingsClearAll'); if (cl) cl.onclick = clearAllData;
   const rs = $('#settingsReset'); if (rs) rs.onclick = resetSettings;
 
-  // global entry points (sidebar settings buttons)
+  // global entry points
   document.addEventListener('settings:open', showSettingsPage);
+
+  // Initialize backup handlers
+  initBackupHandlers();
+  initHotkeySettings();
 
   console.log('[Inkdown] Settings page initialized');
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Add this function to update the storage/backup UI
-export function updateStorageUI() {
-  // Storage usage
-  const status = getQuotaStatus();
-  const storageUsed = $('#settingsStorageUsed');
-  const storageFill = $('#settingsStorageFill');
-
-  if (storageUsed) {
-    storageUsed.textContent = formatBytes(status.used) + ' of ' + formatBytes(status.limit) + ' (' + status.percent + '%)';
-  }
-
-  if (storageFill) {
-    storageFill.style.width = Math.min(status.percent, 100) + '%';
-    storageFill.className = 'storageFill level-' + status.level;
-  }
-
-  // File counts
-  const fileCount = $('#settingsFileCount');
-  const archivedCount = $('#settingsArchivedCount');
-
-  if (fileCount) {
-    fileCount.textContent = getFileCount() + ' / ' + MAX_FILES + ' files';
-  }
-
-  if (archivedCount) {
-    archivedCount.textContent = getArchivedFiles().length + ' files';
-  }
-
-  // Backup list
-  renderBackupList();
-}
-
-function renderBackupList() {
-  const list = $('#backupList');
-  if (!list) return;
-
-  const backups = getBackups();
-
-  if (backups.length === 0) {
-    list.innerHTML = '<div class="backupEmpty">No backups yet. Create one to protect your data.</div>';
-    return;
-  }
-
-  list.innerHTML = backups.map(b => `
-    <div class="backupItem" data-id="${b.id}">
-      <div class="backupInfo">
-        <b>${b.reason === 'daily-auto' ? '🕐 Daily backup' : b.reason === 'manual' ? '💾 Manual backup' : '📦 ' + b.reason}</b>
-        <span>${formatBackupTime(b.timestamp)} · ${b.fileCount} files · ${(b.size / 1024).toFixed(1)} KB</span>
-      </div>
-      <div class="backupActions">
-        <button class="backupBtn restore" data-action="restore">Restore</button>
-        <button class="backupBtn danger" data-action="delete">Delete</button>
-      </div>
-    </div>
-  `).join('');
-
-  // Wire up buttons
-  list.querySelectorAll('.backupItem').forEach(item => {
-    const id = item.dataset.id;
-
-    item.querySelector('[data-action="restore"]').onclick = async () => {
-      if (confirm('Restore this backup? Current data will be backed up first.')) {
-        const result = await restoreBackup(id);
-        if (result.success) {
-          alert('Backup restored successfully. Reloading...');
-          location.reload();
-        } else {
-          alert('Restore failed: ' + result.error);
-        }
-      }
-    };
-
-    item.querySelector('[data-action="delete"]').onclick = () => {
-      if (confirm('Delete this backup?')) {
-        deleteBackup(id);
-        renderBackupList();
-      }
-    };
-  });
-}
-
-// Add these event handlers in initSettings()
+/* ---------- Backup handlers ---------- */
 export function initBackupHandlers() {
-  // Create backup
   const createBtn = $('#settingsCreateBackup');
   if (createBtn) {
     createBtn.onclick = async () => {
@@ -330,15 +282,13 @@ export function initBackupHandlers() {
       createBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Create Backup Now</span>';
 
       if (result.success) {
-        renderBackupList();
-        document.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Backup created', type: 'success' } }));
+        toast('Backup created', 'success');
       } else {
-        alert('Backup failed: ' + result.error);
+        toast('Backup failed: ' + result.error, 'error');
       }
     };
   }
 
-  // Export backup
   const exportBtn = $('#settingsExportBackup');
   if (exportBtn) {
     exportBtn.onclick = async () => {
@@ -347,12 +297,11 @@ export function initBackupHandlers() {
       exportBtn.disabled = false;
 
       if (!result.success) {
-        alert('Export failed: ' + result.error);
+        toast('Export failed: ' + result.error, 'error');
       }
     };
   }
 
-  // Import backup
   const importBtn = $('#settingsImportBackup');
   const importFile = $('#settingsBackupFile');
   if (importBtn && importFile) {
@@ -362,10 +311,10 @@ export function initBackupHandlers() {
         if (confirm('Import this backup? Current data will be backed up first.')) {
           const result = await importBackupFromZip(e.target.files[0]);
           if (result.success) {
-            alert('Backup imported. Reloading...');
-            location.reload();
+            toast('Backup imported. Reloading...', 'success');
+            setTimeout(() => location.reload(), 1000);
           } else {
-            alert('Import failed: ' + result.error);
+            toast('Import failed: ' + result.error, 'error');
           }
         }
         e.target.value = '';
@@ -374,13 +323,7 @@ export function initBackupHandlers() {
   }
 }
 
-
-
-
-
-
-
-// Hotkey management
+/* ---------- Hotkey management ---------- */
 export async function initHotkeySettings() {
   const openInput = $('#settingsHotkeyOpen');
   const captureInput = $('#settingsHotkeyCapture');
@@ -391,20 +334,15 @@ export async function initHotkeySettings() {
 
   if (!openInput || !captureInput) return;
 
-  // Load current hotkeys from daemon
   await loadHotkeyConfig();
-
-  // Update daemon status periodically
   updateDaemonStatus();
   setInterval(updateDaemonStatus, 30000);
 
-  // Save hotkeys
   if (saveBtn) {
     saveBtn.onclick = async () => {
       const openHotkey = openInput.value.trim().toLowerCase();
       const captureHotkey = captureInput.value.trim().toLowerCase();
 
-      // Validate
       if (!validateHotkey(openHotkey)) {
         toast('Invalid "Open" hotkey format', 'error');
         return;
@@ -418,7 +356,6 @@ export async function initHotkeySettings() {
         return;
       }
 
-      // Save via pywebview API
       const api = window.pywebview && window.pywebview.api;
       if (api && api.save_hotkey_config) {
         const result = await api.save_hotkey_config({
@@ -439,7 +376,6 @@ export async function initHotkeySettings() {
     };
   }
 
-  // Reset to defaults
   if (resetBtn) {
     resetBtn.onclick = async () => {
       openInput.value = 'ctrl+alt+space';
@@ -481,7 +417,7 @@ async function updateDaemonStatus() {
     const status = await api.get_daemon_status();
 
     if (status && status.running) {
-      if (statusText) statusText.textContent = 'Running (last heartbeat: ' + formatAge(status.age_seconds) + ')';
+      if (statusText) statusText.textContent = 'Running (' + formatAge(status.age_seconds) + ')';
       if (statusDot) statusDot.className = 'statusIndicator running';
     } else {
       if (statusText) statusText.textContent = 'Not running';
@@ -502,25 +438,16 @@ function formatAge(seconds) {
 
 function validateHotkey(hotkey) {
   if (!hotkey) return false;
-
   const parts = hotkey.split('+');
   if (parts.length < 2) return false;
-
   const validModifiers = ['ctrl', 'alt', 'shift', 'win'];
   const modifiers = parts.slice(0, -1);
   const key = parts[parts.length - 1];
-
-  // All but last must be modifiers
   for (const mod of modifiers) {
     if (!validModifiers.includes(mod)) return false;
   }
-
-  // Last must be a valid key
   if (!key || key.length === 0) return false;
-
-  // Check for reserved combinations
   const reserved = ['ctrl+alt+del', 'win+l', 'ctrl+shift+esc'];
   if (reserved.includes(hotkey)) return false;
-
   return true;
 }

@@ -71,10 +71,14 @@ export async function renderView(animate = false) {
 const renderPreviewDebounced = debounce(() => renderView(false), 280);
 
 /* ================= FILE OPEN / BACK ================= */
-export function openFile(rec, opts = {}) {
-  tabs.openTab(rec, opts);
-  // 🎯 Restore scroll position for the opened file
-  restoreScrollPosition(rec);
+export async function openFile(rec, opts = {}) {
+  let fullRec = rec;
+  if (rec._useIDB || rec._hasExternalContent) {
+    const { getFileWithContent } = await import('./storage.js');
+    fullRec = await getFileWithContent(rec.id);
+  }
+  tabs.openTab(fullRec, opts);
+  restoreScrollPosition(fullRec);
 }
 
 export function backToLibrary() {
@@ -432,30 +436,202 @@ function initSaveExport() {
     if (!b) return;
     menu.classList.remove('open');
     const base = state.name.replace(/\.(md|markdown|mdown|txt)$/i, '');
+
     if (b.dataset.act === 'md') {
-      download(new Blob([state.md], { type: 'text/markdown' }), state.name.endsWith('.md') ? state.name : base + '.md');
-      toast('Downloaded ' + state.name);
+      const content = state.md;
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const filename = state.name.endsWith('.md') ? state.name : base + '.md';
+      await download(blob, filename);
+
+    } else if (b.dataset.act === 'copy') {
+      try {
+        await navigator.clipboard.writeText(state.md);
+        toast('Markdown copied to clipboard');
+      } catch (err) {
+        toast('Copy failed', 'warn');
+      }
+
+    } else if (b.dataset.act === 'html') {
+      const content = exportHTML();
+      const blob = new Blob([content], { type: 'text/html' });
+      await download(blob, base + '.html');
+
+    } else if (b.dataset.act === 'rich') {
+      // Copy rendered HTML to clipboard
+      try {
+        const htmlContent = state.docEl.innerHTML;
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([htmlContent], { type: 'text/html' }),
+            'text/plain': new Blob([state.docEl.textContent], { type: 'text/plain' })
+          })
+        ]);
+        toast('Rendered content copied');
+      } catch (err) {
+        toast('Copy failed', 'warn');
+      }
+
+    } else if (b.dataset.act === 'png') {
+      // Export as image
+      try {
+        toast('Generating image...');
+        const canvas = await html2canvas(state.docEl, {
+          backgroundColor: '#ffffff',
+          scale: 2
+        });
+        const dataUrl = canvas.toDataURL('image/png');
+        const base64 = dataUrl.split(',')[1];
+
+        const api = window.pywebview && window.pywebview.api;
+        if (api && typeof api.save_binary_file === 'function') {
+          const result = await api.save_binary_file(base + '.png', base64);
+          if (result) {
+            toast('Image saved: ' + result.split(/[/\\]/).pop());
+          }
+        } else {
+          // Browser fallback
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = base + '.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          toast('Image downloaded');
+        }
+      } catch (err) {
+        console.error('[Export] PNG export failed:', err);
+        toast('Image export failed', 'warn');
+      }
+
+    } else if (b.dataset.act === 'pdf') {
+      // PDF: use browser print dialog
+      toast('Opening print dialog — choose "Save as PDF"');
+      setTimeout(() => window.print(), 300);
+
+    } else if (b.dataset.act === 'print') {
+      window.print();
+
+    } else if (b.dataset.act === 'share') {
+      // Copy share link
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(state.md)));
+        const url = location.origin + location.pathname + '#doc=' + encoded;
+        await navigator.clipboard.writeText(url);
+        toast('Share link copied to clipboard');
+      } catch (err) {
+        toast('Could not create share link', 'warn');
+      }
+
+    } else if (b.dataset.act === 'backup') {
+      // Export backup as zip
+      await exportBackupZip();
     }
-    if (b.dataset.act === 'copy') {
-      try { await navigator.clipboard.writeText(state.md); toast('Markdown copied'); }
-      catch (err) { toast('Copy failed', 'warn'); }
-    }
-    if (b.dataset.act === 'html') {
-      download(new Blob([exportHTML()], { type: 'text/html' }), base + '.html');
-      toast('HTML exported');
-    }
-    if (b.dataset.act === 'print') window.print();
   });
 }
 
-function download(blob, name) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+/** Export entire library as a ZIP backup */
+async function exportBackupZip() {
+  if (typeof JSZip === 'undefined') {
+    toast('JSZip not loaded — cannot create backup', 'warn');
+    return;
+  }
+
+  try {
+    toast('Creating backup...');
+    const zip = new JSZip();
+    const library = getLibrary();
+
+    // Add all files
+    library.forEach(file => {
+      const safeName = file.name.replace(/[/\\?%*:|"<>]/g, '-');
+      zip.file(safeName, file.md || '');
+    });
+
+    // Add metadata
+    zip.file('_backup-info.json', JSON.stringify({
+      created: new Date().toISOString(),
+      app: 'Inkdown',
+      fileCount: library.length
+    }, null, 2));
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const filename = 'inkdown-backup-' + new Date().toISOString().split('T')[0] + '.zip';
+
+    const api = window.pywebview && window.pywebview.api;
+    if (api && typeof api.save_binary_file === 'function') {
+      const base64 = await blobToBase64(blob);
+      const result = await api.save_binary_file(filename, base64);
+      if (result) {
+        toast('Backup saved: ' + result.split(/[/\\]/).pop());
+      }
+    } else {
+      await download(blob, filename);
+    }
+
+  } catch (err) {
+    console.error('[Export] Backup failed:', err);
+    toast('Backup failed', 'warn');
+  }
 }
 
+/** Convert Blob to base64 string */
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Download/save a file. Uses PyWebView API in desktop mode,
+ * falls back to browser download in web mode.
+ */
+async function download(blob, name) {
+  const api = window.pywebview && window.pywebview.api;
+
+  if (api && typeof api.save_file === 'function') {
+    // Desktop mode: use PyWebView save dialog
+    try {
+      const text = await blob.text();
+      const result = await api.save_file(name, text);
+
+      if (result) {
+        toast('Saved to: ' + result.split(/[/\\]/).pop());
+        return true;
+      } else {
+        // User cancelled the save dialog
+        return false;
+      }
+    } catch (e) {
+      console.error('[Export] PyWebView save failed:', e);
+      toast('Export failed', 'warn');
+      return false;
+    }
+  } else {
+    // Browser mode: use standard download
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      toast('Downloaded ' + name);
+      return true;
+    } catch (e) {
+      console.error('[Export] Browser download failed:', e);
+      toast('Export failed', 'warn');
+      return false;
+    }
+  }
+}
 function exportHTML() {
   return '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(state.name) + '</title>' +
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><style>' +

@@ -188,7 +188,10 @@ function fileCard(f, showFolder){
   meta.innerHTML = metaHtml;
 
   el.append(top, nm, sn, meta);
-  el.onclick = () => openFile(f);
+  el.onclick = () => openFile(f).catch(e => {
+    console.error('[Home] Failed to open file:', e);
+    toast('Could not open file', 'warn');
+  });
 
   el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', f.id); e.dataTransfer.effectAllowed='move'; el.classList.add('dragging'); });
   el.addEventListener('dragend', () => el.classList.remove('dragging'));
@@ -304,12 +307,18 @@ export function renderLibrary(){
 function newFile(){
   const rec = createFile(uniqueName('untitled.md', getLibrary()), '', { folder: currentFolder });
   renderLibrary();
-  openFile(rec, { edit:true });
+  openFile(rec, { edit:true }).catch(e => {
+    console.error('[Home] Failed to open file:', e);
+    toast('Could not open file', 'warn');
+  });
 }
 function newSample(){
   const rec = createFile(uniqueName('sample-readme.md', getLibrary()), SAMPLE, { folder: currentFolder });
   renderLibrary();
-  openFile(rec);
+  openFile(rec).catch(e => {
+    console.error('[Home] Failed to open file:', e);
+    toast('Could not open file', 'warn');
+  });
   toast('Sample loaded');
 }
 function doNewFolder(){
@@ -461,7 +470,10 @@ export function initLibrary(){
       const name = url.split('/').pop().split('?')[0] || 'imported.md';
       const rec = createFile(uniqueName(name, getLibrary()), text, { folder: currentFolder });
       renderLibrary();
-      openFile(rec);
+      openFile(rec).catch(e => {
+        console.error('[Home] Failed to open file:', e);
+        toast('Could not open file', 'warn');
+      });
       toast('Imported '+name);
     } catch(err){ toast('Could not fetch that URL','warn'); }
   };
@@ -504,7 +516,10 @@ document.addEventListener('library:newfolder', () => {
 });
 document.addEventListener('file:open', (e) => {
   if (e.detail && e.detail.file) {
-    openFile(e.detail.file);
+    openFile(e.detail.file).catch(e => {
+      console.error('[Home] Failed to open file:', e);
+      toast('Could not open file', 'warn');
+    });
   }
 });
 document.addEventListener('app:toggleedit', () => {
