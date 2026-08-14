@@ -26,7 +26,8 @@ import { initBackupManager } from './backup-manager.js';
 import { updateStorageUI, initBackupHandlers, initHotkeySettings } from './settings.js';
 import * as StorageMonitor from './storage-monitor.js';
 import { initClickToSource } from './click-to-source.js';
-
+import { initChat } from './chat.js';
+import { initChatSettings } from './chat-settings.js';
 
 // Global safety net: one bad error should never white-screen the whole app.
 window.addEventListener('error', (e) => {
@@ -116,6 +117,8 @@ async function openLaunchFiles() {
   initUI(); initTOC(); initNavigation(); initEditor(); initSearch(); initHighlight();
   initViewer(); initQuality(); initLibrary(); initTodos(); initChart(); initAssist(); initPWA();
   initSettings();
+  initChatSettings();
+  initChat();
   initStorageMonitor();
   initBackupManager();
   initBackupHandlers();
@@ -125,6 +128,7 @@ async function openLaunchFiles() {
   initPalette();
   initClickToSource();
   setupKeyboard();
+  
 
   const shared = openSharedFromHash();
   const launched = await openLaunchFiles();

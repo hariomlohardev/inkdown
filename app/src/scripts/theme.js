@@ -1,4 +1,5 @@
 import { $, $$ } from './state.js';
+import { rerenderMermaidOnThemeChange } from './markdown.js';
 
 const THEME_KEY = 'inkdown:theme';
 const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
@@ -41,8 +42,9 @@ export function setThemeMode(mode) {
   if (mode !== 'light' && mode !== 'dark' && mode !== 'system') mode = 'system';
   try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
   apply();
+  // Re-render mermaid diagrams with new theme
+  setTimeout(rerenderMermaidOnThemeChange, 200);
 }
-
 // Backwards-compatible helpers
 export function setTheme(t) { setThemeMode(t); }
 export function toggleTheme() { setThemeMode(isDark() ? 'light' : 'dark'); }

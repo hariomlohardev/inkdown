@@ -531,6 +531,63 @@
         </div>
       </div>
 
+      <!-- Chat API Configuration -->
+      <div class="setSection">
+        <div class="setSectionHead">
+          <div class="setSectionIcon">🤖</div>
+          <div>
+            <h3>AI Chat Configuration</h3>
+            <span>Configure your AI API for the chatbot</span>
+          </div>
+        </div>
+        <div class="setCard">
+          <div class="setRow">
+            <div class="setRowText">
+              <b>API Endpoint URL</b>
+              <span>The full URL for the API (e.g., https://api.meta.ai/v1/responses)</span>
+            </div>
+            <input type="text" id="chatBaseUrl" class="setInput" placeholder="https://api.meta.ai/v1/responses">
+          </div>
+          
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Model ID</b>
+              <span>Model name (e.g., gpt-4, gpt-3.5-turbo, claude-3-opus)</span>
+            </div>
+            <input type="text" id="chatModelId" class="setInput" placeholder="gpt-4">
+          </div>
+          
+          <div class="setRow">
+            <div class="setRowText">
+              <b>API Key</b>
+              <span>Your API key (stored securely in browser)</span>
+            </div>
+            <input type="password" id="chatApiKey" class="setInput" placeholder="sk-...">
+          </div>
+          
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Temperature</b>
+              <span>Creativity level (0.0 - 1.0)</span>
+            </div>
+            <input type="number" id="chatTemperature" class="setInput" value="0.7" min="0" max="1" step="0.1">
+          </div>
+          
+          <div class="setRow">
+            <div class="setRowText">
+              <b>Max Tokens</b>
+              <span>Maximum response length</span>
+            </div>
+            <input type="number" id="chatMaxTokens" class="setInput" value="2048" min="100" max="8192" step="100">
+          </div>
+          
+          <div class="setRow">
+            <button class="setBtn" id="chatTestConfig">Test Configuration</button>
+            <button class="setBtn primary" id="chatSaveConfig">Save Configuration</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Reset -->
       <div class="setSection">
         <div class="setSectionHead">
@@ -1047,5 +1104,83 @@
 <div id="toasts"></div>
 
 <script type="module" src="src/scripts/main.js"></script>
+
+<!-- Chat Panel -->
+<div id="chatPanel" class="chat-panel" style="display: none;">
+  <div id="chatResizeHandle" class="chat-resize-handle"></div>
+  
+  <div class="chat-header">
+    <div class="chat-title">
+      <div class="chat-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <span>AI Assistant</span>
+        <div class="chat-status" id="chatStatus">Ready</div>
+      </div>
+    </div>
+    <button id="chatClose" class="chat-close" title="Close (Ctrl+Space)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div id="chatHistory" class="chat-history">
+    <div class="chat-empty">
+      <div class="chat-empty-icon">💬</div>
+      <div class="chat-empty-title">Ask me anything</div>
+      <div class="chat-empty-desc">I have full context of your document. Type @ for quick commands.</div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <div class="chat-input-wrapper">
+      <!-- @ Autocomplete Dropdown -->
+      <div id="chatAutocomplete" class="chat-autocomplete">
+          <div class="chat-autocomplete-header">
+            <span class="chat-autocomplete-title">Quick Commands</span>
+            <span class="chat-autocomplete-hint">
+              <kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>↵</kbd> select
+            </span>
+          </div>
+          <div id="chatAutocompleteList"></div>
+          <div class="chat-autocomplete-footer">
+            <span>Type to filter</span>
+            <div class="chat-autocomplete-footer-keys">
+              <span><kbd>Esc</kbd> close</span>
+            </div>
+          </div>
+        </div>
+      
+      <textarea 
+        id="chatInput" 
+        class="chat-input" 
+        placeholder="Ask about this document... "
+        rows="1"
+      ></textarea>
+      <button id="chatSend" class="chat-send" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-hint">
+      Enter to send · Shift+Enter for new line · Type @ for commands
+    </div>
+  </div>
+</div>
+
+<!-- Chat Toggle Button -->
+<button id="chatToggle" class="chat-toggle" title="Open Chat (Ctrl+Space)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</button>
+
 </body>
 </html>

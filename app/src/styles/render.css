@@ -90,3 +90,142 @@
   padding: 2px 6px;
   border-radius: 4px;
 }
+
+
+/* ========================================================================
+   MERMAID DIAGRAMS — Robust Styling
+   ======================================================================== */
+
+/* Container */
+.mermaid-container {
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Loading state */
+.mermaid-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.mermaid-loading::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: mermaidSpin 0.8s linear infinite;
+}
+
+@keyframes mermaidSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Rendered diagram */
+.mermaid-rendered {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.mermaid-rendered svg {
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Error state */
+.mermaid-error {
+  padding: 16px;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+}
+
+.mermaid-error-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #ef4444;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.mermaid-error-icon {
+  font-size: 16px;
+}
+
+.mermaid-error-message {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-family: var(--mono);
+}
+
+.mermaid-error-details {
+  margin-top: 8px;
+}
+
+.mermaid-error-details summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 0;
+}
+
+.mermaid-error-details summary:hover {
+  color: var(--ink);
+}
+
+.mermaid-error-details pre {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 11px;
+  overflow-x: auto;
+  color: var(--ink2);
+  border: 1px solid var(--line);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .mermaid-container {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .mermaid-rendered svg {
+  filter: brightness(0.95);
+}
+
+/* Print */
+@media print {
+  .mermaid-container {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .mermaid-container {
+    padding: 12px;
+    margin: 16px 0;
+  }
+  
+  .mermaid-rendered {
+    overflow-x: auto;
+  }
+}
