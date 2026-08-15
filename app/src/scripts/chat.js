@@ -836,13 +836,19 @@ function updateChatVisibility() {
   if (chatOpen) {
     chatPanel.style.display = 'flex';
     chatPanel.style.width = chatWidth + 'px';
-    if (chatBtn) chatBtn.classList.add('active');
+    if (chatBtn) {
+      chatBtn.classList.add('active');
+      chatBtn.setAttribute('aria-expanded', 'true');
+    }
 
     const input = $('#chatInput');
     if (input) setTimeout(() => input.focus(), 100);
   } else {
     chatPanel.style.display = 'none';
-    if (chatBtn) chatBtn.classList.remove('active');
+    if (chatBtn) {
+      chatBtn.classList.remove('active');
+      chatBtn.setAttribute('aria-expanded', 'false');
+    }
   }
 }
 
