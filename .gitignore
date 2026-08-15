@@ -60,3 +60,7 @@ daemon-crash.log
 # Temporary
 *.tmp
 *.temp
+
+# Claude Code
+.claude/
+.claude.json
