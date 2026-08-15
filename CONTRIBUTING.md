@@ -9,7 +9,11 @@ Thanks for wanting to contribute! Inkdown is a Python + PyWebView desktop Markdo
 git clone https://github.com/hariomlohardev/inkdown.git
 cd inkdown
 pip install -r requirements.txt        # or: pip install -e ".[dev]"
+```
 
+> **Windows:** `build.bat` handles `scripts/make_icon.py → icon.ico` and `scripts/fetch_vendor.py → app/vendor/` then `pyinstaller --paths src`. If you run `pyinstaller` manually, add `--paths src`.
+
+```bash
 # 2. Run
 python main.py                          # desktop app
 python main.py --capture                # quick-capture window only
