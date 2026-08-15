@@ -27,3 +27,22 @@ def test_app_entry_exists():
     assert os.path.isfile(os.path.join(repo_root, "app", "index.html"))
     assert os.path.isdir(os.path.join(repo_root, "app", "src", "scripts"))
     assert os.path.isdir(os.path.join(repo_root, "src", "inkdown"))
+
+
+def test_chat_toggle_exposes_accessible_state():
+    import os
+
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(repo_root, "app", "index.html"), encoding="utf-8") as handle:
+        markup = handle.read()
+    with open(
+        os.path.join(repo_root, "app", "src", "scripts", "chat.js"),
+        encoding="utf-8",
+    ) as handle:
+        script = handle.read()
+
+    assert 'id="chatToggle"' in markup
+    assert 'aria-label="Open chat (Ctrl+Space)"' in markup
+    assert 'aria-expanded="false"' in markup
+    assert "setAttribute('aria-expanded', String(chatOpen))" in script
+    assert "chatOpen ? 'Close chat (Ctrl+Space)' : 'Open chat (Ctrl+Space)'" in script
