@@ -535,7 +535,10 @@ def main():
         if not os.path.isdir(root):
             try:
                 ctypes.windll.user32.MessageBoxW(
-                    0, 'Could not find the app folder at:\n\n%s\n\nPlease reinstall.' % root,
+                    0,
+                    'Could not find the app folder at:\n\n%s\n\n'
+                    'Re-clone or run: python scripts/fetch_vendor.py\n'
+                    'Then rebuild: build.bat' % root,
                     'Inkdown', 0x10)
             except Exception:
                 pass
