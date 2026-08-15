@@ -1,6 +1,0 @@
-README.md
-setup.py
-src/Inkdown.egg-info/PKG-INFO
-src/Inkdown.egg-info/SOURCES.txt
-src/Inkdown.egg-info/dependency_links.txt
-src/Inkdown.egg-info/top_level.txt

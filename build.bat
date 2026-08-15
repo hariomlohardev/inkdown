@@ -13,7 +13,9 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo [2/5] Generating app icon...
-if exist make_icon.py (
+if exist scripts\make_icon.py (
+    python scripts\make_icon.py >nul 2>&1
+) else if exist make_icon.py (
     python make_icon.py >nul 2>&1
 )
 if not exist icon.ico (
@@ -24,13 +26,16 @@ if not exist icon.ico (
 )
 
 echo [3/5] Fetching offline libraries...
-if exist fetch_vendor.py (
+if exist scripts\fetch_vendor.py (
+    python scripts\fetch_vendor.py >nul 2>&1
+) else if exist fetch_vendor.py (
     python fetch_vendor.py >nul 2>&1
 )
 
 echo [4/5] Building EXE with PyInstaller...
 pyinstaller --noconfirm --onedir --windowed --name Inkdown ^
   %ICONFLAG% ^
+  --paths src ^
   --version-file version_info.txt ^
   --collect-all webview ^
   --add-data "app;app" ^
