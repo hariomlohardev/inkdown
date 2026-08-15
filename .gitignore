@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+*.spec.bak
+.eggs/
+*.whl
+.venv/
+venv/
+env/
+
+# PyInstaller
+*.manifest
+*.pyinstaller/
+
+# Inkdown build outputs
+Output/
+dist/
+build/
+# Generated icon (produced by scripts/make_icon.py) — keep source icon.png + app/icon.svg
+icon.ico
+# Keep Output dir but ignore its contents (binary installer)
+
+# WebView / app cache
+app/vendor/fonts/*.log
+
+# Node (if ever used)
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Claude / local memory
+.remember/
+
+# Logs
+*.log
+launch.log
+daemon-crash.log
+
+# Env & secrets
+.env
+.env.local
+
+# Temporary
+*.tmp
+*.temp
+
+# Claude Code
+.claude/
+.claude.json
