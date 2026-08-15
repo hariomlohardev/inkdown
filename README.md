@@ -1,461 +1,179 @@
+<p align="center">
+  <img src="app/icon.svg" width="96" alt="Inkdown" />
+</p>
 
-<div align="center">
+<h1 align="center">Inkdown — Notion for Markdown</h1>
 
-# 🖋️ Inkdown
+<p align="center"><strong>Write beautifully, ship Markdown in seconds.</strong> <code>pip install -e . && python main.py</code></p>
 
-### The Notion-inspired Markdown studio for writers who care about craft
+<p align="center">
+  <a href="https://github.com/hariomlohardev/inkdown/releases"><img src="https://img.shields.io/badge/version-1.0.0-ff2e88?style=flat-square" alt="Version"/></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11%2B-3776ab?style=flat-square" alt="Python"/></a>
+  <a href="https://github.com/hariomlohardev/inkdown/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hariomlohardev/inkdown?style=flat-square" alt="License"/></a>
+  <a href="https://github.com/hariomlohardev/inkdown"><img src="https://img.shields.io/github/stars/hariomlohardev/inkdown?style=social" alt="Stars"/></a>
+  <img src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078d4?style=flat-square" alt="Platform"/>
+  <img src="https://img.shields.io/badge/made%20with-PyWebView%20%2B%20Vanilla%20JS-ff7ed8?style=flat-square" alt="Stack"/>
+  <img src="https://img.shields.io/badge/tests-4%20passed-brightgreen?style=flat-square" alt="tests"/>
+  <img src="https://img.shields.io/badge/themes-light%20%2B%20dark%20%2B%205%20accents-blueviolet?style=flat-square" alt="themes"/>
+  <a href="https://github.com/hariomlohardev/inkdown/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/hariomlohardev/inkdown/good%20first%20issue?label=good%20first%20issues&color=7057ff" alt="Good First Issues"/></a>
+</p>
 
-**A beautiful, fast, and feature-rich Markdown editor with todos, slides, and global hotkeys**
-
-[![Version](https://img.shields.io/badge/version-1.0.0-ff2e88?style=for-the-badge)](https://github.com/hariomlohardev/inkdown)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010/11-0078d4?style=for-the-badge)](https://github.com/hariomlohardev/inkdown/releases)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
-[![Download](https://img.shields.io/badge/download-Installer-ff2e88?style=for-the-badge)](./Output/Inkdown-Setup.exe)
-
----
-
-[📥 Download Installer](./Output/Inkdown-Setup.exe) • [✨ Features](#-features) • [⌨️ Shortcuts](#-keyboard-shortcuts) • [📖 Documentation](#-usage)
-
-</div>
-
----
-
-## 🌟 Overview
-
-**Inkdown** is a modern Markdown editor that combines the elegance of Notion with the power of a professional writing tool. Whether you're writing documentation, taking notes, or creating presentations, Inkdown provides a seamless, distraction-free experience with features that actually matter.
-
-Built with **PyWebView** and vanilla JavaScript, Inkdown runs as a native Windows desktop app while maintaining the speed and flexibility of web technologies.
+<p align="center">
+  <em>Beautiful, zero-config Markdown studio — Python-native, offline-first, no account.</em><br>
+  <code>library</code> • <code>live preview</code> • <code>todos + widget</code> • <code>slides</code> • <code>chat</code> • <code>highlights</code> • <code>palette</code>
+</p>
 
 ---
 
-## ✨ Features
-
-### 📝 Core Editor
-
-- **Live Preview** — See your Markdown rendered in real-time as you type
-- **Split View** — Edit and preview side-by-side
-- **Focus Mode** — Distraction-free writing environment
-- **Syntax Highlighting** — 180+ languages supported
-- **Math Support** — KaTeX-powered LaTeX rendering
-- **Mermaid Diagrams** — Create flowcharts, sequences, and more
-- **Code Blocks** — With line numbers and copy button
-
-### 📚 Library Management
-
-- **Multi-file Library** — Organize unlimited documents
-- **Folders** — Create nested folder structures
-- **Search** — Instant full-text search across all files
-- **Tags** — Organize with custom tags
-- **Archive** — Hide completed projects without deleting
-- **Import/Export** — Drag-and-drop, paste, or import from URL
-
-### 🎨 Notion-Inspired Design
-
-- **Minimalist UI** — Clean, spacious, beautiful
-- **Dark/Light Themes** — Automatic system theme detection
-- **Custom Accent Colors** — Personalize your workspace
-- **Smooth Animations** — 60fps GPU-accelerated transitions
-- **Typography** — Serif, sans-serif, mono, and Atkinson Hyperlegible fonts
-
-### ✅ Todo System
-
-- **Day-based Todos** — Organize tasks by date
-- **Floating Widget** — Always-on-top quick capture
-- **Global Hotkeys** — `Ctrl+Alt+C` to capture from anywhere
-- **Priority Levels** — Low, medium, high, urgent
-- **File Linking** — Connect todos to documents
-- **Streak Tracking** — Build productive habits
-- **Auto-backup** — Never lose your tasks
-
-### 📽️ Slides & Presentations
-
-- **Instant Slides** — Convert any document to a presentation
-- **Smart Splitting** — Automatically splits by headings
-- **Full-screen Mode** — Present with confidence
-- **Smooth Transitions** — Professional animations
-- **Progress Indicator** — Know where you are
-- **Speaker Notes** — Private notes visible only to you
-
-### 🖍️ Highlights & Annotations
-
-- **5 Color Options** — Yellow, pink, green, blue, purple
-- **Click to Remove** — Easy management
-- **Persistent** — Survives re-renders and reloads
-- **Context-Aware** — Accurate even with duplicate text
-- **Keyboard Shortcut** — Press `H` to highlight selection
-
-### ⌨️ Power User Features
-
-- **Command Palette** (`Ctrl+P`) — VS Code-style command search
-- **Quick Capture** (`Ctrl+Alt+C`) — Global hotkey for instant notes
-- **100+ Keyboard Shortcuts** — Work at the speed of thought
-- **Version History** — Never lose your work
-- **Auto-save** — Configurable intervals
-- **Storage Monitoring** — Know when you're running low
-
-### 🤖 Writing Assistant
-
-- **Readability Score** — Flesch-Kincaid analysis
-- **Broken Link Checker** — Find dead links instantly
-- **Tone Analysis** — Check for inclusivity and clarity
-- **Summarizer** — Generate TL;DR automatically
-- **Multi-language Translation** — 12 languages supported
-
-### 📊 Advanced Features
-
-- **Tables with Charts** — Visualize data directly in tables
-- **Footnotes** — Academic-style citations
-- **Callouts** — Note, tip, warning, danger blocks
-- **Emoji Shortcodes** — `:rocket:` → 🚀
-- **Image Viewer** — Click to zoom, scroll to pan
-- **Export Options** — PDF, HTML, PNG, Markdown, ZIP backup
-
----
-
-## 🚀 Installation
-
-### Windows (Recommended)
-
-1. **Download the installer:**
-   ```
-   ./Output/Inkdown-Setup.exe
-   ```
-
-2. **Run the installer** and follow the setup wizard
-
-3. **Launch Inkdown** from Start Menu or Desktop shortcut
-
-4. **Optional:** Run the daemon for global hotkeys:
-   ```batch
-   .\Output\run-daemon.bat
-   ```
-
-### From Source
+## Install
 
 ```bash
-# Clone the repository
-git clone https://github.com/hariomlohardev/inkdown.git
-cd inkdown
+# Windows — one click
+# Download Output/Inkdown-Setup.exe from Releases → Install → Launch from Start Menu
 
-# Install dependencies
-pip install -r requirements.txt
+# From source (any OS for web preview)
+git clone https://github.com/hariomlohardev/inkdown && cd inkdown
+pip install -r requirements.txt        # or: pip install -e ".[dev]"
+python main.py                          # desktop app (PyWebView)
+python -m inkdown                       # same, package entry
+npx serve app                           # web-only preview (no Python)
+```
 
-# Run in development mode
+Requires Python 3.11+. Deps: `pywebview`, `pillow`, `pystray`, `keyboard`. Frontend: `marked`, `DOMPurify`, `highlight.js`, `KaTeX`, `mermaid` (vendored in `app/vendor/`).
+
+## Usage
+
+### 1 — Library (home)
+
+```bash
+python main.py                          # open library
+python main.py notes.md                 # open with file (also: double-click .md in Explorer)
+# In app:
+# + New file (Ctrl+N) → type → Ctrl+S → folders → search (/) → archive
+```
+
+**Library keys:** `Ctrl+N` new • `Ctrl+O` import • `/` search • drag-drop `.md` • paste Markdown • import from URL
+
+### 2 — Editor (write)
+
+```bash
+# Inside a doc:
+Ctrl+E              # toggle edit (textarea + live preview, split drag)
+Ctrl+B / Ctrl+I     # bold / italic
+H                   # highlight selection (5 colors, persistent)
+Ctrl+\              # table of contents (filter + minimap)
+Ctrl+K              # search in doc
+F                   # focus mode • F11 fullscreen
+Ctrl+P              # palette (files, actions, settings)
+```
+
+**Pipeline:** `marked → DOMPurify → highlight.js / KaTeX (+ mhchem) / mermaid / callouts / emoji` in `app/src/scripts/markdown.js`.
+
+### 3 — Power: Todos, Slides, Chat
+
+```bash
+# Todos
+click Todos in sidebar  # or Ctrl+Alt+W widget
+Ctrl+Alt+C              # quick capture from anywhere (daemon)
+
+# Slides
+right-click in doc → Present as Slides   # splits on ##, ←/→, F fullscreen
+
+# Chat (AI)
+Ctrl+Space              # open panel → @ for commands
+# Configure in Settings → AI Chat: baseUrl, model, apiKey (stored locally)
+```
+
+## Demo
+
+Screenshots live in `docs/screenshots/` (add yours via `html2canvas` export → PNG):
+
+```bash
 python main.py
-
-# Build executable
-build.bat
+# → Library → Editor → Todos → Slides → Palette → then
+# Export → PNG / HTML via header menu
 ```
 
----
+Preview: `docs/screenshots/library.png` · `editor.png` · `todos.png` · `slides.png` (generate locally — no `vhs` needed).
 
-## 📖 Usage
+## Features
 
-### Getting Started
+| Feature | Library | Editor | Power |
+|---|:---:|:---:|:---:|
+| Multi-file + folders + search + archive + import (file/URL/paste) | ✅ | — | — |
+| Live preview + split + focus + TOC + minimap + word goal | — | ✅ | — |
+| 180+ langs `hljs` + KaTeX + mermaid + callouts + footnotes + emoji | — | ✅ | — |
+| 5-color highlights (H, persistent, duplicate-aware) | — | ✅ | — |
+| Day-based todos + widget + streak + capture (`Ctrl+Alt+C`) | — | — | ✅ |
+| Slides from `##` + fullscreen + progress + speaker notes | — | — | ✅ |
+| Palette `Ctrl+P` + shortcuts (`Ctrl+/`) + version history + auto-save | — | — | ✅ |
+| Tables → bar/line chart (canvas) + image viewer + export (md/html/pdf/png/zip) | — | ✅ | ✅ |
+| Chat (`Ctrl+Space`, `@` commands, 12-lang translate, tone/summary) | — | — | ✅ |
+| 100% local, offline, no telemetry, `localStorage + IndexedDB + inkdown-data.json` | ✅ | ✅ | ✅ |
 
-1. **Create a new file** — Click `+ New File` or press `Ctrl+N`
-2. **Start writing** — Type Markdown, see live preview
-3. **Save** — Press `Ctrl+S` or click the save button
-4. **Organize** — Create folders, add tags, archive old files
-
-### Writing Markdown
-
-```markdown
-# Heading 1
-## Heading 2
-
-**Bold text** and *italic text*
-
-- Bullet list
-- Another item
-
-1. Numbered list
-2. Second item
-
-[Link](https://example.com)
-
-![Image](image.png)
-
-> Blockquote
-
-`inline code`
-
-```python
-def hello():
-    print("Hello, World!")
-
-$$
-E = mc^2
-$$
-```
-
-### Using Todos
-
-1. **Open Todos page** — Click the ✅ icon in sidebar
-2. **Add a task** — Type and press Enter
-3. **Set priority** — Click the priority dot
-4. **Link a file** — Click the link icon
-5. **Quick capture** — Press `Ctrl+Alt+C` from anywhere
-
-### Creating Slides
-
-1. **Write your document** with `##` headings for each slide
-2. **Right-click** anywhere in the document
-3. **Select "Present as Slides"**
-4. **Navigate** with arrow keys or click
-5. **Full-screen** with `F` key
-
-### Command Palette
-
-Press `Ctrl+P` to open the command palette and search for:
-- Files by name
-- Actions (new file, export, etc.)
-- Settings (change theme, font, etc.)
-- Navigation (go to todos, settings, etc.)
-
----
-
-## ⌨️ Keyboard Shortcuts
-
-<details>
-<summary><b>Click to expand full shortcut list</b></summary>
-
-### General
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+S` | Save document |
-| `Ctrl+E` | Toggle edit mode |
-| `Ctrl+P` | Command palette |
-| `Ctrl+K` | Search document |
-| `Ctrl+O` | Open file |
-| `Ctrl+N` | New file |
-| `F11` | Fullscreen |
-| `F` | Focus mode |
-| `Esc` | Close dialogs |
-
-### Editing
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+B` | Bold |
-| `Ctrl+I` | Italic |
-| `Ctrl+\`` | Inline code |
-| `H` | Highlight selection |
-
-### Todos
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+Alt+C` | Quick capture (global) |
-| `Ctrl+Alt+Space` | Open Inkdown (global) |
-
-### Navigation
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+\` | Toggle table of contents |
-| `Ctrl+[` | Jump back |
-| `Home` | Scroll to top |
-
-### Slides
-
-| Shortcut | Action |
-|----------|--------|
-| `←` / `→` | Previous/Next slide |
-| `Home` / `End` | First/Last slide |
-| `F` | Toggle fullscreen |
-| `Esc` | Exit slides |
-
-</details>
-
----
-
-## 🎨 Customization
-
-### Themes
-
-Inkdown supports three theme modes:
-- **System** — Follows your OS theme
-- **Light** — Clean white interface
-- **Dark** — Easy on the eyes
-
-Change in **Settings → Appearance → Theme**
-
-### Fonts
-
-Choose from four reading fonts:
-- **Serif** — Classic, elegant (default)
-- **Sans-serif** — Modern, clean
-- **Monospace** — Code-friendly
-- **Atkinson Hyperlegible** — Accessibility-focused
-
-### Accent Colors
-
-Personalize with 5 accent colors:
-- 🌸 Pink (default)
-- 💙 Blue
-- 💚 Green
-- 💜 Purple
-- 🧡 Orange
-
----
-
-## 🏗️ Architecture
-
-### Tech Stack
-
-- **Backend:** Python 3.11+, PyWebView
-- **Frontend:** Vanilla JavaScript (ES6 modules)
-- **Styling:** Custom CSS with CSS variables
-- **Markdown:** marked.js + DOMPurify
-- **Math:** KaTeX
-- **Diagrams:** Mermaid.js
-- **Charts:** Custom canvas-based renderer
-
-### File Structure
-
-```
-inkdown/
-├── app/
-│   ├── src/
-│   │   ├── scripts/     # JavaScript modules
-│   │   ├── styles/      # CSS files
-│   │   └── index.html   # Main HTML
-│   └── vendor/          # Third-party libraries
-├── main.py              # PyWebView entry point
-├── inkdown_daemon.py    # Global hotkey daemon
-├── build.bat            # Build script
-└── requirements.txt     # Python dependencies
-```
-
----
-
-## 🔒 Privacy & Security
-
-- **100% Local** — All data stored on your device
-- **No Telemetry** — Zero tracking or analytics
-- **No Account Required** — Just download and use
-- **Open Source** — Inspect the code yourself
-- **Offline-First** — Works without internet
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to help:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Development Setup
+## Themes
 
 ```bash
-# Install dev dependencies
-pip install -r requirements.txt
-
-# Run tests
-pytest
-
-# Lint code
-flake8 src/
+# In app: Settings → Appearance
+# Theme: System / Light / Dark  — follows OS, or pick fixed
+# Font: Serif / Sans / Mono / Atkinson Hyperlegible
+# Accent: Pink (default) • Blue • Green • Purple • Orange
 ```
 
----
+All CSS via `app/src/styles/tokens.css` — `data-theme="light|dark"` on `<html>`, `main.css` import chain. No bundler.
 
-## 📄 License
+## Documentation
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+- **Markdown guide:** [`docs/markdown-guide.md`](docs/markdown-guide.md) — syntax Inkdown supports
+- **Design docs:** [`internal/design/`](internal/design/) — 9 local deep-dives (overview, arch, backend, frontend, storage, features, styling, build/deploy, gotchas) — gitignored, for contributors
+- **Help inside app:** `Ctrl+/` shortcuts modal, Settings pages, `docs/screenshots/`
 
----
+## Development
 
-## 🙏 Acknowledgments
-
-- **[Notion](https://notion.so)** — Design inspiration
-- **[Obsidian](https://obsidian.md)** — Feature inspiration
-- **[PyWebView](https://pywebview.flowrl.com/)** — Desktop framework
-- **[marked.js](https://marked.js.org/)** — Markdown parser
-- **[KaTeX](https://katex.org/)** — Math rendering
-- **[Mermaid](https://mermaid.js.org/)** — Diagram generation
-
----
-
-## 📞 Support
-
-- **Issues:** [GitHub Issues](https://github.com/hariomlohardev/inkdown/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/hariomlohardev/inkdown/discussions)
-
----
-
-## 🗺️ Roadmap
-
-### Coming Soon
-
-- [ ] Mobile app (iOS/Android)
-- [ ] Cloud sync (optional)
-- [ ] Collaborative editing
-- [ ] Plugin system
-- [ ] API for integrations
-- [ ] Vim mode
-- [ ] Multi-cursor editing
-- [ ] AI writing assistant
-
----
-
-<div align="center">
-
-**Made with ❤️ by [Your Name]**
-
-[⭐ Star this repo](https://github.com/hariomlohardev/inkdown) if you find it useful!
-
-[📥 Download Now](./Output/Inkdown-Setup.exe)
-
-</div>
-
----
-
-<details>
-<summary><b>Screenshots</b> (Click to expand)</summary>
-
-### Library View
-*Organize all your documents in one place*
-
-![Library](docs/screenshots/library.png)
-
-### Editor
-*Beautiful, distraction-free writing*
-
-![Editor](docs/screenshots/editor.png)
-
-### Todos
-*Stay productive with built-in task management*
-
-![Todos](docs/screenshots/todos.png)
-
-### Slides
-*Turn any document into a presentation*
-
-![Slides](docs/screenshots/slides.png)
-
-### Command Palette
-*Access any feature instantly*
-
-![Command Palette](docs/screenshots/command-palette.png)
-
-</details>
-
----
-
-<div align="center">
-
-### 🖋️ Inkdown — Write beautifully, think clearly, present confidently
-
-[Download for Windows](./Output/Inkdown-Setup.exe) • [View on GitHub](https://github.com/hariomlohardev/inkdown)
-
-</div>
+```bash
+git clone https://github.com/hariomlohardev/inkdown && cd inkdown
+pip install -e ".[dev]"
+python scripts/fetch_vendor.py   # refresh app/vendor/ (3.9MB, committed)
+python scripts/make_icon.py      # regenerate icon.ico + icon.png
+python -m pytest -q              # 4 passed
+python main.py                   # desktop — q to quit, python main.py file.md also works
+npx serve app                    # web — http://localhost:3000/app/index.html
+build.bat                        # → dist/Inkdown/Inkdown.exe → Output/Inkdown-Setup.exe (Inno Setup)
 ```
 
----
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CLAUDE.md`](CLAUDE.md). `src` layout, `pyproject.toml` is source of truth, `Output/` + `dist/` + `icon.ico` are gitignored.
+
+## Contributing — Good First Issues
+
+**Want to contribute?** Issues are triaged for every level:
+
+<a href="https://github.com/hariomlohardev/inkdown/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/hariomlohardev/inkdown/good%20first%20issue?label=good%20first%20issues&color=7057ff" alt="Good First Issues"/></a> <a href="https://github.com/hariomlohardev/inkdown/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"><img src="https://img.shields.io/github/issues/hariomlohardev/inkdown/help%20wanted?label=help%20wanted" alt="Help Wanted"/></a>
+
+**Browse all:** https://github.com/hariomlohardev/inkdown/issues
+
+- **Good First Issues (30 min, beginner):** One file, copy-paste steps — e.g., docstrings, `python main.py --help` text, `CONTRIBUTING.md` typo, new callout style.
+- **Intermediate (60-90 min):** Pack/export polish, `peek`-style theme token, storage quota UI, `peek` demo parity.
+- **Complex (1-2 days):** Plugin system, cloud sync (opt-in), Vim mode, multi-cursor.
+
+Every issue has **exact file**, **acceptance checkboxes**, and **time estimate**. PRs with `good first issue` get priority review.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for workflow. `main` is the ship branch; Pages deploy lives in `.github/workflows/deploy.yml` (`app/` → Pages).
+
+## Why Inkdown?
+
+| Tool | Lacks |
+|---|---|
+| Notion | No offline Markdown files, no local-first, account required |
+| Obsidian | No native slides/chat, heavier plugin model |
+| VS Code + Markdown | No library/todos/slides polish, not writer-first |
+| Typora / Mark Text | No todos/widget/daemon, no AI panel |
+
+**Moat:** Every doc is a file. Every file is a slide deck. One hotkey from anywhere (`Ctrl+Alt+C`) and you’re back. `python main.py` is zero friction.
+
+## Author
+
+Built by [Hariom Lohar](https://hariomlohardev.github.io/) — hariomlohar.new@gmail.com
+
+## License
+
+MIT — see [`LICENSE`](LICENSE)
