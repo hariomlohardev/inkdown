@@ -48,6 +48,9 @@ Thumbs.db
 # Claude / local memory
 .remember/
 
+# Internal helpers (local design docs, scratch, not for open source)
+internal/
+
 # Logs
 *.log
 launch.log
