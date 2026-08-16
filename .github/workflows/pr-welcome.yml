@@ -1,0 +1,70 @@
+name: PR Welcome
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Welcome
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const isFirst = context.payload.pull_request.author_association === 'FIRST_TIME_CONTRIBUTOR'
+              || context.payload.pull_request.author_association === 'FIRST_TIMER'
+              || context.payload.pull_request.author_association === 'NONE';
+
+            const body = `Hey @${author}! :wave: :sparkles: :heart:
+
+            **Thank you for your PR!** :tada: :pen: We're so excited you chose to contribute to **Inkdown**! :star2: :rocket:
+
+            Our maintainers will **review it soon** — usually within **24-48 hours** :hourglass_flowing_sand: :eyes:. No need to ping, we check every PR! :white_check_mark:
+
+            **What happens next?**
+            - :mag: We’ll run CI checks (tests on Ubuntu + Windows)
+            - :speech_balloon: We’ll leave a friendly review (like in [#92](https://github.com/hariomlohardev/peek/pull/92))
+            - :white_check_mark: If all good, we’ll **squash & merge** and your commit will shine on ` + '`main`' + `! :sparkles:
+
+            **Quick checklist while you wait** :clipboard::
+            - Title is \`feat:\` / \`fix:\` / \`docs:\` / \`chore:\` ?
+            - Linked an issue with \`Fixes #123\` ?
+            - Ran \`python -m pytest -q\` and \`python -m py_compile src/inkdown/__main__.py\` ?
+
+            **Please don’t spam PRs with AI** :robot: :no_entry_sign:
+            > We love AI as a helper, but **AI-generated spam PRs** (copy-pasted, untested, duplicate, or low-effort) will be **closed** and may lead to a **temporary ban** :warning: :no_entry:. Quality over quantity always wins! :seedling: :star:
+
+            ${isFirst ? `**First PR?** Welcome! :confetti_ball: :tada: One focused PR is better than five tiny ones — and PRs with \`good first issue\` get priority review! :fire:` : `Thanks for coming back! :repeat: :heart:`}
+
+            Need help? Comment here or check [\`CONTRIBUTING.md\`](https://github.com/hariomlohardev/inkdown/blob/main/CONTRIBUTING.md) + [\`good first issues\`](https://github.com/hariomlohardev/inkdown/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) :books: :wrench:
+
+            *P.S. If you liked Inkdown, a :star: on the repo helps us a lot!* :star: :pray:
+            `;
+
+            // Avoid duplicate welcome comments
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+            });
+            const already = comments.some(c => c.user.type === 'Bot' && c.body.includes('Thank you for your PR'));
+            if (already) {
+              core.info('Welcome already posted — skipping');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
+            core.info(`Welcomed @${author} on #${pr.number}`);
