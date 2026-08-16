@@ -25,6 +25,8 @@ python scripts/fetch_vendor.py          # re-download app/vendor/
 python scripts/make_icon.py             # regenerate icon.ico + icon.png
 ```
 
+> **Windows:** `build.bat` handles `scripts/make_icon.py → icon.ico` and `scripts/fetch_vendor.py → app/vendor/`, then runs `pyinstaller --paths src`. If you run `pyinstaller` manually, add `--paths src` (both `build.bat` and `installer.iss` expect the `src/` layout).
+
 ## Project layout
 
 ```
