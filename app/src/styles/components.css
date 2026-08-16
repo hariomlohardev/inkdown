@@ -53,6 +53,14 @@ input[type=range] { flex: 1; accent-color: var(--accent); }
 .verRow .vt { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink2); font-weight: 600; }
 .verRow .vr { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 6px; padding: 3px 9px; flex: 0 0 auto; }
 .verRow .vr:hover { background: var(--accent); color: #16000a; }
+.verRow .vd { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ink2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; flex: 0 0 auto; }
+.verRow .vd:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+.verDiff { margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface2); }
+.verDiffHead { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; font-family: var(--mono); font-size: 10.5px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--surface); }
+.verDiffHead b { color: var(--ink2); }
+.verDiffClose { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+.verDiffClose:hover { background: var(--surface2); color: var(--ink2); }
+.verDiffBody { margin: 0; padding: 10px; font-family: var(--mono); font-size: 11px; line-height: 1.6; max-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
 .popEmpty { padding: 18px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
 #searchBar { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-8px); z-index: 45; display: flex; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 8px 10px; opacity: 0; pointer-events: none; transition: var(--t-normal); }
