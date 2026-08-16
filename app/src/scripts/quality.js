@@ -106,8 +106,8 @@ function renderVersions() {
       ? arr.map((v, i) => {
           const words = (v.md.trim().match(/\S+/g) || []).length;
           const t = new Date(v.at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-          return '<div class="verRow"><span class="vn">' + t + ' · ' + words + 'w</span><span class="vt">' + esc(v.md.trim().split('\n')[0].slice(0, 40)) + '</span><button class="vr" data-i="' + i + '">RESTORE</button></div>';
-        }).join('')
+          return '<div class="verRow"><span class="vn">' + t + ' · ' + words + 'w</span><span class="vt">' + esc(v.md.trim().split('\n')[0].slice(0, 40)) + '</span><button class="vr" data-i="' + i + '">RESTORE</button><button class="vd" data-i="' + i + '">DIFF</button></div>';
+        }).join('') + '<div id="verDiff" class="verDiff" hidden></div>'
       : '<div class="popEmpty">Snapshots appear here each time you save.</div>');
   p.querySelectorAll('.vr').forEach(b => {
     b.onclick = () => {
@@ -120,6 +120,44 @@ function renderVersions() {
       $('#verPanel').classList.remove('open');
     };
   });
+  p.querySelectorAll('.vd').forEach(b => {
+    b.onclick = () => {
+      const arr2 = getVersions();
+      const v = arr2[+b.dataset.i];
+      if (!v) return;
+      showVerDiff(v.md, state.md);
+    };
+  });
+}
+
+function showVerDiff(oldMd, curMd) {
+  const diffEl = $('#verDiff');
+  if (!diffEl) return;
+  diffEl.hidden = false;
+  diffEl.innerHTML = '<div class="verDiffHead"><b>Diff vs current</b><button class="verDiffClose">✕</button></div><pre class="verDiffBody">' + esc(computeDiff(oldMd, curMd)) + '</pre>';
+  diffEl.querySelector('.verDiffClose').onclick = () => { diffEl.hidden = true; diffEl.innerHTML = ''; };
+  // Simple line diff: + added, - removed,   unchanged (first 100 lines)
+  function computeDiff(a, b) {
+    const aLines = a.split('\n');
+    const bLines = b.split('\n');
+    const aSet = new Set(aLines);
+    const bSet = new Set(bLines);
+    const out = [];
+    const max = Math.max(aLines.length, bLines.length);
+    let shown = 0;
+    for (let i = 0; i < max && shown < 200; i++) {
+      const al = aLines[i];
+      const bl = bLines[i];
+      if (al === bl) {
+        if (shown < 100) out.push('  ' + (al || ''));
+      } else {
+        if (al !== undefined && !bSet.has(al)) { out.push('- ' + al); shown++; }
+        if (bl !== undefined && !aSet.has(bl)) { out.push('+ ' + bl); shown++; }
+      }
+    }
+    if (shown >= 200) out.push('… diff truncated at 200 lines');
+    return out.join('\n') || '(no difference)';
+  }
 }
 
 export function updateStats() {
