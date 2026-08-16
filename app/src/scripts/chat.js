@@ -833,6 +833,14 @@ function updateChatVisibility() {
 
   if (!chatPanel) return;
 
+  if (chatBtn) {
+    chatBtn.setAttribute('aria-expanded', String(chatOpen));
+    chatBtn.setAttribute(
+      'aria-label',
+      chatOpen ? 'Close chat (Ctrl+Space)' : 'Open chat (Ctrl+Space)'
+    );
+  }
+
   if (chatOpen) {
     chatPanel.style.display = 'flex';
     chatPanel.style.width = chatWidth + 'px';
