@@ -317,6 +317,40 @@ Blockquotes can contain other Markdown.
 
 ---
 
+### Callouts
+
+Inkdown also supports GitHub-style callouts. Add a `[!TYPE]` tag right after the `>` marker. Supported types: `NOTE`, `TIP`, `WARNING`, `DANGER`.
+
+```markdown
+> [!NOTE]
+> Useful information users should know, even when skimming.
+
+> [!TIP]
+> A helpful tip or a trick to get more out of Inkdown.
+
+> [!WARNING]
+> A caution — be careful, this could break something.
+
+> [!DANGER]
+> A serious consequence — stop and read before proceeding.
+```
+
+**Rendered:**
+
+> [!NOTE]
+> Useful information users should know, even when skimming.
+
+> [!TIP]
+> A helpful tip or a trick to get more out of Inkdown.
+
+> [!WARNING]
+> A caution — be careful, this could break something.
+
+> [!DANGER]
+> A serious consequence — stop and read before proceeding.
+
+---
+
 ## 8. Code
 
 ### Inline Code
