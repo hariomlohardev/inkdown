@@ -60,6 +60,7 @@ jobs:
           echo "syntax OK"
 
       - name: Verify app
+        shell: bash
         run: |
           test -f app/index.html || (echo "::error::app/index.html missing" && exit 1)
           test -f app/src/scripts/main.js || (echo "::error::app/src/scripts/main.js missing" && exit 1)
@@ -69,6 +70,7 @@ jobs:
           ls -lh app/vendor/ 2>&1 | head -n 15 || echo "vendor not found (run fetch_vendor.py)"
 
       - name: Check build helpers
+        shell: bash
         run: |
           test -f scripts/fetch_vendor.py || (echo "::error::scripts/fetch_vendor.py missing" && exit 1)
           test -f scripts/make_icon.py || (echo "::error::scripts/make_icon.py missing" && exit 1)
