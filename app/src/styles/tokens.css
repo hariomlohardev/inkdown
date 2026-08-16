@@ -34,6 +34,11 @@ html[data-theme="light"] {
   --shadow: 0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
   --glow1: rgba(255, 46, 136, 0.07);
   --glow2: rgba(0, 0, 0, 0.045);
+  --hl-yellow-bg: #fef08a; --hl-yellow-text: #713f12;
+  --hl-pink-bg: #fbcfe8;   --hl-pink-text: #831843;
+  --hl-green-bg: #bbf7d0;  --hl-green-text: #14532d;
+  --hl-blue-bg: #bfdbfe;   --hl-blue-text: #1e3a8a;
+  --hl-purple-bg: #e9d5ff; --hl-purple-text: #581c87;
   color-scheme: light;
 }
 
@@ -60,5 +65,10 @@ html[data-theme="dark"] {
   --shadow: 0 14px 38px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
   --glow1: rgba(255, 46, 136, 0.08);
   --glow2: rgba(255, 255, 255, 0.035);
+  --hl-yellow-bg: #5c5114; --hl-yellow-text: #f5edb8;
+  --hl-pink-bg: #6b2c4d;   --hl-pink-text: #ffd4e8;
+  --hl-green-bg: #2c5c3e;  --hl-green-text: #d4f5dd;
+  --hl-blue-bg: #2a3f73;   --hl-blue-text: #d3e4ff;
+  --hl-purple-bg: #4c3673; --hl-purple-text: #ebddff;
   color-scheme: dark;
 }

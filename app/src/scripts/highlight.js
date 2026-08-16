@@ -4,11 +4,11 @@ import { state, $ } from './state.js';
 import { upsertFile } from './storage.js';
 
 const HIGHLIGHT_COLORS = [
-  { name: 'yellow', bg: '#fef08a', text: '#713f12' },
-  { name: 'pink',   bg: '#fbcfe8', text: '#831843' },
-  { name: 'green',  bg: '#bbf7d0', text: '#14532d' },
-  { name: 'blue',   bg: '#bfdbfe', text: '#1e3a8a' },
-  { name: 'purple', bg: '#e9d5ff', text: '#581c87' },
+  { name: 'yellow', bg: 'var(--hl-yellow-bg)', text: 'var(--hl-yellow-text)' },
+  { name: 'pink',   bg: 'var(--hl-pink-bg)',   text: 'var(--hl-pink-text)' },
+  { name: 'green',  bg: 'var(--hl-green-bg)',  text: 'var(--hl-green-text)' },
+  { name: 'blue',   bg: 'var(--hl-blue-bg)',   text: 'var(--hl-blue-text)' },
+  { name: 'purple', bg: 'var(--hl-purple-bg)', text: 'var(--hl-purple-text)' },
 ];
 
 let saveTimeout = null;
