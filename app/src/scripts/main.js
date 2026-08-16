@@ -104,8 +104,9 @@ async function openLaunchFiles() {
 }
 
 (async function boot() {
+  try { performance.mark("inkdown:bootStart"); } catch (_) {}
   await restored;
-  setTimeout(hideSplash, 4000);
+  setTimeout(hideSplash, 1200);
 
   initTheme(); initState(); migrateLegacy();
   // Migrate large files to IndexedDB (async, non-blocking)
@@ -135,5 +136,11 @@ async function openLaunchFiles() {
   if (!shared && !launched) showLibrary();
 
   hideSplash();
+  try {
+    performance.mark("inkdown:bootEnd");
+    performance.measure("inkdown:boot", "inkdown:bootStart", "inkdown:bootEnd");
+    const m = performance.getEntriesByName("inkdown:boot")[0];
+    if (m) console.log(`[Inkdown] boot ${Math.round(m.duration)}ms`);
+  } catch (_) {}
   if (!window.marked || !window.DOMPurify) toast('CDN libraries failed — some features limited', 'warn');
 })();

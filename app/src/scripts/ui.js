@@ -25,6 +25,14 @@ export function toast(msg, type = 'ok') {
   }, 2300);
 }
 
+// Guard: don't lose words on reload/close when dirty
+window.addEventListener('beforeunload', e => {
+  if (state.dirty) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 
 /** Restore saved scroll position after file is rendered */
 function restoreScrollPosition(file) {
