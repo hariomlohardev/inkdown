@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
+  issues: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -45,20 +47,142 @@ jobs:
           PYTHONPATH: src
 
       - name: Run tests
+        id: pytest
         run: |
-          python -m pytest -q
+          python -m pytest -q --tb=short 2>&1 | tee pytest.log
+          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+          cat pytest.log
 
       - name: Check syntax
         run: |
           python -m py_compile src/inkdown/__main__.py src/inkdown/daemon.py src/inkdown/file_lock.py
-          python -m py_compile src/inkdown/watchdog.py src/inkdown/updater.py
+          python -m py_compile src/inkdown/watchdog.py src/inkdown/updater.py src/inkdown/capture_window.py
+          echo "syntax OK"
 
       - name: Verify app
         run: |
-          test -f app/index.html
-          test -f app/src/scripts/main.js
-          test -f app/src/styles/main.css
-          echo "app/ OK"
+          test -f app/index.html || (echo "::error::app/index.html missing" && exit 1)
+          test -f app/src/scripts/main.js || (echo "::error::app/src/scripts/main.js missing" && exit 1)
+          test -f app/src/styles/main.css || (echo "::error::app/src/styles/main.css missing" && exit 1)
+          test -f app/src/styles/tokens.css || (echo "::error::tokens.css missing" && exit 1)
+          echo "app/ OK — $(find app -type f | wc -l) files"
+          ls -lh app/vendor/ 2>&1 | head -n 15 || echo "vendor not found (run fetch_vendor.py)"
+
+      - name: Check build helpers
+        run: |
+          test -f scripts/fetch_vendor.py || (echo "::error::scripts/fetch_vendor.py missing" && exit 1)
+          test -f scripts/make_icon.py || (echo "::error::scripts/make_icon.py missing" && exit 1)
+          test -f pyproject.toml || (echo "::error::pyproject.toml missing" && exit 1)
+          test -f Inkdown.spec || (echo "::error::Inkdown.spec missing" && exit 1)
+          echo "build helpers OK"
+
+      - name: Upload pytest log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ matrix.os }}-${{ matrix.python }}
+          path: pytest.log
+          retention-days: 7
+
+      - name: Comment on PR if failed
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Hey @${author}! :wave: :warning: :test_tube:
+
+            **CI failed** :x: — we checked your PR and something didn’t pass :mag: :hammer:
+
+            **What failed?** Check the logs: :eyes: [View run](${runUrl}) :arrow_right: look for :x: red steps (usually \`Run tests\` or \`Check syntax\`).
+
+            **Common fixes** :wrench::
+            - :test_tube: \`python -m pytest -q\` locally — does it pass? (needs \`PYTHONPATH=src\`)
+            - :snake: \`python -m py_compile src/inkdown/__main__.py\` — syntax clean?
+            - :package: \`pip install -r requirements.txt\` then re-run
+            - :file_folder: Did you miss \`app/\` or \`src/\` files? Check \`Verify app\` log
+            - :art: If you touched CSS, did \`tokens.css\` still have all vars?
+
+            **How to fix** :seedling::
+            1. Fix locally, commit + push to your PR branch — CI will re-run automatically :repeat:
+            2. Or comment here and we’ll help! :speech_balloon:
+
+            **Need help?** Paste the failing log snippet here and we’ll guide you :books: :heart:
+
+            *P.S. Don’t worry — failing CI is normal for first PRs!* :hugs: :star2:
+            `;
+
+            // Avoid spamming — update existing failure comment if present
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+            });
+            const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('CI failed'));
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+              core.info(`Updated failure comment for @${author}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body,
+              });
+              core.info(`Posted failure comment for @${author}`);
+            }
+
+  # Comment success on PR (only once, to celebrate)
+  notify-success:
+    runs-on: ubuntu-latest
+    needs: test
+    if: success() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // Only comment if not already commented success
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+            });
+            const already = comments.some(c => c.user.type === 'Bot' && c.body.includes('CI passed'));
+            if (already) {
+              core.info('Success already posted — skipping');
+              return;
+            }
+
+            const body = `Hey @${author}! :tada: :white_check_mark: :sparkles:
+
+            **CI passed!** :rocket: All checks green — \`pytest\` (Ubuntu + Windows) + syntax + \`app/\` verify :check_mark:
+
+            Our maintainers will review soon and **squash & merge** if all good :eyes: :star2: No action needed from you!
+
+            [View run](${runUrl}) :arrow_right: all green :green_circle:
+
+            *Thanks for making Inkdown better!* :heart: :pen:
+            `;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
 
   build-smoke:
     runs-on: ubuntu-latest
