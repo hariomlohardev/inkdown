@@ -60,7 +60,26 @@ function restoreScrollPosition(file) {
 export async function renderView(animate = false) {
   const target = state.editing ? state.previewEl : state.docEl;
   target.classList.remove('anim');
-  target.innerHTML = buildHTML(state.md);
+
+  // P0-4: Large file — chunked render to keep typing at 60fps
+  const isLarge = state.md.length > 500 * 1024 || state.md.split('\n').length > 2000;
+  if (isLarge) {
+    // Show progressive rendering with tiny placeholder first
+    target.innerHTML = '<div class="largeFileHint">Rendering large file…' + ' <span class="largeFileMeta">' + (state.md.length/1024|0) + 'KB, ' + state.md.split('\n').length + ' lines</span></div>';
+    // Chunk by ~150 lines to avoid blocking
+    const lines = state.md.split('\n');
+    const CHUNK = 150;
+    let html = '';
+    for (let i = 0; i < lines.length; i += CHUNK) {
+      const chunkMd = lines.slice(i, i + CHUNK).join('\n');
+      html += buildHTML(chunkMd);
+      // Yield every 2 chunks to keep UI responsive
+      if (i % (CHUNK*2) === 0) await new Promise(r => setTimeout(r, 0));
+    }
+    target.innerHTML = html;
+  } else {
+    target.innerHTML = buildHTML(state.md);
+  }
   decorate(target);
   await runMermaid(target);
   runMath(target);
