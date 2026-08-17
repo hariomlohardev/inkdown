@@ -1,4 +1,4 @@
 {
-  "version": "1.0.0",
-  "installer_url": "https://example.com/inkdown/Inkdown-Setup.exe"
+  "version": "1.1.0",
+  "installer_url": "https://github.com/hariomlohardev/inkdown/releases/download/v1.1.0/Inkdown-Setup.exe"
 }

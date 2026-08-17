@@ -7,7 +7,7 @@
 <p align="center"><strong>Write beautifully, ship Markdown in seconds.</strong> <code>pip install -e . && python main.py</code></p>
 
 <p align="center">
-  <a href="https://github.com/hariomlohardev/inkdown/releases"><img src="https://img.shields.io/badge/version-1.0.0-ff2e88?style=flat-square" alt="Version"/></a>
+  <a href="https://github.com/hariomlohardev/inkdown/releases"><img src="https://img.shields.io/badge/version-1.1.0-ff2e88?style=flat-square" alt="Version"/></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11%2B-3776ab?style=flat-square" alt="Python"/></a>
   <a href="https://github.com/hariomlohardev/inkdown/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hariomlohardev/inkdown?style=flat-square" alt="License"/></a>
   <a href="https://github.com/hariomlohardev/inkdown"><img src="https://img.shields.io/github/stars/hariomlohardev/inkdown?style=social" alt="Stars"/></a>
