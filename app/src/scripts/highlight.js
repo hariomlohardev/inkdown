@@ -30,9 +30,17 @@ function migrateHighlights() {
         text: h.q,
         before: '',
         after: '',
+        blockId: '',
+        start: -1,
         color: 0,
         createdAt: Date.now()
       };
+    }
+    // Migrate existing to add blockId if missing (keep working, will use context fallback)
+    if (h && h.text && h.blockId === undefined) {
+      h.blockId = '';
+      h.start = -1;
+      changed = true;
     }
     return h;
   }).filter(Boolean);
@@ -54,14 +62,17 @@ function performHighlight() {
   try {
     const range = sel.getRangeAt(0);
     const ctx = getContext(range, text);
+    const block = getBlockInfo(range);
 
     // Check if this exact highlight already exists → cycle color
     const existing = state.highlights.find(h =>
-      h.text === text && h.before === ctx.before && h.after === ctx.after
+      h.text === text && h.before === ctx.before && h.after === ctx.after && (h.blockId || '') === (block.id || '')
     );
 
     if (existing) {
       existing.color = ((existing.color || 0) + 1) % HIGHLIGHT_COLORS.length;
+      // Update block info if we now have it
+      if (block.id && !existing.blockId) { existing.blockId = block.id; existing.start = block.start; }
       saveHighlights();
       applyHighlights(state.docEl);
     } else {
@@ -71,15 +82,17 @@ function performHighlight() {
         text: text,
         before: ctx.before,
         after: ctx.after,
+        blockId: block.id || '',
+        start: block.start ?? -1,
         color: 0,
         createdAt: Date.now()
       };
-      
+
       state.highlights.push(newHighlight);
       saveHighlights();
       applySingleHighlight(newHighlight);
     }
-    
+
     sel.removeAllRanges();
     return true;
   } catch (err) {
@@ -218,6 +231,36 @@ function getContext(range, text) {
   }
 }
 
+function getBlockInfo(range) {
+  try {
+    if (!state.docEl) return { id: '', start: -1 };
+    let el = range.startContainer;
+    if (el.nodeType === 3) el = el.parentElement;
+    // Walk up to find block-level element with an id or create one
+    while (el && el !== state.docEl) {
+      if (/^(P|H[1-6]|LI|BLOCKQUOTE|TD|TH|DT|DD)$/.test(el.tagName)) {
+        if (!el.dataset.hlBlock) {
+          // Assign stable block id based on position among siblings
+          const idx = [...state.docEl.querySelectorAll(el.tagName)].indexOf(el);
+          el.dataset.hlBlock = el.tagName.toLowerCase() + '-' + idx;
+        }
+        // Compute start offset within block
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        let off = 0;
+        let n;
+        let found = false;
+        while ((n = walker.nextNode())) {
+          if (n === range.startContainer) { off += range.startOffset; found = true; break; }
+          off += n.textContent.length;
+        }
+        return { id: el.dataset.hlBlock, start: found ? off : -1 };
+      }
+      el = el.parentElement;
+    }
+  } catch (e) {}
+  return { id: '', start: -1 };
+}
+
 /** Apply a single highlight immediately (no full re-render) */
 function applySingleHighlight(item) {
   if (!state.docEl || !item || !item.text) return;
@@ -305,6 +348,40 @@ export function applyHighlights(root) {
 /** Find matches with flexible context matching */
 function findMatches(root, item) {
   const matches = [];
+
+  // If we have blockId, try that first (more precise for duplicate text)
+  if (item.blockId) {
+    const block = root.querySelector(`[data-hl-block="${CSS.escape(item.blockId)}"]`);
+    if (block) {
+      const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+      let full = '';
+      const nodes = [];
+      let n;
+      while ((n = walker.nextNode())) { nodes.push(n); full += n.textContent; }
+      let idx = -1;
+      if (typeof item.start === 'number' && item.start >= 0) {
+        idx = item.start;
+        // Verify text at that offset
+        if (full.slice(idx, idx + item.text.length) !== item.text) idx = full.indexOf(item.text);
+      } else {
+        idx = full.indexOf(item.text);
+      }
+      if (idx !== -1) {
+        // Map idx to node
+        let off = 0;
+        for (const node of nodes) {
+          const len = node.textContent.length;
+          if (idx >= off && idx + item.text.length <= off + len) {
+            matches.push({ node, start: idx - off, end: idx + item.text.length - off });
+            break;
+          }
+          if (idx < off + len) break;
+          off += len;
+        }
+        if (matches.length) return matches;
+      }
+    }
+  }
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: (node) => {
