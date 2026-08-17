@@ -1,4 +1,4 @@
-import { $ } from './state.js';
+import { $, rememberJump } from './state.js';
 import { state } from './state.js';
 import { getLibrary, getFile } from './storage.js';
 import { toast } from './ui.js';
@@ -98,7 +98,85 @@ function fuzzyScore(query, text) {
   return 0;
 }
 
+function getHeadings() {
+  const md = state.md || '';
+  const lines = md.split('\n');
+  const out = [];
+  const seen = new Set();
+  lines.forEach((line, idx) => {
+    const m = line.match(/^(#{1,6})\s+(.*\S)\s*$/);
+    if (!m) return;
+    const level = m[1].length;
+    const title = m[2].replace(/#+\s*$/, '').trim();
+    if (!title || seen.has(title.toLowerCase())) {
+      // Allow dupes but keep first; still add with line info
+      if (seen.has(title.toLowerCase() + '|' + idx)) return;
+    }
+    seen.add(title.toLowerCase());
+    // Create id like markdown.js does (slug)
+    const id = title.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-').slice(0, 64) || `h-${idx}`;
+    out.push({ level, title, line: idx + 1, id, keywords: title.toLowerCase() });
+  });
+  return out.slice(0, 100);
+}
+
+function jumpToHeading(h) {
+  // Try viewer heading first (reading mode), else editor line
+  const docEl = state.docEl;
+  const target = docEl ? docEl.querySelector(`#${CSS.escape(h.hid)}`) || [...docEl.querySelectorAll('h1,h2,h3,h4,h5,h6')].find(el => el.textContent.trim().toLowerCase() === h.title.toLowerCase()) : null;
+  if (target) {
+    try { rememberJump(); } catch (_) {}
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Also highlight briefly
+    const prev = target.style.outline;
+    target.style.outline = '2px solid var(--accent)';
+    setTimeout(() => target.style.outline = prev, 1200);
+    // If editing, also move editor cursor
+    if (state.editing && state.editorEl) {
+      const lines = (state.md || '').split('\n');
+      let idx = 0;
+      for (let i = 0; i < h.line - 1 && i < lines.length; i++) idx += lines[i].length + 1;
+      state.editorEl.focus();
+      state.editorEl.selectionStart = idx;
+      state.editorEl.selectionEnd = idx + (lines[h.line - 1] || '').length;
+    }
+  } else if (state.editing && state.editorEl) {
+    const lines = (state.md || '').split('\n');
+    let idx = 0;
+    for (let i = 0; i < h.line - 1; i++) idx += lines[i].length + 1;
+    state.editorEl.focus();
+    state.editorEl.selectionStart = idx;
+    state.editorEl.selectionEnd = idx + (lines[h.line - 1] || '').length;
+    state.editorEl.scrollTop = Math.max(0, (h.line - 1) * 23 - 100);
+  }
+}
+
 function searchCommands(query) {
+  const raw = query.trim();
+  // Heading mode: "#", "#foo", "# foo"
+  if (raw.startsWith('#')) {
+    const q = raw.slice(1).trim().toLowerCase();
+    const heads = getHeadings();
+    const filtered = q ? heads.filter(h => h.keywords.includes(q) || fuzzyScore(q, h.title) > 0) : heads;
+    // Rank: prefix > includes > fuzzy, plus lower level (H1/H2) boost
+    filtered.forEach(h => {
+      const s = h.keywords.startsWith(q) ? 95 : h.keywords.includes(q) ? 80 : fuzzyScore(q, h.title);
+      h.score = s - (h.level - 1) * 2; // H1 slightly higher
+    });
+    filtered.sort((a, b) => b.score - a.score);
+    return filtered.slice(0, 15).map(h => ({
+      type: 'heading',
+      title: h.title,
+      subtitle: `H${h.level} · line ${h.line}`,
+      icon: `H${h.level}`,
+      keywords: h.keywords,
+      level: h.level,
+      line: h.line,
+      hid: h.id,
+      action: () => jumpToHeading(h)
+    }));
+  }
+
   if (!query.trim()) {
     // Show recent files + common actions
     return commandRegistry
@@ -140,7 +218,7 @@ function renderResults(items) {
 
   items.forEach((item, i) => {
     if (item.type !== lastType) {
-      const labels = { file: 'Files', action: 'Actions', nav: 'Navigation' };
+      const labels = { file: 'Files', action: 'Actions', nav: 'Navigation', heading: 'Headings' };
       html += `<div class="cmdGroup">${labels[item.type] || item.type}</div>`;
       lastType = item.type;
     }
@@ -152,7 +230,7 @@ function renderResults(items) {
           <b>${escHtml(item.title)}</b>
           <span>${escHtml(item.subtitle || '')}</span>
         </div>
-        ${item.type === 'file' ? '<span class="cmdHint">Open</span>' : ''}
+        ${item.type === 'file' ? '<span class="cmdHint">Open</span>' : item.type === 'heading' ? '<span class="cmdHint">Jump</span>' : ''}
       </div>
     `;
   });
