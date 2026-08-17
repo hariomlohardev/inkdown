@@ -8,6 +8,29 @@ import { SAMPLE } from './samples.js';
 
 let currentFolder = '';
 let searchQuery = '';
+let searchIndex = null;
+let searchIndexAt = 0;
+
+function buildSearchIndex() {
+  const lib = getLibrary();
+  // Rebuild if library size changed or 5s stale
+  if (searchIndex && lib.length === searchIndexAt) return searchIndex;
+  searchIndex = lib.map(f => ({
+    id: f.id,
+    file: f,
+    hay: ((f.name || '') + ' ' + snippetOf(f.md || '')).toLowerCase()
+  }));
+  searchIndexAt = lib.length;
+  return searchIndex;
+}
+
+function highlightMatch(text, query) {
+  if (!query) return escHtml(text);
+  const q = query.trim();
+  if (!q) return escHtml(text);
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+  return escHtml(text).replace(re, '<mark class="hlSearch">$1</mark>');
+}
 
 /* ---------- helpers ---------- */
 const fileFolder = f => f.folder || '';
@@ -161,7 +184,7 @@ function renderStats(){
 }
 
 /* ---------- cards ---------- */
-function fileCard(f, showFolder){
+function fileCard(f, showFolder, query = ''){
   const el = document.createElement('div');
   el.className = 'card fileCard';
   el.setAttribute('role','listitem');
@@ -179,8 +202,8 @@ function fileCard(f, showFolder){
   acts.append(mv, dl);
   top.append(ico, acts);
 
-  const nm = document.createElement('div'); nm.className='cardName'; nm.textContent = f.name;
-  const sn = document.createElement('div'); sn.className='cardSnippet'; sn.textContent = snippetOf(f.md);
+  const nm = document.createElement('div'); nm.className='cardName'; nm.innerHTML = highlightMatch(f.name, query);
+  const sn = document.createElement('div'); sn.className='cardSnippet'; sn.innerHTML = highlightMatch(snippetOf(f.md), query);
   const meta = document.createElement('div'); meta.className='cardMeta';
   let metaHtml = '<span>'+words+' words</span>';
   if ((f.updatedAt||f.createdAt)) metaHtml += '<span class="dot"></span><span>'+relTime(f.updatedAt||f.createdAt)+'</span>';
@@ -287,9 +310,19 @@ export function renderLibrary(){
 
   const q = searchQuery.trim().toLowerCase();
   if (q){
-    const matches = getLibrary().filter(f => (f.name||'').toLowerCase().includes(q) || (f.md||'').toLowerCase().includes(q));
+    const idx = buildSearchIndex();
+    const matches = idx.filter(x => x.hay.includes(q)).map(x => x.file);
+    // Fallback to direct file md search if snippet miss (for long docs)
+    if (!matches.length) {
+      const lib = getLibrary();
+      const direct = lib.filter(f => (f.name||'').toLowerCase().includes(q) || (f.md||'').toLowerCase().includes(q));
+      if (direct.length) {
+        direct.forEach(f => grid.appendChild(fileCard(f, true, searchQuery.trim())));
+        return;
+      }
+    }
     if (!matches.length) grid.appendChild(emptyState());
-    else matches.forEach(f => grid.appendChild(fileCard(f, true)));
+    else matches.forEach(f => grid.appendChild(fileCard(f, true, searchQuery.trim())));
     return;
   }
 
@@ -397,7 +430,14 @@ function closeMoveMenu(){
 /* ---------- init ---------- */
 export function initLibrary(){
   const search = $('#libSearch');
-  if (search) search.addEventListener('input', e => { searchQuery = e.target.value; renderLibrary(); });
+  if (search) {
+    let searchTimer = null;
+    search.addEventListener('input', e => {
+      searchQuery = e.target.value;
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => renderLibrary(), 80);
+    });
+  }
 
   const libNew = $('#libNew');
   if (libNew) libNew.onclick = newFile;
