@@ -8,7 +8,7 @@ export function initNavigation() {
   // Minimap: click or drag to teleport through the document
   const mm = $('#minimap');
   if (!mm) return;   // Early exit if minimap doesn't exist
-  
+
   let drag = false;
 
   const go = e => {
@@ -18,6 +18,8 @@ export function initNavigation() {
   };
 
   mm.addEventListener('mousedown', e => {
+    // Don't trigger if clicking on thumb (handled separately)
+    if (e.target.id === 'mmThumb') return;
     drag = true;
     go(e);
   });
@@ -25,6 +27,36 @@ export function initNavigation() {
     if (drag) go(e);
   });
   window.addEventListener('mouseup', () => drag = false);
+
+  // mmThumb draggable via pointer events (60fps, pointer capture)
+  const th = $('#mmThumb');
+  if (th) {
+    th.style.touchAction = 'none';
+    th.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      th.setPointerCapture(e.pointerId);
+      const startY = e.clientY;
+      const startTopPct = parseFloat(th.style.top) || 0;
+      const mmH = mm.clientHeight;
+      const onMove = ev => {
+        const deltaPct = (ev.clientY - startY) / mmH * 100;
+        const thH = th.offsetHeight;
+        const maxTop = 100 - (thH / mmH * 100);
+        let newTop = startTopPct + deltaPct;
+        newTop = Math.max(0, Math.min(maxTop, newTop));
+        th.style.top = newTop + '%';
+        const maxScroll = state.scrollArea.scrollHeight - state.scrollArea.clientHeight;
+        state.scrollArea.scrollTop = (newTop / 100) * maxScroll;
+      };
+      const onUp = () => {
+        th.releasePointerCapture(e.pointerId);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+      };
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  }
 
   // Re-measure on window resize
   window.addEventListener('resize', debounce(measureNav, 200));
