@@ -105,8 +105,21 @@ export function buildTOC(el) {
 
   applyTocFilter();
 
+  // Throttled active highlight to 16ms (60fps)
+  let ticking = false;
+  let lastActive = null;
+  const throttledSetActive = id => {
+    if (ticking) { lastActive = id; return; }
+    ticking = true;
+    requestAnimationFrame(() => {
+      setActiveToc(lastActive || id);
+      ticking = false;
+      lastActive = null;
+    });
+  };
+
   tocIO = new IntersectionObserver(es => {
-    es.forEach(en => { if (en.isIntersecting) setActiveToc(en.target.id); });
+    es.forEach(en => { if (en.isIntersecting) throttledSetActive(en.target.id); });
   }, { root: state.scrollArea, rootMargin: '-8% 0px -78% 0px' });
   hs.forEach(h => tocIO.observe(h));
 }
