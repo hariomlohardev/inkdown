@@ -2,6 +2,18 @@ import os, sys, socket, threading, functools, ctypes, logging, multiprocessing, 
 import http.server, socketserver
 import json as json_module
 from datetime import datetime
+from inkdown import __version__
+
+if "--version" in sys.argv:
+    print(__version__)
+    sys.exit(0)
+
+if "--help" in sys.argv:
+    print("Options:")
+    print(" --version : Print Version")
+    print(" --capture : Start in quick-capture mode")
+    sys.exit(0)
+
 
 PORT = 8741
 MAX_OPEN_FILE_BYTES = 15 * 1024 * 1024
